@@ -68,7 +68,8 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("ClientOnly", policy => policy.RequireRole("Client"));
+    options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
+    options.AddPolicy("ClientOnly", policy => policy.RequireRole("Customer"));
 });
 
 builder.Services.AddCors(options =>
@@ -113,6 +114,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    // Development/demo seed data only. Do not run seeded demo credentials in production.
+    await DbInitializer.InitializeAsync(app.Services);
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
