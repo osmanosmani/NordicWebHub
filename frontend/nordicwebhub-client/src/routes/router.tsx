@@ -7,10 +7,12 @@ import { AdminDashboard } from '../pages/admin/AdminDashboard'
 import { AdminPackages } from '../pages/admin/AdminPackages'
 import { AdminProjects } from '../pages/admin/AdminProjects'
 import { AdminRequests } from '../pages/admin/AdminRequests'
+import { AdminTickets } from '../pages/admin/AdminTickets'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
+import { CustomerTickets } from '../pages/customer/CustomerTickets'
 import { Home } from '../pages/public/Home'
 import { Login } from '../pages/public/Login'
 import { Pricing } from '../pages/public/Pricing'
@@ -75,6 +77,10 @@ export const router = createBrowserRouter([
             path: 'projects',
             element: <AdminProjects />,
           },
+          {
+            path: 'tickets',
+            element: <AdminTickets />,
+          },
         ],
       },
     ],
@@ -105,6 +111,10 @@ export const router = createBrowserRouter([
           {
             path: 'projects',
             element: <CustomerProjects />,
+          },
+          {
+            path: 'tickets',
+            element: <CustomerTickets />,
           },
         ],
       },
