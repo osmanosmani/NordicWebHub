@@ -18,7 +18,7 @@ public class Project
 
     public string Description { get; set; } = string.Empty;
 
-    public ProjectStatus Status { get; set; } = ProjectStatus.Planned;
+    public ProjectStatus Status { get; set; } = ProjectStatus.Planning;
 
     public DateTime StartDate { get; set; }
 

@@ -2,9 +2,11 @@ namespace NordicWebHub.Api.Models.Enums;
 
 public enum ProjectStatus
 {
-    Planned = 0,
-    InProgress = 1,
-    OnHold = 2,
-    Completed = 3,
-    Cancelled = 4
+    Planning = 0,
+    Design = 1,
+    Development = 2,
+    Review = 3,
+    Live = 4,
+    Completed = 5,
+    Cancelled = 6
 }

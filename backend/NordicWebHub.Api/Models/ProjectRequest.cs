@@ -24,7 +24,7 @@ public class ProjectRequest
 
     public string BudgetRange { get; set; } = string.Empty;
 
-    public ProjectRequestStatus Status { get; set; } = ProjectRequestStatus.Pending;
+    public ProjectRequestStatus Status { get; set; } = ProjectRequestStatus.New;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
