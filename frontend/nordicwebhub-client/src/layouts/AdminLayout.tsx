@@ -6,6 +6,7 @@ import { cn } from '../utils/cn'
 const adminLinks = [
   { to: '/admin/dashboard', label: 'Overview' },
   { to: '/admin/packages', label: 'Packages' },
+  { to: '/admin/companies', label: 'Companies' },
 ]
 
 export function AdminLayout() {

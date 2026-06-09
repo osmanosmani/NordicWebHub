@@ -2,8 +2,10 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AdminLayout } from '../layouts/AdminLayout'
 import { CustomerLayout } from '../layouts/CustomerLayout'
 import { PublicLayout } from '../layouts/PublicLayout'
+import { AdminCompanies } from '../pages/admin/AdminCompanies'
 import { AdminDashboard } from '../pages/admin/AdminDashboard'
 import { AdminPackages } from '../pages/admin/AdminPackages'
+import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { Home } from '../pages/public/Home'
 import { Login } from '../pages/public/Login'
@@ -57,6 +59,10 @@ export const router = createBrowserRouter([
             path: 'packages',
             element: <AdminPackages />,
           },
+          {
+            path: 'companies',
+            element: <AdminCompanies />,
+          },
         ],
       },
     ],
@@ -75,6 +81,10 @@ export const router = createBrowserRouter([
           {
             path: 'dashboard',
             element: <CustomerDashboard />,
+          },
+          {
+            path: 'company',
+            element: <CustomerCompany />,
           },
         ],
       },
