@@ -7,6 +7,7 @@ const customerLinks = [
   { to: '/customer/dashboard', label: 'Overview' },
   { to: '/customer/company', label: 'My Company' },
   { to: '/customer/requests', label: 'Requests' },
+  { to: '/customer/projects', label: 'Projects' },
 ]
 
 export function CustomerLayout() {
