@@ -5,8 +5,10 @@ import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminCompanies } from '../pages/admin/AdminCompanies'
 import { AdminDashboard } from '../pages/admin/AdminDashboard'
 import { AdminPackages } from '../pages/admin/AdminPackages'
+import { AdminRequests } from '../pages/admin/AdminRequests'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
+import { CustomerRequests } from '../pages/customer/CustomerRequests'
 import { Home } from '../pages/public/Home'
 import { Login } from '../pages/public/Login'
 import { Pricing } from '../pages/public/Pricing'
@@ -63,6 +65,10 @@ export const router = createBrowserRouter([
             path: 'companies',
             element: <AdminCompanies />,
           },
+          {
+            path: 'requests',
+            element: <AdminRequests />,
+          },
         ],
       },
     ],
@@ -85,6 +91,10 @@ export const router = createBrowserRouter([
           {
             path: 'company',
             element: <CustomerCompany />,
+          },
+          {
+            path: 'requests',
+            element: <CustomerRequests />,
           },
         ],
       },

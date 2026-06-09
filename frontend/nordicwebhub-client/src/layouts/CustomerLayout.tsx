@@ -6,6 +6,7 @@ import { cn } from '../utils/cn'
 const customerLinks = [
   { to: '/customer/dashboard', label: 'Overview' },
   { to: '/customer/company', label: 'My Company' },
+  { to: '/customer/requests', label: 'Requests' },
 ]
 
 export function CustomerLayout() {
