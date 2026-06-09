@@ -19,6 +19,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<TicketReply> TicketReplies => Set<TicketReply>();
 
+    public DbSet<MaintenanceLog> MaintenanceLogs => Set<MaintenanceLog>();
+
+    public DbSet<HostingStatus> HostingStatuses => Set<HostingStatus>();
+
+    public DbSet<SeoReport> SeoReports => Set<SeoReport>();
+
+    public DbSet<AiSeoRequest> AiSeoRequests => Set<AiSeoRequest>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -197,6 +205,88 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(ticketReply => ticketReply.User)
                 .WithMany(user => user.TicketReplies)
                 .HasForeignKey(ticketReply => ticketReply.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<MaintenanceLog>(entity =>
+        {
+            entity.Property(maintenanceLog => maintenanceLog.Title)
+                .HasMaxLength(200);
+
+            entity.Property(maintenanceLog => maintenanceLog.Description)
+                .HasMaxLength(2000);
+
+            entity.Property(maintenanceLog => maintenanceLog.ActionTaken)
+                .HasMaxLength(2000);
+
+            entity.Property(maintenanceLog => maintenanceLog.Result)
+                .HasMaxLength(1000);
+
+            entity.Property(maintenanceLog => maintenanceLog.CreatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.HasOne(maintenanceLog => maintenanceLog.Company)
+                .WithMany(company => company.MaintenanceLogs)
+                .HasForeignKey(maintenanceLog => maintenanceLog.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<HostingStatus>(entity =>
+        {
+            entity.Property(hostingStatus => hostingStatus.DomainName)
+                .HasMaxLength(250);
+
+            entity.Property(hostingStatus => hostingStatus.Notes)
+                .HasMaxLength(1000);
+
+            entity.Property(hostingStatus => hostingStatus.LastCheckedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.HasOne(hostingStatus => hostingStatus.Company)
+                .WithMany(company => company.HostingStatuses)
+                .HasForeignKey(hostingStatus => hostingStatus.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SeoReport>(entity =>
+        {
+            entity.Property(seoReport => seoReport.TopKeywords)
+                .HasMaxLength(1000);
+
+            entity.Property(seoReport => seoReport.TechnicalIssues)
+                .HasMaxLength(2000);
+
+            entity.Property(seoReport => seoReport.Recommendations)
+                .HasMaxLength(2000);
+
+            entity.Property(seoReport => seoReport.CreatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.HasOne(seoReport => seoReport.Company)
+                .WithMany(company => company.SeoReports)
+                .HasForeignKey(seoReport => seoReport.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<AiSeoRequest>(entity =>
+        {
+            entity.Property(aiSeoRequest => aiSeoRequest.Industry)
+                .HasMaxLength(100);
+
+            entity.Property(aiSeoRequest => aiSeoRequest.City)
+                .HasMaxLength(100);
+
+            entity.Property(aiSeoRequest => aiSeoRequest.CreatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.HasOne(aiSeoRequest => aiSeoRequest.Company)
+                .WithMany(company => company.AiSeoRequests)
+                .HasForeignKey(aiSeoRequest => aiSeoRequest.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(aiSeoRequest => aiSeoRequest.Customer)
+                .WithMany(user => user.AiSeoRequests)
+                .HasForeignKey(aiSeoRequest => aiSeoRequest.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

@@ -1,6 +1,6 @@
 namespace NordicWebHub.Api.Models.Enums;
 
-public enum SupportTicketStatus
+public enum TicketStatus
 {
     Open = 0,
     InProgress = 1,

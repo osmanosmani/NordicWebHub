@@ -18,7 +18,7 @@ public class SupportTicket
 
     public string Description { get; set; } = string.Empty;
 
-    public SupportTicketStatus Status { get; set; } = SupportTicketStatus.Open;
+    public TicketStatus Status { get; set; } = TicketStatus.Open;
 
     public TicketPriority Priority { get; set; } = TicketPriority.Normal;
 

@@ -27,4 +27,12 @@ public class Company
     public ICollection<Project> Projects { get; set; } = new List<Project>();
 
     public ICollection<SupportTicket> SupportTickets { get; set; } = new List<SupportTicket>();
+
+    public ICollection<MaintenanceLog> MaintenanceLogs { get; set; } = new List<MaintenanceLog>();
+
+    public ICollection<HostingStatus> HostingStatuses { get; set; } = new List<HostingStatus>();
+
+    public ICollection<SeoReport> SeoReports { get; set; } = new List<SeoReport>();
+
+    public ICollection<AiSeoRequest> AiSeoRequests { get; set; } = new List<AiSeoRequest>();
 }
