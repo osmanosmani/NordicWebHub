@@ -3,6 +3,7 @@ import { AdminLayout } from '../layouts/AdminLayout'
 import { CustomerLayout } from '../layouts/CustomerLayout'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminDashboard } from '../pages/admin/AdminDashboard'
+import { AdminPackages } from '../pages/admin/AdminPackages'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { Home } from '../pages/public/Home'
 import { Login } from '../pages/public/Login'
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
           {
             path: 'dashboard',
             element: <AdminDashboard />,
+          },
+          {
+            path: 'packages',
+            element: <AdminPackages />,
           },
         ],
       },

@@ -3,7 +3,10 @@ import { Button } from '../components/ui/Button'
 import { useAuth } from '../context/useAuth'
 import { cn } from '../utils/cn'
 
-const adminLinks = [{ to: '/admin/dashboard', label: 'Overview' }]
+const adminLinks = [
+  { to: '/admin/dashboard', label: 'Overview' },
+  { to: '/admin/packages', label: 'Packages' },
+]
 
 export function AdminLayout() {
   const { logout, user } = useAuth()

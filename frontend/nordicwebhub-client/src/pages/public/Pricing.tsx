@@ -1,56 +1,133 @@
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { getPackages } from '../../api/packagesApi'
+import { Button } from '../../components/ui/Button'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { useAuth } from '../../context/useAuth'
+import type { ServicePackage } from '../../types/servicePackage'
+import { getErrorMessage } from '../../utils/getErrorMessage'
 
-const packages = [
-  {
-    name: 'Starter Website',
-    price: '499 SEK / month',
-    setup: '4 990 SEK setup',
-    detail: 'A clean website foundation for small companies.',
-  },
-  {
-    name: 'Business Website',
-    price: '999 SEK / month',
-    setup: '12 990 SEK setup',
-    detail: 'More pages, stronger structure, and lead-focused sections.',
-  },
-  {
-    name: 'SEO Growth',
-    price: '3 990 SEK / month',
-    setup: '4 990 SEK setup',
-    detail: 'Ongoing SEO improvements and monthly reporting.',
-  },
-]
+const sekFormatter = new Intl.NumberFormat('sv-SE', {
+  currency: 'SEK',
+  maximumFractionDigits: 0,
+  style: 'currency',
+})
 
 export function Pricing() {
+  const { isAuthenticated } = useAuth()
+  const [packages, setPackages] = useState<ServicePackage[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    getPackages()
+      .then((servicePackages) => {
+        if (isMounted) {
+          setPackages(servicePackages)
+          setError('')
+        }
+      })
+      .catch((loadError: unknown) => {
+        if (isMounted) {
+          setError(
+            getErrorMessage(
+              loadError,
+              'Could not load service packages. Please try again.',
+            ),
+          )
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <section className="page-shell py-12 sm:py-16">
       <PageHeader
-        description="Simple package examples for the NordicWebHub demo portal."
+        description="Choose a digital service package and send a request from the client portal."
         eyebrow="Packages"
         title="Pricing"
       />
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {packages.map((servicePackage) => (
-          <article
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-            key={servicePackage.name}
-          >
-            <h2 className="text-lg font-semibold text-slate-950">
-              {servicePackage.name}
-            </h2>
-            <p className="mt-4 text-2xl font-semibold text-slate-950">
-              {servicePackage.price}
-            </p>
-            <p className="mt-1 text-sm font-medium text-slate-500">
-              {servicePackage.setup}
-            </p>
-            <p className="mt-5 text-sm leading-6 text-slate-600">
-              {servicePackage.detail}
-            </p>
-          </article>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm font-medium text-slate-600 shadow-sm">
+          Loading service packages
+        </div>
+      ) : null}
+
+      {error ? (
+        <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      {!isLoading && !error && packages.length === 0 ? (
+        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
+          No active service packages are available right now.
+        </div>
+      ) : null}
+
+      {!isLoading && !error && packages.length > 0 ? (
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {packages.map((servicePackage) => (
+            <article
+              className="flex min-h-full flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+              key={servicePackage.id}
+            >
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase text-blue-700">
+                    {servicePackage.category}
+                  </p>
+                  <h2 className="mt-2 text-xl font-semibold text-slate-950">
+                    {servicePackage.name}
+                  </h2>
+                </div>
+              </div>
+
+              <p className="text-sm leading-6 text-slate-600">
+                {servicePackage.description}
+              </p>
+
+              <dl className="mt-6 grid gap-3 text-sm">
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
+                  <dt className="text-slate-500">Monthly price</dt>
+                  <dd className="font-semibold text-slate-950">
+                    {sekFormatter.format(servicePackage.monthlyPrice)}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
+                  <dt className="text-slate-500">Setup fee</dt>
+                  <dd className="font-semibold text-slate-950">
+                    {sekFormatter.format(servicePackage.setupFee)}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
+                  <dt className="text-slate-500">Delivery time</dt>
+                  <dd className="font-semibold text-slate-950">
+                    {servicePackage.deliveryTime}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="mt-auto pt-6">
+                <Link to={isAuthenticated ? '/customer/dashboard' : '/login'}>
+                  <Button className="w-full">Request this package</Button>
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : null}
     </section>
   )
 }
