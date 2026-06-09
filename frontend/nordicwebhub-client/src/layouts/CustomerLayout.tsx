@@ -3,7 +3,7 @@ import { Button } from '../components/ui/Button'
 import { useAuth } from '../context/useAuth'
 import { cn } from '../utils/cn'
 
-const customerLinks = [{ to: '/customer', label: 'Overview' }]
+const customerLinks = [{ to: '/customer/dashboard', label: 'Overview' }]
 
 export function CustomerLayout() {
   const { logout, user } = useAuth()

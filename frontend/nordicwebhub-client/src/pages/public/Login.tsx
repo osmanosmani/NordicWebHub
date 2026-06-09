@@ -1,20 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
 import { TextInput } from '../../components/ui/TextInput'
 import { useAuth } from '../../context/useAuth'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
-type LocationState = {
-  from?: {
-    pathname?: string
-  }
-}
-
 export function Login() {
   const { login } = useAuth()
-  const location = useLocation()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,10 +21,7 @@ export function Login() {
 
     try {
       const user = await login({ email, password })
-      const state = location.state as LocationState | null
-      navigate(state?.from?.pathname || getDefaultRouteForUser(user), {
-        replace: true,
-      })
+      navigate(getDefaultRouteForUser(user), { replace: true })
     } catch (submitError) {
       setError(getErrorMessage(submitError, 'Login failed. Please try again.'))
     } finally {

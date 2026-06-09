@@ -32,12 +32,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "NordicWebHub.Auth";
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = builder.Environment.IsDevelopment()
-        ? SameSiteMode.Lax
-        : SameSiteMode.None;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-        ? CookieSecurePolicy.None
-        : CookieSecurePolicy.Always;
+    // The React app runs on http://localhost:5173 while the API runs on HTTPS,
+    // so browser cookie rules require SameSite=None and Secure for local auth.
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
 

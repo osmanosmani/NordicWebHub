@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { Unauthorized } from '../pages/public/Unauthorized'
 import type { AuthRole } from '../types/auth'
 
 type ProtectedRouteProps = {
@@ -7,10 +8,10 @@ type ProtectedRouteProps = {
 }
 
 export function ProtectedRoute({ allowedRole }: ProtectedRouteProps) {
-  const { isLoading, user } = useAuth()
+  const { loading, user } = useAuth()
   const location = useLocation()
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
         <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-700 shadow-sm">
@@ -25,7 +26,7 @@ export function ProtectedRoute({ allowedRole }: ProtectedRouteProps) {
   }
 
   if (allowedRole && user.role !== allowedRole) {
-    return <Navigate replace to="/unauthorized" />
+    return <Unauthorized />
   }
 
   return <Outlet />
