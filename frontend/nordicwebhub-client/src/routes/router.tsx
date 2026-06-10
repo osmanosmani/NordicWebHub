@@ -4,12 +4,14 @@ import { CustomerLayout } from '../layouts/CustomerLayout'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminCompanies } from '../pages/admin/AdminCompanies'
 import { AdminDashboard } from '../pages/admin/AdminDashboard'
+import { AdminMaintenanceLogs } from '../pages/admin/AdminMaintenanceLogs'
 import { AdminPackages } from '../pages/admin/AdminPackages'
 import { AdminProjects } from '../pages/admin/AdminProjects'
 import { AdminRequests } from '../pages/admin/AdminRequests'
 import { AdminTickets } from '../pages/admin/AdminTickets'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
+import { CustomerMaintenanceLogs } from '../pages/customer/CustomerMaintenanceLogs'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
 import { CustomerTickets } from '../pages/customer/CustomerTickets'
@@ -81,6 +83,10 @@ export const router = createBrowserRouter([
             path: 'tickets',
             element: <AdminTickets />,
           },
+          {
+            path: 'maintenance-logs',
+            element: <AdminMaintenanceLogs />,
+          },
         ],
       },
     ],
@@ -115,6 +121,10 @@ export const router = createBrowserRouter([
           {
             path: 'tickets',
             element: <CustomerTickets />,
+          },
+          {
+            path: 'maintenance-logs',
+            element: <CustomerMaintenanceLogs />,
           },
         ],
       },

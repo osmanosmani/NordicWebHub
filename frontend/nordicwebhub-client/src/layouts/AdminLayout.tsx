@@ -10,6 +10,7 @@ const adminLinks = [
   { to: '/admin/requests', label: 'Requests' },
   { to: '/admin/projects', label: 'Projects' },
   { to: '/admin/tickets', label: 'Tickets' },
+  { to: '/admin/maintenance-logs', label: 'Maintenance' },
 ]
 
 export function AdminLayout() {
@@ -54,6 +55,22 @@ export function AdminLayout() {
               Log out
             </Button>
           </div>
+          <nav className="flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 sm:px-6 lg:hidden">
+            {adminLinks.map((link) => (
+              <NavLink
+                className={({ isActive }) =>
+                  cn(
+                    'shrink-0 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
+                    isActive && 'bg-blue-50 text-blue-800',
+                  )
+                }
+                key={link.to}
+                to={link.to}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
         </header>
 
         <main className="px-4 py-8 sm:px-6 lg:px-8">
