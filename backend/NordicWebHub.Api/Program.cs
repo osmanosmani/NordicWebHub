@@ -56,6 +56,9 @@ builder.Services
         options.Password.RequiredLength = 8;
         options.Password.RequireNonAlphanumeric = false;
         options.SignIn.RequireConfirmedEmail = false;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+        options.Lockout.AllowedForNewUsers = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();

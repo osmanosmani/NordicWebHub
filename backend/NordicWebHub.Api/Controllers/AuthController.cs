@@ -74,15 +74,35 @@ public class AuthController(
     {
         var user = await userManager.FindByEmailAsync(dto.Email.Trim());
 
-        if (user is null || !await userManager.CheckPasswordAsync(user, dto.Password))
+        if (user is null)
         {
             return Unauthorized(new
             {
-                message = "Invalid email or password."
+                message = "Invalid login attempt."
             });
         }
 
-        await signInManager.SignInAsync(user, isPersistent: true);
+        var signInResult = await signInManager.PasswordSignInAsync(
+            user,
+            dto.Password,
+            isPersistent: true,
+            lockoutOnFailure: true);
+
+        if (signInResult.IsLockedOut)
+        {
+            return StatusCode(StatusCodes.Status423Locked, new
+            {
+                message = "Account temporarily locked due to too many failed attempts."
+            });
+        }
+
+        if (!signInResult.Succeeded)
+        {
+            return Unauthorized(new
+            {
+                message = "Invalid login attempt."
+            });
+        }
 
         return Ok(await CreateAuthResponseAsync(user));
     }
