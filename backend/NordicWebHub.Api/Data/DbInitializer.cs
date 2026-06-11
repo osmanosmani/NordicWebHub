@@ -727,7 +727,7 @@ public static class DbInitializer
                 CustomerId = customerId,
                 Industry = "Construction",
                 City = "Stockholm",
-                ResultJson = """{"summary":"Focus on service pages, project references, and local construction keywords.","keywords":["byggfirma stockholm","renovering stockholm","byggprojekt offert"]}""",
+                ResultJson = """{"localKeywords":["byggfirma stockholm","renovering stockholm","byggentreprenör stockholm","byggprojekt offert stockholm","lokal byggservice stockholm"],"blogPostIdeas":[{"title":"Så väljer du rätt byggfirma i Stockholm","focus":"Praktiska kriterier för att jämföra lokala byggföretag."},{"title":"Planera en lyckad renovering i Stockholm","focus":"Budget, tidsplan och tillstånd inför en renovering."},{"title":"Vanliga frågor inför ett byggprojekt","focus":"Svar på kundernas vanligaste frågor före offert."}],"metaTitle":"Byggfirma Stockholm | Nordic Build AB","metaDescription":"Nordic Build AB hjälper företag och privatpersoner med byggprojekt och renovering i Stockholm. Kontakta oss för en tydlig offert.","recommendations":["Skapa separata lokala sidor för renovering och byggservice.","Publicera projektcase med område, arbete och resultat.","Förbättra Google Business Profile med bilder och kundomdömen."]}""",
                 CreatedAt = DateTime.UtcNow.AddDays(-4)
             },
             new AiSeoRequest
@@ -736,7 +736,7 @@ public static class DbInitializer
                 CustomerId = demoCustomerId,
                 Industry = "Cleaning Services",
                 City = "Malmö",
-                ResultJson = """{"summary":"Prioritize local cleaning pages and recurring office cleaning content.","keywords":["städfirma malmö","kontorsstädning malmö","flyttstädning skåne"]}""",
+                ResultJson = """{"localKeywords":["städfirma malmö","kontorsstädning malmö","företagsstädning malmö","flyttstädning malmö","lokalvård malmö"],"blogPostIdeas":[{"title":"Så väljer du städfirma i Malmö","focus":"Kvalitet, försäkring och tydliga avtal för lokal städning."},{"title":"Fördelar med regelbunden kontorsstädning","focus":"Hur en ren arbetsmiljö påverkar trivsel och produktivitet."},{"title":"Checklista inför flyttstädning","focus":"Moment som kunder bör kontrollera före besiktning."}],"metaTitle":"Städfirma Malmö | Skåne Clean Service AB","metaDescription":"Professionell kontorsstädning, företagsstädning och flyttstädning i Malmö. Begär offert från Skåne Clean Service AB.","recommendations":["Skapa tjänstesidor för varje städtjänst i Malmö.","Samla lokala kundomdömen och visa dem nära offertformuläret.","Publicera guider som svarar på vanliga frågor om städning."]}""",
                 CreatedAt = DateTime.UtcNow.AddDays(-2)
             }
         };

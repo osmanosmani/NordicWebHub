@@ -11,6 +11,7 @@ import { AdminRequests } from '../pages/admin/AdminRequests'
 import { AdminSeoReports } from '../pages/admin/AdminSeoReports'
 import { AdminTickets } from '../pages/admin/AdminTickets'
 import { AdminWebsiteCheck } from '../pages/admin/AdminWebsiteCheck'
+import { CustomerAiSeo } from '../pages/customer/CustomerAiSeo'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { CustomerHostingStatus } from '../pages/customer/CustomerHostingStatus'
@@ -145,6 +146,10 @@ export const router = createBrowserRouter([
           {
             path: 'hosting-status',
             element: <CustomerHostingStatus />,
+          },
+          {
+            path: 'ai-seo',
+            element: <CustomerAiSeo />,
           },
         ],
       },

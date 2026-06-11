@@ -12,6 +12,7 @@ const customerLinks = [
   { to: '/customer/maintenance-logs', label: 'Maintenance' },
   { to: '/customer/seo-reports', label: 'SEO Reports' },
   { to: '/customer/hosting-status', label: 'Hosting Status' },
+  { to: '/customer/ai-seo', label: 'AI SEO' },
 ]
 
 export function CustomerLayout() {

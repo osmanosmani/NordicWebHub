@@ -31,6 +31,14 @@ builder.Services
 
 builder.Services.AddScoped<WebsiteHealthCheckService>();
 
+builder.Services.AddHttpClient("OpenAI", client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com/v1/");
+    client.Timeout = TimeSpan.FromSeconds(45);
+});
+
+builder.Services.AddScoped<IAiSeoService, AiSeoService>();
+
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
