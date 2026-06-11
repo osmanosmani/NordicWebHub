@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.Models;
+using NordicWebHub.Api.Services;
 
 const string reactFrontendCorsPolicy = "ReactFrontend";
 
@@ -16,6 +17,19 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services
+    .AddHttpClient("WebsiteHealthCheck", client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(8);
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("NordicWebHub-HealthCheck/1.0");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        AllowAutoRedirect = false
+    });
+
+builder.Services.AddScoped<WebsiteHealthCheckService>();
 
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>

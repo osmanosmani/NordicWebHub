@@ -12,6 +12,7 @@ const adminLinks = [
   { to: '/admin/tickets', label: 'Tickets' },
   { to: '/admin/maintenance-logs', label: 'Maintenance' },
   { to: '/admin/seo-reports', label: 'SEO Reports' },
+  { to: '/admin/website-check', label: 'Website Check' },
 ]
 
 export function AdminLayout() {

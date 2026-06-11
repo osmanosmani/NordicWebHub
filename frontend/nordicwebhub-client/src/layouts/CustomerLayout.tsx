@@ -11,6 +11,7 @@ const customerLinks = [
   { to: '/customer/tickets', label: 'Tickets' },
   { to: '/customer/maintenance-logs', label: 'Maintenance' },
   { to: '/customer/seo-reports', label: 'SEO Reports' },
+  { to: '/customer/hosting-status', label: 'Hosting Status' },
 ]
 
 export function CustomerLayout() {

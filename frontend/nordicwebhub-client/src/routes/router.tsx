@@ -10,8 +10,10 @@ import { AdminProjects } from '../pages/admin/AdminProjects'
 import { AdminRequests } from '../pages/admin/AdminRequests'
 import { AdminSeoReports } from '../pages/admin/AdminSeoReports'
 import { AdminTickets } from '../pages/admin/AdminTickets'
+import { AdminWebsiteCheck } from '../pages/admin/AdminWebsiteCheck'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
+import { CustomerHostingStatus } from '../pages/customer/CustomerHostingStatus'
 import { CustomerMaintenanceLogs } from '../pages/customer/CustomerMaintenanceLogs'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
@@ -93,6 +95,10 @@ export const router = createBrowserRouter([
             path: 'seo-reports',
             element: <AdminSeoReports />,
           },
+          {
+            path: 'website-check',
+            element: <AdminWebsiteCheck />,
+          },
         ],
       },
     ],
@@ -135,6 +141,10 @@ export const router = createBrowserRouter([
           {
             path: 'seo-reports',
             element: <CustomerSeoReports />,
+          },
+          {
+            path: 'hosting-status',
+            element: <CustomerHostingStatus />,
           },
         ],
       },
