@@ -12,16 +12,34 @@ namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/ai-seo")]
-[Authorize(Roles = "Customer")]
+[Authorize]
 public class AiSeoController(
     ApplicationDbContext dbContext,
     IAiSeoService aiSeoService,
     ICurrentCustomerCompanyService currentCustomerCompanyService,
     ILogger<AiSeoController> logger) : ControllerBase
 {
+    private const string AdminRole = "Admin";
+    private const string CustomerRole = "Customer";
+
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
+    [HttpGet]
+    [Authorize(Roles = AdminRole)]
+    public async Task<ActionResult<IEnumerable<AiSeoRequestResultDto>>> GetResults(
+        CancellationToken cancellationToken)
+    {
+        var requests = await dbContext.AiSeoRequests
+            .AsNoTracking()
+            .Include(request => request.Company)
+            .OrderByDescending(request => request.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return Ok(ParseResults(requests));
+    }
+
     [HttpPost("generate")]
+    [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<AiSeoResultDto>> Generate(
         GenerateAiSeoRequestDto dto,
         CancellationToken cancellationToken)
@@ -91,6 +109,7 @@ public class AiSeoController(
     }
 
     [HttpGet("my-results")]
+    [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<IEnumerable<AiSeoRequestResultDto>>> GetMyResults(
         CancellationToken cancellationToken)
     {
@@ -120,6 +139,12 @@ public class AiSeoController(
             .OrderByDescending(request => request.CreatedAt)
             .ToListAsync(cancellationToken);
 
+        return Ok(ParseResults(requests));
+    }
+
+    private IReadOnlyCollection<AiSeoRequestResultDto> ParseResults(
+        IEnumerable<AiSeoRequest> requests)
+    {
         var results = new List<AiSeoRequestResultDto>();
 
         foreach (var request in requests)
@@ -146,7 +171,7 @@ public class AiSeoController(
             }
         }
 
-        return Ok(results);
+        return results;
     }
 
     private string? GetCurrentUserId()

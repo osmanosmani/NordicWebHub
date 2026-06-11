@@ -247,6 +247,15 @@ public class CompaniesController(
                 });
             }
 
+            if (owner.Id != company.OwnerId
+                && await HasRelatedRecordsAsync(company.Id))
+            {
+                return Conflict(new
+                {
+                    message = "Company owner cannot be changed while the company has related customer or operational data."
+                });
+            }
+
             company.Name = dto.Name!.Trim();
             company.OrgNumber = dto.OrgNumber!.Trim();
             company.WebsiteUrl = NormalizeOptionalText(dto.WebsiteUrl);
