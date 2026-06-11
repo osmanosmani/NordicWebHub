@@ -10,6 +10,7 @@ const customerLinks = [
   { to: '/customer/projects', label: 'Projects' },
   { to: '/customer/tickets', label: 'Tickets' },
   { to: '/customer/maintenance-logs', label: 'Maintenance' },
+  { to: '/customer/seo-reports', label: 'SEO Reports' },
 ]
 
 export function CustomerLayout() {
@@ -24,7 +25,7 @@ export function CustomerLayout() {
             <p className="text-sm text-slate-500">Customer portal</p>
           </div>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-1 xl:flex">
             {customerLinks.map((link) => (
               <NavLink
                 className={({ isActive }) =>
@@ -50,7 +51,7 @@ export function CustomerLayout() {
             </Button>
           </div>
         </div>
-        <nav className="page-shell flex gap-1 overflow-x-auto border-t border-slate-100 py-2 lg:hidden">
+        <nav className="page-shell flex gap-1 overflow-x-auto border-t border-slate-100 py-2 xl:hidden">
           {customerLinks.map((link) => (
             <NavLink
               className={({ isActive }) =>

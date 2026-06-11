@@ -8,12 +8,14 @@ import { AdminMaintenanceLogs } from '../pages/admin/AdminMaintenanceLogs'
 import { AdminPackages } from '../pages/admin/AdminPackages'
 import { AdminProjects } from '../pages/admin/AdminProjects'
 import { AdminRequests } from '../pages/admin/AdminRequests'
+import { AdminSeoReports } from '../pages/admin/AdminSeoReports'
 import { AdminTickets } from '../pages/admin/AdminTickets'
 import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { CustomerMaintenanceLogs } from '../pages/customer/CustomerMaintenanceLogs'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
+import { CustomerSeoReports } from '../pages/customer/CustomerSeoReports'
 import { CustomerTickets } from '../pages/customer/CustomerTickets'
 import { Home } from '../pages/public/Home'
 import { Login } from '../pages/public/Login'
@@ -87,6 +89,10 @@ export const router = createBrowserRouter([
             path: 'maintenance-logs',
             element: <AdminMaintenanceLogs />,
           },
+          {
+            path: 'seo-reports',
+            element: <AdminSeoReports />,
+          },
         ],
       },
     ],
@@ -125,6 +131,10 @@ export const router = createBrowserRouter([
           {
             path: 'maintenance-logs',
             element: <CustomerMaintenanceLogs />,
+          },
+          {
+            path: 'seo-reports',
+            element: <CustomerSeoReports />,
           },
         ],
       },

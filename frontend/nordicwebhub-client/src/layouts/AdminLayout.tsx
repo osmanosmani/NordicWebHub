@@ -11,6 +11,7 @@ const adminLinks = [
   { to: '/admin/projects', label: 'Projects' },
   { to: '/admin/tickets', label: 'Tickets' },
   { to: '/admin/maintenance-logs', label: 'Maintenance' },
+  { to: '/admin/seo-reports', label: 'SEO Reports' },
 ]
 
 export function AdminLayout() {
