@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+// `/api` is the shared endpoint prefix, not a browser page. Individual calls
+// append routes such as `/auth/login` to reach the ASP.NET Core API.
 const apiBaseUrl =
-  import.meta.env.VITE_API_BASE_URL || 'https://localhost:7089/api'
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5096/api'
 
 const csrfClient = axios.create({
   baseURL: apiBaseUrl,

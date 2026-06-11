@@ -92,7 +92,7 @@ public class AuthController(
         {
             return StatusCode(StatusCodes.Status423Locked, new
             {
-                message = "Account temporarily locked due to too many failed attempts."
+                message = "Account is temporarily locked. Please try again later."
             });
         }
 

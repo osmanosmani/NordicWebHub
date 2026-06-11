@@ -9,6 +9,7 @@ using NordicWebHub.Api.Services;
 const string reactFrontendCorsPolicy = "ReactFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
+var isDevelopment = builder.Environment.IsDevelopment();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
@@ -21,8 +22,12 @@ builder.Services.AddAntiforgery(options =>
     options.HeaderName = "X-CSRF-TOKEN";
     options.Cookie.Name = "NordicWebHub.Csrf";
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = isDevelopment
+        ? SameSiteMode.Lax
+        : SameSiteMode.None;
+    options.Cookie.SecurePolicy = isDevelopment
+        ? CookieSecurePolicy.None
+        : CookieSecurePolicy.Always;
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -71,10 +76,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "NordicWebHub.Auth";
     options.Cookie.HttpOnly = true;
-    // The React app runs on http://localhost:5173 while the API runs on HTTPS,
-    // so browser cookie rules require SameSite=None and Secure for local auth.
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    // Local React and API development both use HTTP localhost. Production
+    // keeps cross-site cookies restricted to HTTPS.
+    options.Cookie.SameSite = isDevelopment
+        ? SameSiteMode.Lax
+        : SameSiteMode.None;
+    options.Cookie.SecurePolicy = isDevelopment
+        ? CookieSecurePolicy.None
+        : CookieSecurePolicy.Always;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
 
@@ -138,7 +147,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors(reactFrontendCorsPolicy);
 app.UseAuthentication();
 
@@ -188,9 +200,8 @@ app.MapGet("/api/csrf-token", (HttpContext context, IAntiforgery antiforgery) =>
 
 app.MapGet("/api/health", () => Results.Ok(new
 {
-    status = "Healthy",
-    application = "NordicWebHub.Api",
-    utc = DateTime.UtcNow
+    status = "ok",
+    app = "NordicWebHub.Api"
 }))
 .AllowAnonymous()
 .WithName("HealthCheck")

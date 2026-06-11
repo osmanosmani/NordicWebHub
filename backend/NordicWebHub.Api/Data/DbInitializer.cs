@@ -72,6 +72,7 @@ public static class DbInitializer
             user.FirstName = firstName;
             user.LastName = lastName;
             user.EmailConfirmed = true;
+            ResetDemoUserLockout(user);
 
             var updateResult = await userManager.UpdateAsync(user);
             ThrowIfFailed(updateResult, $"Failed to update demo user '{email}'.");
@@ -86,6 +87,9 @@ public static class DbInitializer
             EmailConfirmed = true,
             FirstName = firstName,
             LastName = lastName,
+            AccessFailedCount = 0,
+            LockoutEnd = null,
+            LockoutEnabled = true,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -93,6 +97,13 @@ public static class DbInitializer
         ThrowIfFailed(createResult, $"Failed to create demo user '{email}'.");
 
         return user;
+    }
+
+    private static void ResetDemoUserLockout(ApplicationUser user)
+    {
+        user.AccessFailedCount = 0;
+        user.LockoutEnd = null;
+        user.LockoutEnabled = true;
     }
 
     private static async Task AddUserToRoleAsync(
