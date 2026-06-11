@@ -16,6 +16,7 @@ namespace NordicWebHub.Api.Controllers;
 public class AiSeoController(
     ApplicationDbContext dbContext,
     IAiSeoService aiSeoService,
+    ICurrentCustomerCompanyService currentCustomerCompanyService,
     ILogger<AiSeoController> logger) : ControllerBase
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
@@ -31,17 +32,14 @@ public class AiSeoController(
             return InvalidSession();
         }
 
-        var company = await dbContext.Companies
-            .AsNoTracking()
-            .FirstOrDefaultAsync(
-                company => company.OwnerId == userId,
-                cancellationToken);
+        var company = await currentCustomerCompanyService
+            .GetCurrentCustomerCompanyAsync(cancellationToken);
 
         if (company is null)
         {
-            return BadRequest(new
+            return NotFound(new
             {
-                message = "Create or connect a company before using the AI SEO assistant."
+                message = CurrentCustomerCompanyService.NoCompanyMessage
             });
         }
 
@@ -102,12 +100,23 @@ public class AiSeoController(
             return InvalidSession();
         }
 
+        var company = await currentCustomerCompanyService
+            .GetCurrentCustomerCompanyAsync(cancellationToken);
+
+        if (company is null)
+        {
+            return NotFound(new
+            {
+                message = CurrentCustomerCompanyService.NoCompanyMessage
+            });
+        }
+
         var requests = await dbContext.AiSeoRequests
             .AsNoTracking()
             .Include(request => request.Company)
             .Where(request =>
                 request.CustomerId == userId
-                && request.Company.OwnerId == userId)
+                && request.CompanyId == company.Id)
             .OrderByDescending(request => request.CreatedAt)
             .ToListAsync(cancellationToken);
 

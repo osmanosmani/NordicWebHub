@@ -6,13 +6,17 @@ using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.SupportTickets;
 using NordicWebHub.Api.Models;
 using NordicWebHub.Api.Models.Enums;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/tickets")]
 [Authorize]
-public class SupportTicketsController(ApplicationDbContext dbContext) : ControllerBase
+public class SupportTicketsController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -51,9 +55,21 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
             });
         }
 
-        if (!CanAccessTicket(ticket))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (ticket.CompanyId != company.Id
+                || ticket.CustomerId != GetCurrentUserId())
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(ticket));
@@ -72,8 +88,18 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
             });
         }
 
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
+        {
+            return CustomerCompanyNotFound();
+        }
+
         var tickets = await TicketsWithDetails()
-            .Where(ticket => ticket.CustomerId == userId)
+            .Where(ticket =>
+                ticket.CompanyId == company.Id
+                && ticket.CustomerId == userId)
             .OrderBy(ticket => ticket.Status == TicketStatus.Closed)
             .ThenByDescending(ticket => ticket.CreatedAt)
             .ToListAsync();
@@ -107,17 +133,12 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
             });
         }
 
-        var company = await dbContext.Companies
-            .AsNoTracking()
-            .OrderBy(existingCompany => existingCompany.Id)
-            .FirstOrDefaultAsync(existingCompany => existingCompany.OwnerId == userId);
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
 
         if (company is null)
         {
-            return NotFound(new
-            {
-                message = "No company is connected to your account yet."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var ticket = new SupportTicket
@@ -178,9 +199,21 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
             });
         }
 
-        if (!CanAccessTicket(ticket))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (ticket.CompanyId != company.Id
+                || ticket.CustomerId != userId)
+            {
+                return Forbid();
+            }
         }
 
         var reply = new TicketReply
@@ -273,11 +306,6 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
             .Include(ticket => ticket.Customer)
             .Include(ticket => ticket.Replies.OrderBy(reply => reply.CreatedAt))
             .ThenInclude(reply => reply.User);
-    }
-
-    private bool CanAccessTicket(SupportTicket ticket)
-    {
-        return User.IsInRole(AdminRole) || ticket.CustomerId == GetCurrentUserId();
     }
 
     private string? GetCurrentUserId()
@@ -378,6 +406,14 @@ public class SupportTicketsController(ApplicationDbContext dbContext) : Controll
         return BadRequest(new
         {
             message = "Priority must be one of: Low, Medium, High, Urgent."
+        });
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
         });
     }
 }

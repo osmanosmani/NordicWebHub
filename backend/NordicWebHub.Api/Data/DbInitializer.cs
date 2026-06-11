@@ -234,7 +234,7 @@ public static class DbInitializer
         foreach (var company in companies)
         {
             var existingCompany = await dbContext.Companies
-                .FirstOrDefaultAsync(existing => existing.Name == company.Name);
+                .SingleOrDefaultAsync(existing => existing.OwnerId == company.OwnerId);
 
             if (existingCompany is null)
             {
@@ -243,12 +243,12 @@ public static class DbInitializer
                 continue;
             }
 
+            existingCompany.Name = company.Name;
             existingCompany.OrgNumber = company.OrgNumber;
             existingCompany.WebsiteUrl = company.WebsiteUrl;
             existingCompany.City = company.City;
             existingCompany.Industry = company.Industry;
             existingCompany.Phone = company.Phone;
-            existingCompany.OwnerId = company.OwnerId;
         }
 
         await dbContext.SaveChangesAsync();

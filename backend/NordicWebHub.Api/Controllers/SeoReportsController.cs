@@ -1,17 +1,20 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.SeoReports;
 using NordicWebHub.Api.Models;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/seo-reports")]
 [Authorize]
-public class SeoReportsController(ApplicationDbContext dbContext) : ControllerBase
+public class SeoReportsController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -38,9 +41,20 @@ public class SeoReportsController(ApplicationDbContext dbContext) : ControllerBa
             return SeoReportNotFound();
         }
 
-        if (!CanAccessCompany(seoReport.Company))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (seoReport.CompanyId != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(seoReport));
@@ -50,17 +64,16 @@ public class SeoReportsController(ApplicationDbContext dbContext) : ControllerBa
     [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<IEnumerable<SeoReportDto>>> GetMySeoReports()
     {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrWhiteSpace(userId))
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
         {
-            return Unauthorized(new
-            {
-                message = "Your session is invalid. Please log in again."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var seoReports = await SeoReportsWithCompany()
-            .Where(report => report.Company.OwnerId == userId)
+            .Where(report => report.CompanyId == company.Id)
             .OrderByDescending(report => report.CreatedAt)
             .ToListAsync();
 
@@ -186,16 +199,6 @@ public class SeoReportsController(ApplicationDbContext dbContext) : ControllerBa
             .Include(report => report.Company);
     }
 
-    private bool CanAccessCompany(Company company)
-    {
-        return User.IsInRole(AdminRole) || company.OwnerId == GetCurrentUserId();
-    }
-
-    private string? GetCurrentUserId()
-    {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
-    }
-
     private static SeoReportDto ToDto(SeoReport seoReport)
     {
         return new SeoReportDto
@@ -229,6 +232,14 @@ public class SeoReportsController(ApplicationDbContext dbContext) : ControllerBa
         return BadRequest(new
         {
             message = "Please fill in top keywords, technical issues, and recommendations."
+        });
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
         });
     }
 }

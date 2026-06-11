@@ -4,13 +4,11 @@ namespace NordicWebHub.Api.DTOs.Companies;
 
 public class UpdateCompanyDto
 {
-    [Required(ErrorMessage = "Name is required.")]
     [StringLength(150, ErrorMessage = "Name cannot be longer than 150 characters.")]
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 
-    [Required(ErrorMessage = "Organization number is required.")]
     [RegularExpression(@"^\d{6}-\d{4}$", ErrorMessage = "Organization number must match Swedish format XXXXXX-XXXX.")]
-    public string OrgNumber { get; set; } = string.Empty;
+    public string? OrgNumber { get; set; }
 
     [Url(ErrorMessage = "Website URL must be a valid URL.")]
     [StringLength(250, ErrorMessage = "Website URL cannot be longer than 250 characters.")]

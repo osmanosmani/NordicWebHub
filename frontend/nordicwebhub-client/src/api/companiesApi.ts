@@ -2,6 +2,7 @@ import { axiosClient } from './axiosClient'
 import type {
   Company,
   CreateCompanyDto,
+  UpdateMyCompanyDto,
   UpdateCompanyDto,
 } from '../types/company'
 
@@ -30,6 +31,12 @@ export async function createCompany(dto: CreateCompanyDto) {
 }
 
 export async function updateCompany(id: number, dto: UpdateCompanyDto) {
+  const response = await axiosClient.put<Company>(`/companies/${id}`, dto)
+
+  return response.data
+}
+
+export async function updateMyCompany(id: number, dto: UpdateMyCompanyDto) {
   const response = await axiosClient.put<Company>(`/companies/${id}`, dto)
 
   return response.data

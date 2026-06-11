@@ -10,7 +10,7 @@ public class ApplicationUser : IdentityUser
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public ICollection<Company> OwnedCompanies { get; set; } = new List<Company>();
+    public Company? Company { get; set; }
 
     public ICollection<ProjectRequest> ProjectRequests { get; set; } = new List<ProjectRequest>();
 

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,13 +5,17 @@ using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.Projects;
 using NordicWebHub.Api.Models;
 using NordicWebHub.Api.Models.Enums;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/projects")]
 [Authorize]
-public class ProjectsController(ApplicationDbContext dbContext) : ControllerBase
+public class ProjectsController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -53,9 +56,20 @@ public class ProjectsController(ApplicationDbContext dbContext) : ControllerBase
             });
         }
 
-        if (!CanAccessProject(project))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (project.CompanyId != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(project));
@@ -65,17 +79,16 @@ public class ProjectsController(ApplicationDbContext dbContext) : ControllerBase
     [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<IEnumerable<ProjectDto>>> GetMyProjects()
     {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrWhiteSpace(userId))
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
         {
-            return Unauthorized(new
-            {
-                message = "Your session is invalid. Please log in again."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var projects = await ProjectsWithDetails()
-            .Where(project => project.Company.OwnerId == userId)
+            .Where(project => project.CompanyId == company.Id)
             .OrderBy(project => project.Deadline)
             .ThenBy(project => project.Title)
             .ToListAsync();
@@ -379,16 +392,6 @@ public class ProjectsController(ApplicationDbContext dbContext) : ControllerBase
             .Include(project => project.ProjectRequest);
     }
 
-    private bool CanAccessProject(Project project)
-    {
-        return User.IsInRole(AdminRole) || project.Company.OwnerId == GetCurrentUserId();
-    }
-
-    private string? GetCurrentUserId()
-    {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
-    }
-
     private async Task<ProjectRequest?> ResolveApprovedProjectRequestAsync(int requestId)
     {
         var projectRequest = await dbContext.ProjectRequests
@@ -468,6 +471,14 @@ public class ProjectsController(ApplicationDbContext dbContext) : ControllerBase
         return BadRequest(new
         {
             message = "Status must be one of: Planning, Design, Development, Review, Live, Completed."
+        });
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
         });
     }
 }

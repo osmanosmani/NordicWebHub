@@ -1,5 +1,6 @@
+import axios from 'axios'
 import { useEffect, useState, type FormEvent } from 'react'
-import { getMyCompany, updateCompany } from '../../api/companiesApi'
+import { getMyCompany, updateMyCompany } from '../../api/companiesApi'
 import { Button } from '../../components/ui/Button'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { TextInput } from '../../components/ui/TextInput'
@@ -36,6 +37,12 @@ export function CustomerCompany() {
       })
       .catch((loadError) => {
         if (isMounted) {
+          if (axios.isAxiosError(loadError) && loadError.response?.status === 404) {
+            setCompany(null)
+            setError('')
+            return
+          }
+
           setError(
             getErrorMessage(loadError, 'Could not load your company profile.'),
           )
@@ -64,14 +71,11 @@ export function CustomerCompany() {
     setSuccessMessage('')
 
     try {
-      const updatedCompany = await updateCompany(company.id, {
-        name: company.name,
-        orgNumber: company.orgNumber,
+      const updatedCompany = await updateMyCompany(company.id, {
         websiteUrl: form.websiteUrl.trim(),
         city: form.city.trim(),
         industry: form.industry.trim(),
         phone: form.phone.trim(),
-        ownerId: company.ownerId,
       })
 
       setCompany(updatedCompany)

@@ -27,6 +27,5 @@ public class CreateCompanyDto
     [StringLength(50, ErrorMessage = "Phone cannot be longer than 50 characters.")]
     public string Phone { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Owner is required.")]
-    public string OwnerId { get; set; } = string.Empty;
+    public string? OwnerId { get; set; }
 }

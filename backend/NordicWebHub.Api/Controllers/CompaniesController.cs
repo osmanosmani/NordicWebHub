@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.Companies;
 using NordicWebHub.Api.Models;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
@@ -14,7 +15,8 @@ namespace NordicWebHub.Api.Controllers;
 [Authorize]
 public class CompaniesController(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager)
+    UserManager<ApplicationUser> userManager,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
     : ControllerBase
 {
     private const string AdminRole = "Admin";
@@ -61,9 +63,20 @@ public class CompaniesController(
             });
         }
 
-        if (!CanAccessCompany(company))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var customerCompany =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (customerCompany is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (customerCompany.Id != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(company));
@@ -73,42 +86,53 @@ public class CompaniesController(
     [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<CompanyDto>> GetMyCompany()
     {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrWhiteSpace(userId))
+        var customerCompany =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (customerCompany is null)
         {
-            return Unauthorized(new
-            {
-                message = "Your session is invalid. Please log in again."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var company = await dbContext.Companies
             .AsNoTracking()
             .Include(existingCompany => existingCompany.Owner)
-            .OrderBy(existingCompany => existingCompany.Id)
-            .FirstOrDefaultAsync(existingCompany => existingCompany.OwnerId == userId);
-
-        if (company is null)
-        {
-            return NotFound(new
-            {
-                message = "No company is connected to your account yet."
-            });
-        }
+            .SingleAsync(existingCompany => existingCompany.Id == customerCompany.Id);
 
         return Ok(ToDto(company));
     }
 
     [HttpPost]
-    [Authorize(Roles = AdminRole)]
+    [Authorize(Roles = AdminRole + "," + CustomerRole)]
     public async Task<ActionResult<CompanyDto>> CreateCompany(CreateCompanyDto dto)
     {
-        if (!ValidateRequiredText(dto.Name, dto.OrgNumber, dto.City, dto.Industry, dto.OwnerId))
+        if (!ValidateRequiredText(dto.Name, dto.OrgNumber, dto.City, dto.Industry))
         {
             return InvalidRequiredTextResponse();
         }
 
-        var owner = await userManager.FindByIdAsync(dto.OwnerId.Trim());
+        ApplicationUser? owner;
+
+        if (User.IsInRole(AdminRole))
+        {
+            if (string.IsNullOrWhiteSpace(dto.OwnerId))
+            {
+                return BadRequest(new
+                {
+                    message = "Owner is required."
+                });
+            }
+
+            owner = await userManager.FindByIdAsync(dto.OwnerId.Trim());
+        }
+        else
+        {
+            var userId = GetCurrentUserId();
+            owner = string.IsNullOrWhiteSpace(userId)
+                ? null
+                : await userManager.FindByIdAsync(userId);
+        }
+
         if (owner is null)
         {
             return BadRequest(new
@@ -122,6 +146,14 @@ public class CompaniesController(
             return BadRequest(new
             {
                 message = "Company owner must be a customer user."
+            });
+        }
+
+        if (await dbContext.Companies.AnyAsync(company => company.OwnerId == owner.Id))
+        {
+            return Conflict(new
+            {
+                message = "This customer already has a company."
             });
         }
 
@@ -151,7 +183,14 @@ public class CompaniesController(
     [HttpPut("{id:int}")]
     public async Task<ActionResult<CompanyDto>> UpdateCompany(int id, UpdateCompanyDto dto)
     {
-        if (!ValidateRequiredText(dto.Name, dto.OrgNumber, dto.City, dto.Industry))
+        if (User.IsInRole(AdminRole)
+            && !ValidateRequiredText(dto.Name, dto.OrgNumber, dto.City, dto.Industry))
+        {
+            return InvalidRequiredTextResponse();
+        }
+
+        if (!User.IsInRole(AdminRole)
+            && !ValidateRequiredText(dto.City, dto.Industry))
         {
             return InvalidRequiredTextResponse();
         }
@@ -168,9 +207,20 @@ public class CompaniesController(
             });
         }
 
-        if (!CanAccessCompany(company))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var customerCompany =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (customerCompany is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (customerCompany.Id != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         if (User.IsInRole(AdminRole))
@@ -184,8 +234,21 @@ public class CompaniesController(
                 });
             }
 
-            company.Name = dto.Name.Trim();
-            company.OrgNumber = dto.OrgNumber.Trim();
+            var ownerAlreadyHasCompany = await dbContext.Companies
+                .AnyAsync(existingCompany =>
+                    existingCompany.OwnerId == owner.Id
+                    && existingCompany.Id != company.Id);
+
+            if (ownerAlreadyHasCompany)
+            {
+                return Conflict(new
+                {
+                    message = "This customer already has a company."
+                });
+            }
+
+            company.Name = dto.Name!.Trim();
+            company.OrgNumber = dto.OrgNumber!.Trim();
             company.WebsiteUrl = NormalizeOptionalText(dto.WebsiteUrl);
             company.City = dto.City.Trim();
             company.Industry = dto.Industry.Trim();
@@ -233,11 +296,6 @@ public class CompaniesController(
         await dbContext.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool CanAccessCompany(Company company)
-    {
-        return User.IsInRole(AdminRole) || company.OwnerId == GetCurrentUserId();
     }
 
     private string? GetCurrentUserId()
@@ -305,6 +363,14 @@ public class CompaniesController(
         return BadRequest(new
         {
             message = "Please fill in all required company fields."
+        });
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
         });
     }
 }

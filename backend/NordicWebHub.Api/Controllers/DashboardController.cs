@@ -1,17 +1,20 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.Dashboard;
 using NordicWebHub.Api.Models.Enums;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/dashboard")]
 [Authorize]
-public class DashboardController(ApplicationDbContext dbContext) : ControllerBase
+public class DashboardController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -75,44 +78,39 @@ public class DashboardController(ApplicationDbContext dbContext) : ControllerBas
     [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<CustomerDashboardDto>> GetCustomerDashboard()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
         {
-            return Unauthorized(new
+            return NotFound(new
             {
-                message = "Your session is invalid. Please log in again."
+                message = CurrentCustomerCompanyService.NoCompanyMessage
             });
         }
 
-        var company = await dbContext.Companies
-            .AsNoTracking()
-            .Where(existingCompany => existingCompany.OwnerId == userId)
-            .OrderBy(existingCompany => existingCompany.Id)
-            .Select(existingCompany => new DashboardCompanyDto
-            {
-                Id = existingCompany.Id,
-                Name = existingCompany.Name,
-                OrgNumber = existingCompany.OrgNumber,
-                WebsiteUrl = existingCompany.WebsiteUrl,
-                City = existingCompany.City,
-                Industry = existingCompany.Industry,
-                Phone = existingCompany.Phone
-            })
-            .FirstOrDefaultAsync();
-
         var dashboard = new CustomerDashboardDto
         {
-            Company = company,
-            ActiveProjects = await GetRecentProjectsQuery(userId, activeOnly: true)
+            Company = new DashboardCompanyDto
+            {
+                Id = company.Id,
+                Name = company.Name,
+                OrgNumber = company.OrgNumber,
+                WebsiteUrl = company.WebsiteUrl,
+                City = company.City,
+                Industry = company.Industry,
+                Phone = company.Phone
+            },
+            ActiveProjects = await GetRecentProjectsQuery(company.Id, activeOnly: true)
                 .Take(RecentItemLimit)
                 .ToListAsync(),
-            OpenTickets = await GetRecentSupportTicketsQuery(userId, openOnly: true)
+            OpenTickets = await GetRecentSupportTicketsQuery(company.Id, openOnly: true)
                 .Take(RecentItemLimit)
                 .ToListAsync(),
-            RecentProjectRequests = await GetRecentProjectRequestsQuery(userId)
+            RecentProjectRequests = await GetRecentProjectRequestsQuery(company.Id)
                 .Take(RecentItemLimit)
                 .ToListAsync(),
-            RecentSupportTickets = await GetRecentSupportTicketsQuery(userId)
+            RecentSupportTickets = await GetRecentSupportTicketsQuery(company.Id)
                 .Take(RecentItemLimit)
                 .ToListAsync()
         };
@@ -121,13 +119,13 @@ public class DashboardController(ApplicationDbContext dbContext) : ControllerBas
     }
 
     private IQueryable<DashboardProjectRequestDto> GetRecentProjectRequestsQuery(
-        string? customerId = null)
+        int? companyId = null)
     {
         var query = dbContext.ProjectRequests.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(customerId))
+        if (companyId.HasValue)
         {
-            query = query.Where(request => request.CustomerId == customerId);
+            query = query.Where(request => request.CompanyId == companyId.Value);
         }
 
         return query
@@ -147,14 +145,14 @@ public class DashboardController(ApplicationDbContext dbContext) : ControllerBas
     }
 
     private IQueryable<DashboardSupportTicketDto> GetRecentSupportTicketsQuery(
-        string? customerId = null,
+        int? companyId = null,
         bool openOnly = false)
     {
         var query = dbContext.SupportTickets.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(customerId))
+        if (companyId.HasValue)
         {
-            query = query.Where(ticket => ticket.CustomerId == customerId);
+            query = query.Where(ticket => ticket.CompanyId == companyId.Value);
         }
 
         if (openOnly)
@@ -183,14 +181,14 @@ public class DashboardController(ApplicationDbContext dbContext) : ControllerBas
     }
 
     private IQueryable<DashboardProjectDto> GetRecentProjectsQuery(
-        string? companyOwnerId = null,
+        int? companyId = null,
         bool activeOnly = false)
     {
         var query = dbContext.Projects.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(companyOwnerId))
+        if (companyId.HasValue)
         {
-            query = query.Where(project => project.Company.OwnerId == companyOwnerId);
+            query = query.Where(project => project.CompanyId == companyId.Value);
         }
 
         if (activeOnly)

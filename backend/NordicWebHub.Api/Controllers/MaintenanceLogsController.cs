@@ -1,17 +1,20 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.MaintenanceLogs;
 using NordicWebHub.Api.Models;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/maintenance-logs")]
 [Authorize]
-public class MaintenanceLogsController(ApplicationDbContext dbContext) : ControllerBase
+public class MaintenanceLogsController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -38,9 +41,20 @@ public class MaintenanceLogsController(ApplicationDbContext dbContext) : Control
             return MaintenanceLogNotFound();
         }
 
-        if (!CanAccessCompany(maintenanceLog.Company))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (maintenanceLog.CompanyId != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(maintenanceLog));
@@ -50,17 +64,16 @@ public class MaintenanceLogsController(ApplicationDbContext dbContext) : Control
     [Authorize(Roles = CustomerRole)]
     public async Task<ActionResult<IEnumerable<MaintenanceLogDto>>> GetMyMaintenanceLogs()
     {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrWhiteSpace(userId))
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
         {
-            return Unauthorized(new
-            {
-                message = "Your session is invalid. Please log in again."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var maintenanceLogs = await MaintenanceLogsWithCompany()
-            .Where(log => log.Company.OwnerId == userId)
+            .Where(log => log.CompanyId == company.Id)
             .OrderByDescending(log => log.CreatedAt)
             .ToListAsync();
 
@@ -83,9 +96,20 @@ public class MaintenanceLogsController(ApplicationDbContext dbContext) : Control
             });
         }
 
-        if (!CanAccessCompany(company))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var customerCompany =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (customerCompany is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (customerCompany.Id != company.Id)
+            {
+                return Forbid();
+            }
         }
 
         var maintenanceLogs = await MaintenanceLogsWithCompany()
@@ -210,16 +234,6 @@ public class MaintenanceLogsController(ApplicationDbContext dbContext) : Control
             .Include(log => log.Company);
     }
 
-    private bool CanAccessCompany(Company company)
-    {
-        return User.IsInRole(AdminRole) || company.OwnerId == GetCurrentUserId();
-    }
-
-    private string? GetCurrentUserId()
-    {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
-    }
-
     private static MaintenanceLogDto ToDto(MaintenanceLog maintenanceLog)
     {
         return new MaintenanceLogDto
@@ -253,6 +267,14 @@ public class MaintenanceLogsController(ApplicationDbContext dbContext) : Control
         return BadRequest(new
         {
             message = "Please fill in the title, description, action taken, and result."
+        });
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
         });
     }
 }

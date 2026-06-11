@@ -40,6 +40,10 @@ builder.Services
     });
 
 builder.Services.AddScoped<WebsiteHealthCheckService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<
+    ICurrentCustomerCompanyService,
+    CurrentCustomerCompanyService>();
 
 builder.Services.AddHttpClient("OpenAI", client =>
 {

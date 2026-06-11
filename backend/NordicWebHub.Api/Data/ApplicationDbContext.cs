@@ -45,6 +45,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         builder.Entity<Company>(entity =>
         {
+            entity.HasIndex(company => company.OwnerId)
+                .IsUnique();
+
             entity.Property(company => company.Name)
                 .HasMaxLength(150);
 
@@ -67,8 +70,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasDefaultValueSql("SYSUTCDATETIME()");
 
             entity.HasOne(company => company.Owner)
-                .WithMany(user => user.OwnedCompanies)
-                .HasForeignKey(company => company.OwnerId)
+                .WithOne(user => user.Company)
+                .HasForeignKey<Company>(company => company.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

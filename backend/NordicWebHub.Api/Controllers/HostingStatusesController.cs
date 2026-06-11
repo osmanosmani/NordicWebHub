@@ -1,17 +1,20 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.HostingStatuses;
 using NordicWebHub.Api.Models;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/hosting-statuses")]
 [Authorize]
-public class HostingStatusesController(ApplicationDbContext dbContext) : ControllerBase
+public class HostingStatusesController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -29,17 +32,19 @@ public class HostingStatusesController(ApplicationDbContext dbContext) : Control
     [Authorize(Roles = "Customer")]
     public async Task<ActionResult<IEnumerable<HostingStatusDto>>> GetMyHostingStatuses()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
         {
-            return Unauthorized(new
+            return NotFound(new
             {
-                message = "Your session is invalid. Please log in again."
+                message = CurrentCustomerCompanyService.NoCompanyMessage
             });
         }
 
         var statuses = await HostingStatusesWithCompany()
-            .Where(status => status.Company.OwnerId == userId)
+            .Where(status => status.CompanyId == company.Id)
             .OrderByDescending(status => status.LastCheckedAt)
             .ToListAsync();
 

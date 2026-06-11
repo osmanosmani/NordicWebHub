@@ -6,13 +6,17 @@ using NordicWebHub.Api.Data;
 using NordicWebHub.Api.DTOs.ProjectRequests;
 using NordicWebHub.Api.Models;
 using NordicWebHub.Api.Models.Enums;
+using NordicWebHub.Api.Services;
 
 namespace NordicWebHub.Api.Controllers;
 
 [ApiController]
 [Route("api/project-requests")]
 [Authorize]
-public class ProjectRequestsController(ApplicationDbContext dbContext) : ControllerBase
+public class ProjectRequestsController(
+    ApplicationDbContext dbContext,
+    ICurrentCustomerCompanyService currentCustomerCompanyService)
+    : ControllerBase
 {
     private const string AdminRole = "Admin";
     private const string CustomerRole = "Customer";
@@ -50,9 +54,21 @@ public class ProjectRequestsController(ApplicationDbContext dbContext) : Control
             });
         }
 
-        if (!CanAccessRequest(request))
+        if (!User.IsInRole(AdminRole))
         {
-            return Forbid();
+            var company =
+                await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+            if (company is null)
+            {
+                return CustomerCompanyNotFound();
+            }
+
+            if (request.CompanyId != company.Id
+                || request.CustomerId != GetCurrentUserId())
+            {
+                return Forbid();
+            }
         }
 
         return Ok(ToDto(request));
@@ -71,8 +87,18 @@ public class ProjectRequestsController(ApplicationDbContext dbContext) : Control
             });
         }
 
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
+
+        if (company is null)
+        {
+            return CustomerCompanyNotFound();
+        }
+
         var requests = await ProjectRequestsWithDetails()
-            .Where(projectRequest => projectRequest.CustomerId == userId)
+            .Where(projectRequest =>
+                projectRequest.CompanyId == company.Id
+                && projectRequest.CustomerId == userId)
             .OrderByDescending(projectRequest => projectRequest.CreatedAt)
             .ToListAsync();
 
@@ -100,17 +126,12 @@ public class ProjectRequestsController(ApplicationDbContext dbContext) : Control
             });
         }
 
-        var company = await dbContext.Companies
-            .AsNoTracking()
-            .OrderBy(existingCompany => existingCompany.Id)
-            .FirstOrDefaultAsync(existingCompany => existingCompany.OwnerId == userId);
+        var company =
+            await currentCustomerCompanyService.GetCurrentCustomerCompanyAsync();
 
         if (company is null)
         {
-            return NotFound(new
-            {
-                message = "No company is connected to your account yet."
-            });
+            return CustomerCompanyNotFound();
         }
 
         var servicePackage = await dbContext.ServicePackages
@@ -193,11 +214,6 @@ public class ProjectRequestsController(ApplicationDbContext dbContext) : Control
             .Include(projectRequest => projectRequest.Customer);
     }
 
-    private bool CanAccessRequest(ProjectRequest request)
-    {
-        return User.IsInRole(AdminRole) || request.CustomerId == GetCurrentUserId();
-    }
-
     private string? GetCurrentUserId()
     {
         return User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -239,5 +255,13 @@ public class ProjectRequestsController(ApplicationDbContext dbContext) : Control
     private static string NormalizeOptionalText(string? value)
     {
         return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+    }
+
+    private NotFoundObjectResult CustomerCompanyNotFound()
+    {
+        return NotFound(new
+        {
+            message = CurrentCustomerCompanyService.NoCompanyMessage
+        });
     }
 }
