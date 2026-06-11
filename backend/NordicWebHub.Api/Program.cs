@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -14,6 +15,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.Cookie.Name = "NordicWebHub.Csrf";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -124,9 +134,51 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(reactFrontendCorsPolicy);
 app.UseAuthentication();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/api")
+        && IsUnsafeHttpMethod(context.Request.Method))
+    {
+        var antiforgery = context.RequestServices.GetRequiredService<IAntiforgery>();
+
+        try
+        {
+            await antiforgery.ValidateRequestAsync(context);
+        }
+        catch (AntiforgeryValidationException)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                message = "CSRF token validation failed. Refresh the page and try again."
+            });
+            return;
+        }
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/api/csrf-token", (HttpContext context, IAntiforgery antiforgery) =>
+{
+    var tokens = antiforgery.GetAndStoreTokens(context);
+
+    context.Response.Headers.CacheControl = "no-store, no-cache";
+    context.Response.Headers.Pragma = "no-cache";
+
+    return Results.Ok(new
+    {
+        token = tokens.RequestToken
+    });
+})
+.AllowAnonymous()
+.WithName("GetCsrfToken")
+.WithTags("Security");
+
 app.MapGet("/api/health", () => Results.Ok(new
 {
     status = "Healthy",
@@ -138,3 +190,11 @@ app.MapGet("/api/health", () => Results.Ok(new
 .WithTags("Health");
 
 app.Run();
+
+static bool IsUnsafeHttpMethod(string method)
+{
+    return HttpMethods.IsPost(method)
+        || HttpMethods.IsPut(method)
+        || HttpMethods.IsPatch(method)
+        || HttpMethods.IsDelete(method);
+}
