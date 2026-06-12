@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getMyProjects } from '../../api/projectsApi'
+import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import type { Project, ProjectStatus } from '../../types/project'
@@ -61,29 +65,27 @@ export function CustomerProjects() {
       />
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
-      <div className="mt-8 rounded-lg border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 px-5 py-4">
-          <h2 className="text-lg font-semibold text-slate-950">My projects</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Progress is based on the current project status.
-          </p>
-        </div>
-
+      <Card
+        className="mt-8"
+        description="Progress is based on the current project status."
+        title="My projects"
+      >
         {isLoading ? (
-          <div className="p-5 text-sm font-medium text-slate-600">
-            Loading projects
+          <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+            <LoadingSpinner label="Loading projects" />
+            <span>Loading projects</span>
           </div>
         ) : null}
 
         {!isLoading && projects.length === 0 ? (
-          <div className="p-5 text-sm text-slate-600">
-            No projects have started yet.
-          </div>
+          <EmptyState
+            compact
+            description="Approved projects will appear here when delivery begins."
+            title="No projects have started"
+          />
         ) : null}
 
         {!isLoading && projects.length > 0 ? (
@@ -125,7 +127,7 @@ export function CustomerProjects() {
             ))}
           </div>
         ) : null}
-      </div>
+      </Card>
     </section>
   )
 }

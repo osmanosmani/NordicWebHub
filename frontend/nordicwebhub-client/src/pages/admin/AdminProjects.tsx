@@ -9,9 +9,17 @@ import {
   updateProject,
   updateProjectStatus,
 } from '../../api/projectsApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { Select } from '../../components/ui/Select'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { TextArea } from '../../components/ui/TextArea'
 import { TextInput } from '../../components/ui/TextInput'
 import type { Company } from '../../types/company'
 import type { ProjectRequest } from '../../types/projectRequest'
@@ -260,18 +268,16 @@ export function AdminProjects() {
       </div>
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[410px_1fr]">
+      <div className="mt-8 grid gap-6 2xl:grid-cols-[410px_minmax(0,1fr)]">
         <form
           className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
           onSubmit={handleSubmit}
@@ -287,45 +293,46 @@ export function AdminProjects() {
 
           <div className="grid gap-4">
             {!editingProject ? (
-              <label className="grid gap-2" htmlFor="projectMode">
-                <span className="form-label">Create mode</span>
-                <select
-                  className="form-input"
-                  id="projectMode"
-                  onChange={(event) =>
-                    setForm({
-                      ...createEmptyForm(),
-                      mode: event.target.value as ProjectFormMode,
-                    })
-                  }
-                  value={form.mode}
-                >
-                  <option value="manual">Manual project</option>
-                  <option value="fromRequest">From approved request</option>
-                </select>
-              </label>
+              <Select
+                id="projectMode"
+                label="Create mode"
+                onChange={(event) =>
+                  setForm({
+                    ...createEmptyForm(),
+                    mode: event.target.value as ProjectFormMode,
+                  })
+                }
+                value={form.mode}
+              >
+                <option value="manual">Manual project</option>
+                <option value="fromRequest">From approved request</option>
+              </Select>
             ) : null}
 
             {!editingProject && form.mode === 'fromRequest' ? (
               <>
-                <label className="grid gap-2" htmlFor="projectRequestId">
-                  <span className="form-label">Approved request</span>
-                  <select
-                    className="form-input"
-                    disabled={approvedRequests.length === 0}
-                    id="projectRequestId"
-                    onChange={(event) => handleRequestSelection(event.target.value)}
-                    required
-                    value={form.projectRequestId}
-                  >
-                    <option value="">Choose a request</option>
-                    {approvedRequests.map((request) => (
-                      <option key={request.id} value={request.id}>
-                        {request.title} - {request.companyName}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <Select
+                  disabled={approvedRequests.length === 0}
+                  hint={
+                    approvedRequests.length === 0
+                      ? 'No approved requests are currently available.'
+                      : undefined
+                  }
+                  id="projectRequestId"
+                  label="Approved request"
+                  onChange={(event) =>
+                    handleRequestSelection(event.target.value)
+                  }
+                  required
+                  value={form.projectRequestId}
+                >
+                  <option value="">Choose a request</option>
+                  {approvedRequests.map((request) => (
+                    <option key={request.id} value={request.id}>
+                      {request.title} - {request.companyName}
+                    </option>
+                  ))}
+                </Select>
 
                 {selectedRequest ? (
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
@@ -339,26 +346,23 @@ export function AdminProjects() {
             ) : null}
 
             {(editingProject || form.mode === 'manual') ? (
-              <label className="grid gap-2" htmlFor="companyId">
-                <span className="form-label">Company</span>
-                <select
-                  className="form-input"
-                  disabled={Boolean(editingProject?.projectRequestId)}
-                  id="companyId"
-                  onChange={(event) =>
-                    setForm({ ...form, companyId: event.target.value })
-                  }
-                  required
-                  value={form.companyId}
-                >
-                  <option value="">Choose a company</option>
-                  {companies.map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Select
+                disabled={Boolean(editingProject?.projectRequestId)}
+                id="companyId"
+                label="Company"
+                onChange={(event) =>
+                  setForm({ ...form, companyId: event.target.value })
+                }
+                required
+                value={form.companyId}
+              >
+                <option value="">Choose a company</option>
+                {companies.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.name}
+                  </option>
+                ))}
+              </Select>
             ) : null}
 
             <TextInput
@@ -370,41 +374,35 @@ export function AdminProjects() {
               value={form.title}
             />
 
-            <label className="grid gap-2" htmlFor="description">
-              <span className="form-label">Description</span>
-              <textarea
-                className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                id="description"
-                maxLength={2000}
-                onChange={(event) =>
-                  setForm({ ...form, description: event.target.value })
-                }
-                required
-                value={form.description}
-              />
-            </label>
+            <TextArea
+              id="description"
+              label="Description"
+              maxLength={2000}
+              onChange={(event) =>
+                setForm({ ...form, description: event.target.value })
+              }
+              required
+              value={form.description}
+            />
 
             {!editingProject ? (
-              <label className="grid gap-2" htmlFor="status">
-                <span className="form-label">Status</span>
-                <select
-                  className="form-input"
-                  id="status"
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      status: event.target.value as ProjectStatus,
-                    })
-                  }
-                  value={form.status}
-                >
-                  {projectStatuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Select
+                id="status"
+                label="Status"
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    status: event.target.value as ProjectStatus,
+                  })
+                }
+                value={form.status}
+              >
+                {projectStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </Select>
             ) : null}
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -432,12 +430,8 @@ export function AdminProjects() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button disabled={isSaving} type="submit">
-              {isSaving
-                ? 'Saving'
-                : editingProject
-                  ? 'Save changes'
-                  : 'Create project'}
+            <Button isLoading={isSaving} loadingLabel="Saving" type="submit">
+              {editingProject ? 'Save changes' : 'Create project'}
             </Button>
             {editingProject ? (
               <Button onClick={resetForm} type="button" variant="secondary">
@@ -447,29 +441,108 @@ export function AdminProjects() {
           </div>
         </form>
 
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 px-5 py-4">
-            <h2 className="text-lg font-semibold text-slate-950">All projects</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Status changes update the customer progress view.
-            </p>
-          </div>
-
+        <Card
+          description="Status changes update the customer progress view."
+          title="All projects"
+        >
           {isLoading ? (
-            <div className="p-5 text-sm font-medium text-slate-600">
-              Loading projects
+            <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+              <LoadingSpinner label="Loading projects" />
+              <span>Loading projects</span>
             </div>
           ) : null}
 
           {!isLoading && projects.length === 0 ? (
-            <div className="p-5 text-sm text-slate-600">
-              No projects have been created yet.
-            </div>
+            <EmptyState
+              compact
+              description="Create a manual project or use an approved request."
+              title="No projects yet"
+            />
           ) : null}
 
           {!isLoading && projects.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <>
+              <div className="divide-y divide-slate-200 md:hidden">
+                {projects.map((project) => (
+                  <article className="p-5" key={project.id}>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-slate-950">
+                          {project.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-slate-500">
+                          {project.companyName}
+                        </p>
+                      </div>
+                      <StatusBadge
+                        label={project.status}
+                        showDot
+                        tone={getProjectStatusTone(project.status)}
+                      />
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-slate-600">
+                      {project.description}
+                    </p>
+                    <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                      <ProjectListDetail
+                        label="Start"
+                        value={formatDate(project.startDate)}
+                      />
+                      <ProjectListDetail
+                        label="Deadline"
+                        value={formatDate(project.deadline)}
+                      />
+                      <ProjectListDetail
+                        label="Source"
+                        value={
+                          project.projectRequestTitle || 'Manual project'
+                        }
+                      />
+                    </dl>
+                    <Select
+                      disabled={updatingProjectId === project.id}
+                      id={`mobile-project-status-${project.id}`}
+                      label="Update status"
+                      onChange={(event) =>
+                        void handleStatusChange(
+                          project,
+                          event.target.value as ProjectStatus,
+                        )
+                      }
+                      value={project.status}
+                      wrapperClassName="mt-5"
+                    >
+                      {projectStatuses.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </Select>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      <Button
+                        onClick={() => startEditing(project)}
+                        size="sm"
+                        variant="secondary"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => void handleDelete(project)}
+                        size="sm"
+                        variant="ghost"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <DataTable
+                className="min-w-[900px]"
+                scrollLabel="Projects table"
+                showMobileHint={false}
+                wrapperClassName="hidden md:block"
+              >
                 <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Project</th>
@@ -481,7 +554,10 @@ export function AdminProjects() {
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {projects.map((project) => (
-                    <tr key={project.id}>
+                    <tr
+                      className="transition-colors hover:bg-slate-50"
+                      key={project.id}
+                    >
                       <td className="max-w-md px-5 py-4 align-top">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="font-semibold text-slate-950">
@@ -509,16 +585,12 @@ export function AdminProjects() {
                         </p>
                       </td>
                       <td className="px-5 py-4 align-top">
-                        <label
-                          className="sr-only"
-                          htmlFor={`project-status-${project.id}`}
-                        >
-                          Status for {project.title}
-                        </label>
-                        <select
-                          className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:opacity-60"
+                        <Select
+                          className="h-10 min-w-32 font-semibold"
                           disabled={updatingProjectId === project.id}
+                          hideLabel
                           id={`project-status-${project.id}`}
+                          label={`Status for ${project.title}`}
                           onChange={(event) =>
                             void handleStatusChange(
                               project,
@@ -532,7 +604,7 @@ export function AdminProjects() {
                               {status}
                             </option>
                           ))}
-                        </select>
+                        </Select>
                       </td>
                       <td className="px-5 py-4 align-top">
                         <div className="flex gap-2">
@@ -555,10 +627,10 @@ export function AdminProjects() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </DataTable>
+            </>
           ) : null}
-        </div>
+        </Card>
       </div>
     </section>
   )
@@ -624,4 +696,19 @@ function getProjectStatusTone(status: ProjectStatus) {
   }
 
   return tones[status]
+}
+
+function ProjectListDetail({
+  label,
+  value,
+}: {
+  label: string
+  value: string
+}) {
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="mt-1 break-words font-semibold text-slate-950">{value}</dd>
+    </div>
+  )
 }

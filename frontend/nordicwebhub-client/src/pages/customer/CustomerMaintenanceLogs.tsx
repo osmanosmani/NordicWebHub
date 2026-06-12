@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { getMyMaintenanceLogs } from '../../api/maintenanceLogsApi'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { PageHeader } from '../../components/ui/PageHeader'
 import type { MaintenanceLog } from '../../types/maintenanceLog'
 import { getErrorMessage } from '../../utils/getErrorMessage'
@@ -57,16 +59,19 @@ export function CustomerMaintenanceLogs() {
       />
 
       {error ? (
-        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between">
-          <span>{error}</span>
-          <Button
-            className="h-9 shrink-0 px-3"
-            onClick={() => setReloadKey((current) => current + 1)}
-            variant="secondary"
-          >
-            Try again
-          </Button>
-        </div>
+        <ErrorMessage
+          action={
+            <Button
+              onClick={() => setReloadKey((current) => current + 1)}
+              size="sm"
+              variant="secondary"
+            >
+              Try again
+            </Button>
+          }
+          className="mt-6"
+          message={error}
+        />
       ) : null}
 
       {isLoading ? (
@@ -81,10 +86,11 @@ export function CustomerMaintenanceLogs() {
       ) : null}
 
       {!isLoading && !error && maintenanceLogs.length === 0 ? (
-        <Card className="mt-8 p-6">
-          <p className="text-sm text-slate-600">
-            No maintenance work has been documented for your company yet.
-          </p>
+        <Card className="mt-8">
+          <EmptyState
+            description="Completed updates, fixes, and backups will appear here."
+            title="No maintenance activity yet"
+          />
         </Card>
       ) : null}
 

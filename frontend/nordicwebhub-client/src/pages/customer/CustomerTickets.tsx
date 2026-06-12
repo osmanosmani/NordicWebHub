@@ -4,9 +4,16 @@ import {
   getMyTickets,
   replyToTicket,
 } from '../../api/ticketsApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { Select } from '../../components/ui/Select'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { TextArea } from '../../components/ui/TextArea'
 import { TextInput } from '../../components/ui/TextInput'
 import type {
   CreateSupportTicketDto,
@@ -141,15 +148,13 @@ export function CustomerTickets() {
       />
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
@@ -177,45 +182,43 @@ export function CustomerTickets() {
                 value={form.title}
               />
 
-              <label className="grid gap-2" htmlFor="description">
-                <span className="form-label">Description</span>
-                <textarea
-                  className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  id="description"
-                  maxLength={2000}
-                  onChange={(event) =>
-                    setForm({ ...form, description: event.target.value })
-                  }
-                  required
-                  value={form.description}
-                />
-              </label>
+              <TextArea
+                id="description"
+                label="Description"
+                maxLength={2000}
+                onChange={(event) =>
+                  setForm({ ...form, description: event.target.value })
+                }
+                required
+                value={form.description}
+              />
 
-              <label className="grid gap-2" htmlFor="priority">
-                <span className="form-label">Priority</span>
-                <select
-                  className="form-input"
-                  id="priority"
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      priority: event.target.value as TicketPriority,
-                    })
-                  }
-                  value={form.priority}
-                >
-                  {priorities.map((priority) => (
-                    <option key={priority} value={priority}>
-                      {priority}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Select
+                id="priority"
+                label="Priority"
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    priority: event.target.value as TicketPriority,
+                  })
+                }
+                value={form.priority}
+              >
+                {priorities.map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priority}
+                  </option>
+                ))}
+              </Select>
             </div>
 
             <div className="mt-6">
-              <Button disabled={isSaving} type="submit">
-                {isSaving ? 'Creating' : 'Create ticket'}
+              <Button
+                isLoading={isSaving}
+                loadingLabel="Creating"
+                type="submit"
+              >
+                Create ticket
               </Button>
             </div>
           </form>
@@ -252,22 +255,20 @@ function TicketList({
   tickets: SupportTicket[]
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 px-5 py-4">
-        <h2 className="text-lg font-semibold text-slate-950">My tickets</h2>
-        <p className="mt-1 text-sm text-slate-500">Open a ticket to reply.</p>
-      </div>
-
+    <Card description="Open a ticket to reply." title="My tickets">
       {isLoading ? (
-        <div className="p-5 text-sm font-medium text-slate-600">
-          Loading tickets
+        <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+          <LoadingSpinner label="Loading tickets" />
+          <span>Loading tickets</span>
         </div>
       ) : null}
 
       {!isLoading && tickets.length === 0 ? (
-        <div className="p-5 text-sm text-slate-600">
-          No support tickets have been created yet.
-        </div>
+        <EmptyState
+          compact
+          description="Use the form above to start a support conversation."
+          title="No support tickets yet"
+        />
       ) : null}
 
       {!isLoading && tickets.length > 0 ? (
@@ -304,7 +305,7 @@ function TicketList({
           ))}
         </div>
       ) : null}
-    </div>
+    </Card>
   )
 }
 
@@ -323,14 +324,18 @@ function TicketDetail({
 }) {
   if (!ticket) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
-        Select a ticket to view the message thread.
-      </div>
+      <Card>
+        <EmptyState
+          compact
+          description="Choose a ticket to see its conversation and reply."
+          title="Select a ticket"
+        />
+      </Card>
     )
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+    <Card>
       <div className="border-b border-slate-200 px-5 py-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
@@ -381,26 +386,28 @@ function TicketDetail({
           </div>
         ) : (
           <form className="mt-6" onSubmit={onReply}>
-            <label className="grid gap-2" htmlFor="ticketReply">
-              <span className="form-label">Reply</span>
-              <textarea
-                className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                id="ticketReply"
-                maxLength={4000}
-                onChange={(event) => setReplyMessage(event.target.value)}
-                required
-                value={replyMessage}
-              />
-            </label>
+            <TextArea
+              id="ticketReply"
+              label="Reply"
+              maxLength={4000}
+              onChange={(event) => setReplyMessage(event.target.value)}
+              required
+              value={replyMessage}
+            />
             <div className="mt-4">
-              <Button disabled={isReplying || !replyMessage.trim()} type="submit">
-                {isReplying ? 'Sending' : 'Send reply'}
+              <Button
+                disabled={!replyMessage.trim()}
+                isLoading={isReplying}
+                loadingLabel="Sending"
+                type="submit"
+              >
+                Send reply
               </Button>
             </div>
           </form>
         )}
       </div>
-    </div>
+    </Card>
   )
 }
 

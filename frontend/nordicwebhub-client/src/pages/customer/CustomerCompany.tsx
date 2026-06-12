@@ -1,7 +1,12 @@
 import axios from 'axios'
 import { useEffect, useState, type FormEvent } from 'react'
 import { getMyCompany, updateMyCompany } from '../../api/companiesApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { TextInput } from '../../components/ui/TextInput'
 import type { Company, UpdateMyCompanyDto } from '../../types/company'
@@ -104,21 +109,25 @@ export function CustomerCompany() {
       />
 
       {isLoading ? (
-        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm font-medium text-slate-600 shadow-sm">
-          Loading company profile
-        </div>
+        <Card className="mt-8">
+          <div className="flex items-center gap-3 p-6 text-sm font-medium text-slate-600">
+            <LoadingSpinner label="Loading company profile" />
+            <span>Loading company profile</span>
+          </div>
+        </Card>
       ) : null}
 
       {error ? (
-        <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-8" message={error} />
       ) : null}
 
       {!isLoading && !error && !company ? (
-        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
-          No company is connected to your account yet.
-        </div>
+        <Card className="mt-8">
+          <EmptyState
+            description="Contact the administrator to connect a company to your account."
+            title="No company connected"
+          />
+        </Card>
       ) : null}
 
       {company ? (
@@ -149,9 +158,9 @@ export function CustomerCompany() {
             </div>
 
             {successMessage ? (
-              <div className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+              <Alert className="mb-5" tone="success">
                 {successMessage}
-              </div>
+              </Alert>
             ) : null}
 
             <div className="grid gap-4">
@@ -196,8 +205,12 @@ export function CustomerCompany() {
             </div>
 
             <div className="mt-6">
-              <Button disabled={isSaving} type="submit">
-                {isSaving ? 'Saving' : 'Save changes'}
+              <Button
+                isLoading={isSaving}
+                loadingLabel="Saving"
+                type="submit"
+              >
+                Save changes
               </Button>
             </div>
           </form>

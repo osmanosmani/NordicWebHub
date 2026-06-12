@@ -7,6 +7,7 @@ type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, 'id'> & {
   hint?: string
   error?: string
   wrapperClassName?: string
+  hideLabel?: boolean
 }
 
 export function Select({
@@ -14,6 +15,7 @@ export function Select({
   className,
   error,
   hint,
+  hideLabel = false,
   id,
   label,
   wrapperClassName,
@@ -27,9 +29,17 @@ export function Select({
 
   return (
     <label className={cn('grid gap-2', wrapperClassName)} htmlFor={id}>
-      <span className="form-label">{label}</span>
+      <span className={cn('form-label', hideLabel && 'sr-only')}>
+        {label}
+        {props.required ? (
+          <span aria-hidden="true" className="ml-1 text-red-600">
+            *
+          </span>
+        ) : null}
+      </span>
       <select
         aria-describedby={descriptionId}
+        aria-errormessage={error ? descriptionId : undefined}
         aria-invalid={error ? true : undefined}
         className={cn(
           'form-input appearance-none bg-[linear-gradient(45deg,transparent_50%,#64748b_50%),linear-gradient(135deg,#64748b_50%,transparent_50%)] bg-[position:calc(100%-16px)_50%,calc(100%-11px)_50%] bg-[size:5px_5px,5px_5px] bg-no-repeat pr-10',
@@ -42,7 +52,7 @@ export function Select({
         {children}
       </select>
       {error ? (
-        <span className="text-sm text-red-700" id={descriptionId}>
+        <span className="text-sm font-medium text-red-700" id={descriptionId}>
           {error}
         </span>
       ) : hint ? (

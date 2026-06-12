@@ -6,10 +6,16 @@ import {
   getSeoReports,
   updateSeoReport,
 } from '../../api/seoReportsApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { Select } from '../../components/ui/Select'
 import { SeoScore } from '../../components/ui/SeoScore'
+import { TextArea } from '../../components/ui/TextArea'
 import { TextInput } from '../../components/ui/TextInput'
 import type { Company } from '../../types/company'
 import type { CreateSeoReportDto, SeoReport } from '../../types/seoReport'
@@ -199,15 +205,13 @@ export function AdminSeoReports() {
       </div>
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
@@ -225,25 +229,22 @@ export function AdminSeoReports() {
           </div>
 
           <div className="grid gap-4">
-            <label className="grid gap-2" htmlFor="companyId">
-              <span className="form-label">Company</span>
-              <select
-                className="form-input"
-                id="companyId"
-                onChange={(event) =>
-                  setForm({ ...form, companyId: event.target.value })
-                }
-                required
-                value={form.companyId}
-              >
-                <option value="">Select company</option>
-                {companies.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Select
+              id="companyId"
+              label="Company"
+              onChange={(event) =>
+                setForm({ ...form, companyId: event.target.value })
+              }
+              required
+              value={form.companyId}
+            >
+              <option value="">Select company</option>
+              {companies.map((company) => (
+                <option key={company.id} value={company.id}>
+                  {company.name}
+                </option>
+              ))}
+            </Select>
 
             <TextInput
               id="seoScore"
@@ -258,40 +259,46 @@ export function AdminSeoReports() {
               value={form.seoScore}
             />
 
-            <SeoTextarea
+            <TextArea
               id="topKeywords"
               label="Top keywords"
               maxLength={1000}
-              onChange={(value) => setForm({ ...form, topKeywords: value })}
+              onChange={(event) =>
+                setForm({ ...form, topKeywords: event.target.value })
+              }
+              required
               value={form.topKeywords}
             />
-            <SeoTextarea
+            <TextArea
               id="technicalIssues"
               label="Technical issues"
               maxLength={2000}
-              onChange={(value) =>
-                setForm({ ...form, technicalIssues: value })
+              onChange={(event) =>
+                setForm({ ...form, technicalIssues: event.target.value })
               }
+              required
               value={form.technicalIssues}
             />
-            <SeoTextarea
+            <TextArea
               id="recommendations"
               label="Recommendations"
               maxLength={2000}
-              onChange={(value) =>
-                setForm({ ...form, recommendations: value })
+              onChange={(event) =>
+                setForm({ ...form, recommendations: event.target.value })
               }
+              required
               value={form.recommendations}
             />
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button disabled={isSaving || companies.length === 0} type="submit">
-              {isSaving
-                ? 'Saving'
-                : editingReport
-                  ? 'Save changes'
-                  : 'Create report'}
+            <Button
+              disabled={companies.length === 0}
+              isLoading={isSaving}
+              loadingLabel="Saving"
+              type="submit"
+            >
+              {editingReport ? 'Save changes' : 'Create report'}
             </Button>
             {editingReport ? (
               <Button onClick={resetForm} type="button" variant="secondary">
@@ -306,15 +313,18 @@ export function AdminSeoReports() {
           title="All SEO reports"
         >
           {isLoading ? (
-            <p className="p-5 text-sm font-medium text-slate-600">
-              Loading SEO reports
-            </p>
+            <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+              <LoadingSpinner label="Loading SEO reports" />
+              <span>Loading SEO reports</span>
+            </div>
           ) : null}
 
           {!isLoading && seoReports.length === 0 ? (
-            <p className="p-5 text-sm text-slate-600">
-              No SEO reports have been created yet.
-            </p>
+            <EmptyState
+              compact
+              description="Create the first SEO assessment for a customer company."
+              title="No SEO reports yet"
+            />
           ) : null}
 
           {!isLoading && seoReports.length > 0 ? (
@@ -388,34 +398,6 @@ function SeoReportCard({
         />
       </dl>
     </article>
-  )
-}
-
-function SeoTextarea({
-  id,
-  label,
-  maxLength,
-  onChange,
-  value,
-}: {
-  id: string
-  label: string
-  maxLength: number
-  onChange: (value: string) => void
-  value: string
-}) {
-  return (
-    <label className="grid gap-2" htmlFor={id}>
-      <span className="form-label">{label}</span>
-      <textarea
-        className="min-h-24 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-        id={id}
-        maxLength={maxLength}
-        onChange={(event) => onChange(event.target.value)}
-        required
-        value={value}
-      />
-    </label>
   )
 }
 

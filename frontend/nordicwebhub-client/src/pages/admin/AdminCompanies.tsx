@@ -5,7 +5,13 @@ import {
   getCompanies,
   updateCompany,
 } from '../../api/companiesApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { TextInput } from '../../components/ui/TextInput'
 import type { Company, CreateCompanyDto } from '../../types/company'
@@ -150,18 +156,16 @@ export function AdminCompanies() {
       </div>
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
+      <div className="mt-8 grid gap-6 2xl:grid-cols-[390px_minmax(0,1fr)]">
         <form
           className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
           onSubmit={handleSubmit}
@@ -240,12 +244,8 @@ export function AdminCompanies() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button disabled={isSaving} type="submit">
-              {isSaving
-                ? 'Saving'
-                : editingCompany
-                  ? 'Save changes'
-                  : 'Create company'}
+            <Button isLoading={isSaving} loadingLabel="Saving" type="submit">
+              {editingCompany ? 'Save changes' : 'Create company'}
             </Button>
             {editingCompany ? (
               <Button onClick={resetForm} type="button" variant="secondary">
@@ -255,29 +255,73 @@ export function AdminCompanies() {
           </div>
         </form>
 
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 px-5 py-4">
-            <h2 className="text-lg font-semibold text-slate-950">All companies</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Owner email is shown when connected to a customer account.
-            </p>
-          </div>
-
+        <Card
+          description="Owner email is shown when connected to a customer account."
+          title="All companies"
+        >
           {isLoading ? (
-            <div className="p-5 text-sm font-medium text-slate-600">
-              Loading companies
+            <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+              <LoadingSpinner label="Loading companies" />
+              <span>Loading companies</span>
             </div>
           ) : null}
 
           {!isLoading && companies.length === 0 ? (
-            <div className="p-5 text-sm text-slate-600">
-              No companies have been created yet.
-            </div>
+            <EmptyState
+              compact
+              description="Create a company and connect it to a customer account."
+              title="No companies yet"
+            />
           ) : null}
 
           {!isLoading && companies.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <>
+              <div className="divide-y divide-slate-200 md:hidden">
+                {companies.map((company) => (
+                  <article className="p-5" key={company.id}>
+                    <div>
+                      <h3 className="font-semibold text-slate-950">
+                        {company.name}
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-500">
+                        {company.industry}
+                      </p>
+                    </div>
+                    <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                      <CompanyDetail
+                        label="Org number"
+                        value={company.orgNumber}
+                      />
+                      <CompanyDetail label="City" value={company.city} />
+                      <CompanyDetail
+                        label="Owner"
+                        value={company.ownerEmail || 'No email'}
+                      />
+                    </dl>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      <Button
+                        onClick={() => startEditing(company)}
+                        size="sm"
+                        variant="secondary"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => void handleDelete(company)}
+                        size="sm"
+                        variant="ghost"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <DataTable
+                scrollLabel="Companies table"
+                showMobileHint={false}
+                wrapperClassName="hidden md:block"
+              >
                 <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Company</th>
@@ -289,7 +333,10 @@ export function AdminCompanies() {
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {companies.map((company) => (
-                    <tr key={company.id}>
+                    <tr
+                      className="transition-colors hover:bg-slate-50"
+                      key={company.id}
+                    >
                       <td className="px-5 py-4 align-top">
                         <p className="font-semibold text-slate-950">{company.name}</p>
                         <p className="mt-1 max-w-xs truncate text-slate-500">
@@ -331,12 +378,21 @@ export function AdminCompanies() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </DataTable>
+            </>
           ) : null}
-        </div>
+        </Card>
       </div>
     </section>
+  )
+}
+
+function CompanyDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="mt-1 break-words font-semibold text-slate-950">{value}</dd>
+    </div>
   )
 }
 

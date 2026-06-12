@@ -5,8 +5,15 @@ import {
   getPackages,
   updatePackage,
 } from '../../api/packagesApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { StatusBadge } from '../../components/ui/StatusBadge'
+import { TextArea } from '../../components/ui/TextArea'
 import { TextInput } from '../../components/ui/TextInput'
 import type {
   CreateServicePackageDto,
@@ -165,15 +172,13 @@ export function AdminPackages() {
       </div>
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[380px_1fr]">
@@ -207,18 +212,16 @@ export function AdminPackages() {
               required
               value={form.category}
             />
-            <label className="grid gap-2" htmlFor="description">
-              <span className="form-label">Description</span>
-              <textarea
-                className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                id="description"
-                onChange={(event) =>
-                  setForm({ ...form, description: event.target.value })
-                }
-                required
-                value={form.description}
-              />
-            </label>
+            <TextArea
+              id="description"
+              label="Description"
+              maxLength={2000}
+              onChange={(event) =>
+                setForm({ ...form, description: event.target.value })
+              }
+              required
+              value={form.description}
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <TextInput
                 id="monthlyPrice"
@@ -268,12 +271,12 @@ export function AdminPackages() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button disabled={isSaving} type="submit">
-              {isSaving
-                ? 'Saving'
-                : editingPackage
-                  ? 'Save changes'
-                  : 'Create package'}
+            <Button
+              isLoading={isSaving}
+              loadingLabel="Saving"
+              type="submit"
+            >
+              {editingPackage ? 'Save changes' : 'Create package'}
             </Button>
             {editingPackage ? (
               <Button onClick={resetForm} type="button" variant="secondary">
@@ -283,24 +286,23 @@ export function AdminPackages() {
           </div>
         </form>
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 px-5 py-4">
-            <h2 className="text-lg font-semibold text-slate-950">All packages</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Admins can see both active and inactive packages.
-            </p>
-          </div>
-
+        <Card
+          description="Admins can see both active and inactive packages."
+          title="All packages"
+        >
           {isLoading ? (
-            <div className="p-5 text-sm font-medium text-slate-600">
-              Loading service packages
+            <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+              <LoadingSpinner label="Loading service packages" />
+              <span>Loading service packages</span>
             </div>
           ) : null}
 
           {!isLoading && packages.length === 0 ? (
-            <div className="p-5 text-sm text-slate-600">
-              No service packages have been created yet.
-            </div>
+            <EmptyState
+              compact
+              description="Create the first package to make it available to customers."
+              title="No service packages yet"
+            />
           ) : null}
 
           {!isLoading && packages.length > 0 ? (
@@ -315,18 +317,12 @@ export function AdminPackages() {
                       <h3 className="text-base font-semibold text-slate-950">
                         {servicePackage.name}
                       </h3>
-                      <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">
-                        {servicePackage.category}
-                      </span>
-                      <span
-                        className={
-                          servicePackage.isActive
-                            ? 'rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700'
-                            : 'rounded-lg bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-500'
-                        }
-                      >
-                        {servicePackage.isActive ? 'Active' : 'Inactive'}
-                      </span>
+                      <StatusBadge label={servicePackage.category} />
+                      <StatusBadge
+                        label={servicePackage.isActive ? 'Active' : 'Inactive'}
+                        showDot
+                        tone={servicePackage.isActive ? 'emerald' : 'slate'}
+                      />
                     </div>
 
                     <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
@@ -375,7 +371,7 @@ export function AdminPackages() {
               ))}
             </div>
           ) : null}
-        </div>
+        </Card>
       </div>
     </section>
   )

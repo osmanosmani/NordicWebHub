@@ -3,7 +3,15 @@ import {
   getProjectRequests,
   updateProjectRequestStatus,
 } from '../../api/projectRequestsApi'
+import { Alert } from '../../components/ui/Alert'
+import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { Select } from '../../components/ui/Select'
+import { StatusBadge } from '../../components/ui/StatusBadge'
 import type {
   ProjectRequest,
   ProjectRequestStatus,
@@ -99,40 +107,104 @@ export function AdminRequests() {
       />
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
-      <div className="mt-8 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 px-5 py-4">
-          <h2 className="text-lg font-semibold text-slate-950">All requests</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Customer, company, and package details are shown for review.
-          </p>
-        </div>
-
+      <Card
+        className="mt-8"
+        description="Customer, company, and package details are shown for review."
+        title="All requests"
+      >
         {isLoading ? (
-          <div className="p-5 text-sm font-medium text-slate-600">
-            Loading project requests
+          <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+            <LoadingSpinner label="Loading project requests" />
+            <span>Loading project requests</span>
           </div>
         ) : null}
 
         {!isLoading && requests.length === 0 ? (
-          <div className="p-5 text-sm text-slate-600">
-            No project requests have been submitted yet.
-          </div>
+          <EmptyState
+            compact
+            description="Customer requests will appear here when submitted."
+            title="No project requests yet"
+          />
         ) : null}
 
         {!isLoading && requests.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <>
+            <div className="divide-y divide-slate-200 md:hidden">
+              {requests.map((request) => (
+                <article className="p-5" key={request.id}>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-slate-950">
+                        {request.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-500">
+                        {request.servicePackageName || 'No package'}
+                      </p>
+                    </div>
+                    <StatusBadge
+                      label={request.status}
+                      showDot
+                      tone={getRequestStatusTone(request.status)}
+                    />
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-slate-600">
+                    {request.description}
+                  </p>
+                  <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                    <RequestDetail
+                      label="Customer"
+                      value={request.customerEmail || 'No email'}
+                    />
+                    <RequestDetail
+                      label="Company"
+                      value={request.companyName || 'No company'}
+                    />
+                    <RequestDetail
+                      label="Budget"
+                      value={request.budgetRange || 'Not specified'}
+                    />
+                    <RequestDetail
+                      label="Created"
+                      value={formatDate(request.createdAt)}
+                    />
+                  </dl>
+                  <Select
+                    disabled={updatingRequestId === request.id}
+                    id={`mobile-status-${request.id}`}
+                    label="Update status"
+                    onChange={(event) =>
+                      void handleStatusChange(
+                        request,
+                        event.target.value as ProjectRequestStatus,
+                      )
+                    }
+                    value={request.status}
+                    wrapperClassName="mt-5"
+                  >
+                    {statuses.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </Select>
+                </article>
+              ))}
+            </div>
+            <DataTable
+              className="min-w-[900px]"
+              scrollLabel="Project requests table"
+              showMobileHint={false}
+              wrapperClassName="hidden md:block"
+            >
               <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
                   <th className="px-5 py-3 font-semibold">Request</th>
@@ -145,7 +217,10 @@ export function AdminRequests() {
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {requests.map((request) => (
-                  <tr key={request.id}>
+                <tr
+                  className="transition-colors hover:bg-slate-50"
+                  key={request.id}
+                >
                     <td className="max-w-md px-5 py-4 align-top">
                       <p className="font-semibold text-slate-950">
                         {request.title}
@@ -169,14 +244,20 @@ export function AdminRequests() {
                     <td className="px-5 py-4 align-top text-slate-700">
                       {request.budgetRange || 'Not specified'}
                     </td>
-                    <td className="px-5 py-4 align-top">
-                      <label className="sr-only" htmlFor={`status-${request.id}`}>
-                        Status for {request.title}
-                      </label>
-                      <select
-                        className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:opacity-60"
+                  <td className="px-5 py-4 align-top">
+                      <div className="mb-2">
+                        <StatusBadge
+                          label={request.status}
+                          showDot
+                          tone={getRequestStatusTone(request.status)}
+                        />
+                      </div>
+                      <Select
+                        className="h-10 min-w-32 font-semibold"
                         disabled={updatingRequestId === request.id}
+                        hideLabel
                         id={`status-${request.id}`}
+                        label={`Status for ${request.title}`}
                         onChange={(event) =>
                           void handleStatusChange(
                             request,
@@ -190,16 +271,39 @@ export function AdminRequests() {
                             {status}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+            </DataTable>
+          </>
         ) : null}
-      </div>
+      </Card>
     </section>
+  )
+}
+
+function getRequestStatusTone(status: ProjectRequestStatus) {
+  const tones: Record<
+    ProjectRequestStatus,
+    'amber' | 'blue' | 'emerald' | 'red'
+  > = {
+    Approved: 'emerald',
+    New: 'amber',
+    Rejected: 'red',
+    Reviewed: 'blue',
+  }
+
+  return tones[status]
+}
+
+function RequestDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="mt-1 break-words font-semibold text-slate-950">{value}</dd>
+    </div>
   )
 }
 

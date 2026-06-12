@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { getMySeoReports } from '../../api/seoReportsApi'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { SeoScore } from '../../components/ui/SeoScore'
 import type { SeoReport } from '../../types/seoReport'
@@ -58,16 +60,19 @@ export function CustomerSeoReports() {
       />
 
       {error ? (
-        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between">
-          <span>{error}</span>
-          <Button
-            className="h-9 shrink-0 px-3"
-            onClick={() => setReloadKey((current) => current + 1)}
-            variant="secondary"
-          >
-            Try again
-          </Button>
-        </div>
+        <ErrorMessage
+          action={
+            <Button
+              onClick={() => setReloadKey((current) => current + 1)}
+              size="sm"
+              variant="secondary"
+            >
+              Try again
+            </Button>
+          }
+          className="mt-6"
+          message={error}
+        />
       ) : null}
 
       {isLoading ? (
@@ -82,10 +87,11 @@ export function CustomerSeoReports() {
       ) : null}
 
       {!isLoading && !error && seoReports.length === 0 ? (
-        <Card className="mt-8 p-6">
-          <p className="text-sm text-slate-600">
-            No SEO reports have been published for your company yet.
-          </p>
+        <Card className="mt-8">
+          <EmptyState
+            description="Published SEO assessments will appear here."
+            title="No SEO reports yet"
+          />
         </Card>
       ) : null}
 

@@ -26,9 +26,17 @@ export function TextArea({
 
   return (
     <label className={cn('grid gap-2', wrapperClassName)} htmlFor={id}>
-      <span className="form-label">{label}</span>
+      <span className="form-label">
+        {label}
+        {props.required ? (
+          <span aria-hidden="true" className="ml-1 text-red-600">
+            *
+          </span>
+        ) : null}
+      </span>
       <textarea
         aria-describedby={descriptionId}
+        aria-errormessage={error ? descriptionId : undefined}
         aria-invalid={error ? true : undefined}
         className={cn(
           'form-textarea',
@@ -39,7 +47,7 @@ export function TextArea({
         {...props}
       />
       {error ? (
-        <span className="text-sm text-red-700" id={descriptionId}>
+        <span className="text-sm font-medium text-red-700" id={descriptionId}>
           {error}
         </span>
       ) : hint ? (

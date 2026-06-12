@@ -5,9 +5,17 @@ import {
   updateTicketPriority,
   updateTicketStatus,
 } from '../../api/ticketsApi'
+import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { Select } from '../../components/ui/Select'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { TextArea } from '../../components/ui/TextArea'
 import type {
   SupportTicket,
   TicketPriority,
@@ -164,18 +172,16 @@ export function AdminTickets() {
       />
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <div className="mt-8 grid gap-6 2xl:grid-cols-[1.1fr_0.9fr]">
         <TicketTable
           isLoading={isLoading}
           onPriorityChange={handlePriorityChange}
@@ -219,29 +225,119 @@ function TicketTable({
   updatingTicketId: number | null
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 px-5 py-4">
-        <h2 className="text-lg font-semibold text-slate-950">All tickets</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Open a ticket to view its message thread.
-        </p>
-      </div>
-
+    <Card
+      description="Open a ticket to view its message thread."
+      title="All tickets"
+    >
       {isLoading ? (
-        <div className="p-5 text-sm font-medium text-slate-600">
-          Loading tickets
+        <div className="flex items-center gap-3 p-5 text-sm font-medium text-slate-600">
+          <LoadingSpinner label="Loading tickets" />
+          <span>Loading tickets</span>
         </div>
       ) : null}
 
       {!isLoading && tickets.length === 0 ? (
-        <div className="p-5 text-sm text-slate-600">
-          No support tickets have been created yet.
-        </div>
+        <EmptyState
+          compact
+          description="Customer support conversations will appear here."
+          title="No support tickets yet"
+        />
       ) : null}
 
       {!isLoading && tickets.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <>
+          <div className="divide-y divide-slate-200 md:hidden">
+            {tickets.map((ticket) => (
+              <article
+                className={
+                  ticket.id === selectedTicketId
+                    ? 'bg-blue-50/50 p-5'
+                    : 'p-5'
+                }
+                key={ticket.id}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-slate-950">
+                      {ticket.title}
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {ticket.companyName}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <StatusBadge
+                      label={getTicketStatusLabel(ticket.status)}
+                      showDot
+                      tone={getTicketStatusTone(ticket.status)}
+                    />
+                    <StatusBadge
+                      label={ticket.priority}
+                      tone={getTicketPriorityTone(ticket.priority)}
+                    />
+                  </div>
+                </div>
+                <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">
+                  {ticket.description}
+                </p>
+                <p className="mt-3 text-xs font-medium text-slate-400">
+                  {ticket.customerEmail} · {formatDate(ticket.createdAt)}
+                </p>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <Select
+                    disabled={updatingTicketId === ticket.id}
+                    id={`mobile-ticket-status-${ticket.id}`}
+                    label="Status"
+                    onChange={(event) =>
+                      onStatusChange(
+                        ticket,
+                        event.target.value as TicketStatus,
+                      )
+                    }
+                    value={ticket.status}
+                  >
+                    {ticketStatuses.map((status) => (
+                      <option key={status} value={status}>
+                        {getTicketStatusLabel(status)}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    disabled={updatingTicketId === ticket.id}
+                    id={`mobile-ticket-priority-${ticket.id}`}
+                    label="Priority"
+                    onChange={(event) =>
+                      onPriorityChange(
+                        ticket,
+                        event.target.value as TicketPriority,
+                      )
+                    }
+                    value={ticket.priority}
+                  >
+                    {priorities.map((priority) => (
+                      <option key={priority} value={priority}>
+                        {priority}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <Button
+                  className="mt-5"
+                  onClick={() => onSelectTicket(ticket.id)}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Open ticket
+                </Button>
+              </article>
+            ))}
+          </div>
+          <DataTable
+            className="min-w-[900px]"
+            scrollLabel="Support tickets table"
+            showMobileHint={false}
+            wrapperClassName="hidden md:block"
+          >
             <thead className="bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Ticket</th>
@@ -271,13 +367,12 @@ function TicketTable({
                     <p className="mt-1 text-xs text-slate-500">{ticket.companyName}</p>
                   </td>
                   <td className="px-5 py-4 align-top">
-                    <label className="sr-only" htmlFor={`ticket-status-${ticket.id}`}>
-                      Status for {ticket.title}
-                    </label>
-                    <select
-                      className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:opacity-60"
+                    <Select
+                      className="h-10 min-w-36 font-semibold"
                       disabled={updatingTicketId === ticket.id}
+                      hideLabel
                       id={`ticket-status-${ticket.id}`}
+                      label={`Status for ${ticket.title}`}
                       onChange={(event) =>
                         onStatusChange(ticket, event.target.value as TicketStatus)
                       }
@@ -288,19 +383,15 @@ function TicketTable({
                           {getTicketStatusLabel(status)}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   </td>
                   <td className="px-5 py-4 align-top">
-                    <label
-                      className="sr-only"
-                      htmlFor={`ticket-priority-${ticket.id}`}
-                    >
-                      Priority for {ticket.title}
-                    </label>
-                    <select
-                      className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:opacity-60"
+                    <Select
+                      className="h-10 min-w-28 font-semibold"
                       disabled={updatingTicketId === ticket.id}
+                      hideLabel
                       id={`ticket-priority-${ticket.id}`}
+                      label={`Priority for ${ticket.title}`}
                       onChange={(event) =>
                         onPriorityChange(
                           ticket,
@@ -314,7 +405,7 @@ function TicketTable({
                           {priority}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   </td>
                   <td className="px-5 py-4 align-top">
                     <Button
@@ -328,10 +419,10 @@ function TicketTable({
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </DataTable>
+        </>
       ) : null}
-    </div>
+    </Card>
   )
 }
 
@@ -356,14 +447,18 @@ function TicketDetail({
 }) {
   if (!ticket) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
-        Select a ticket to view the message thread.
-      </div>
+      <Card>
+        <EmptyState
+          compact
+          description="Choose a ticket from the list to see its conversation."
+          title="Select a ticket"
+        />
+      </Card>
     )
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+    <Card>
       <div className="border-b border-slate-200 px-5 py-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
@@ -387,43 +482,37 @@ function TicketDetail({
 
       <div className="grid gap-5 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="grid gap-2" htmlFor="selectedTicketStatus">
-            <span className="form-label">Status</span>
-            <select
-              className="form-input"
-              disabled={updatingTicketId === ticket.id}
-              id="selectedTicketStatus"
-              onChange={(event) =>
-                onStatusChange(ticket, event.target.value as TicketStatus)
-              }
-              value={ticket.status}
-            >
-              {ticketStatuses.map((status) => (
-                <option key={status} value={status}>
-                  {getTicketStatusLabel(status)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            disabled={updatingTicketId === ticket.id}
+            id="selectedTicketStatus"
+            label="Status"
+            onChange={(event) =>
+              onStatusChange(ticket, event.target.value as TicketStatus)
+            }
+            value={ticket.status}
+          >
+            {ticketStatuses.map((status) => (
+              <option key={status} value={status}>
+                {getTicketStatusLabel(status)}
+              </option>
+            ))}
+          </Select>
 
-          <label className="grid gap-2" htmlFor="selectedTicketPriority">
-            <span className="form-label">Priority</span>
-            <select
-              className="form-input"
-              disabled={updatingTicketId === ticket.id}
-              id="selectedTicketPriority"
-              onChange={(event) =>
-                onPriorityChange(ticket, event.target.value as TicketPriority)
-              }
-              value={ticket.priority}
-            >
-              {priorities.map((priority) => (
-                <option key={priority} value={priority}>
-                  {priority}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            disabled={updatingTicketId === ticket.id}
+            id="selectedTicketPriority"
+            label="Priority"
+            onChange={(event) =>
+              onPriorityChange(ticket, event.target.value as TicketPriority)
+            }
+            value={ticket.priority}
+          >
+            {priorities.map((priority) => (
+              <option key={priority} value={priority}>
+                {priority}
+              </option>
+            ))}
+          </Select>
         </div>
 
         <p className="text-sm leading-6 text-slate-700">{ticket.description}</p>
@@ -450,25 +539,27 @@ function TicketDetail({
         </div>
 
         <form onSubmit={onReply}>
-          <label className="grid gap-2" htmlFor="adminTicketReply">
-            <span className="form-label">Reply</span>
-            <textarea
-              className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              id="adminTicketReply"
-              maxLength={4000}
-              onChange={(event) => setReplyMessage(event.target.value)}
-              required
-              value={replyMessage}
-            />
-          </label>
+          <TextArea
+            id="adminTicketReply"
+            label="Reply"
+            maxLength={4000}
+            onChange={(event) => setReplyMessage(event.target.value)}
+            required
+            value={replyMessage}
+          />
           <div className="mt-4">
-            <Button disabled={isReplying || !replyMessage.trim()} type="submit">
-              {isReplying ? 'Sending' : 'Send reply'}
+            <Button
+              disabled={!replyMessage.trim()}
+              isLoading={isReplying}
+              loadingLabel="Sending"
+              type="submit"
+            >
+              Send reply
             </Button>
           </div>
         </form>
       </div>
-    </div>
+    </Card>
   )
 }
 

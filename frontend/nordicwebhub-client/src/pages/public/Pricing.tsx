@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { getPackages } from '../../api/packagesApi'
 import { ButtonLink } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { StatusBadge } from '../../components/ui/StatusBadge'
 import { useAuth } from '../../context/useAuth'
 import type { ServicePackage } from '../../types/servicePackage'
 import { getErrorMessage } from '../../utils/getErrorMessage'
@@ -58,21 +63,25 @@ export function Pricing() {
       />
 
       {isLoading ? (
-        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm font-medium text-slate-600 shadow-sm">
-          Loading service packages
-        </div>
+        <Card className="mt-8">
+          <div className="flex items-center justify-center gap-3 p-8 text-sm font-medium text-slate-600">
+            <LoadingSpinner label="Loading service packages" />
+            <span>Loading service packages</span>
+          </div>
+        </Card>
       ) : null}
 
       {error ? (
-        <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-8" message={error} />
       ) : null}
 
       {!isLoading && !error && packages.length === 0 ? (
-        <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
-          No active service packages are available right now.
-        </div>
+        <Card className="mt-8">
+          <EmptyState
+            description="Please check again later or contact NordicWebHub."
+            title="No active packages available"
+          />
+        </Card>
       ) : null}
 
       {!isLoading && !error && packages.length > 0 ? (
@@ -84,9 +93,7 @@ export function Pricing() {
             >
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold uppercase text-blue-700">
-                    {servicePackage.category}
-                  </p>
+                  <StatusBadge label={servicePackage.category} tone="blue" />
                   <h2 className="mt-2 text-xl font-semibold text-slate-950">
                     {servicePackage.name}
                   </h2>
