@@ -13,6 +13,7 @@ export function getDashboardStatusTone(status: string) {
     Approved: 'emerald',
     Closed: 'slate',
     Completed: 'emerald',
+    Design: 'amber',
     Development: 'blue',
     InProgress: 'blue',
     Live: 'emerald',

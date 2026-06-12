@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react'
+import {
+  Activity,
+  Building2,
+  ClipboardList,
+  FolderKanban,
+  PackagePlus,
+  TicketCheck,
+  Users,
+} from 'lucide-react'
 import { getAdminDashboard } from '../../api/dashboardApi'
-import { Button } from '../../components/ui/Button'
+import { Button, ButtonLink } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { DataTable } from '../../components/ui/DataTable'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ErrorMessage } from '../../components/ui/ErrorMessage'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { StatCard } from '../../components/ui/StatCard'
 import { StatusBadge } from '../../components/ui/StatusBadge'
@@ -21,6 +31,8 @@ import {
   getDashboardStatusTone,
 } from '../../utils/dashboardFormatters'
 import { getErrorMessage } from '../../utils/getErrorMessage'
+
+const iconClassName = 'h-5 w-5'
 
 export function AdminDashboard() {
   const [dashboard, setDashboard] = useState<AdminDashboardData | null>(null)
@@ -72,6 +84,8 @@ export function AdminDashboard() {
         title="Dashboard"
       />
 
+      <QuickActions />
+
       {error ? (
         <ErrorMessage
           action={
@@ -92,25 +106,37 @@ export function AdminDashboard() {
 
       {!isLoading && dashboard ? (
         <>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-            <StatCard label="Customers" value={dashboard.totalCustomers} />
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             <StatCard
+              detail="Registered customer accounts"
+              icon={<Users className={iconClassName} />}
+              label="Customers"
+              value={dashboard.totalCustomers}
+            />
+            <StatCard
+              detail="Managed business profiles"
+              icon={<Building2 className={iconClassName} />}
               label="Companies"
               tone="slate"
               value={dashboard.totalCompanies}
             />
             <StatCard
-              detail={`${dashboard.totalProjectRequests} total`}
+              detail={`${dashboard.totalProjectRequests} total requests`}
+              icon={<ClipboardList className={iconClassName} />}
               label="Pending Requests"
               tone="amber"
               value={dashboard.pendingProjectRequests}
             />
             <StatCard
+              detail="Projects currently in delivery"
+              icon={<FolderKanban className={iconClassName} />}
               label="Active Projects"
               tone="emerald"
               value={dashboard.activeProjects}
             />
             <StatCard
+              detail="Support items requiring attention"
+              icon={<TicketCheck className={iconClassName} />}
               label="Open Tickets"
               tone="amber"
               value={dashboard.openTickets}
@@ -119,12 +145,50 @@ export function AdminDashboard() {
 
           <div className="mt-6 grid gap-6">
             <RequestsTable requests={dashboard.recentProjectRequests} />
-            <TicketsTable tickets={dashboard.recentSupportTickets} />
-            <ProjectsTable projects={dashboard.recentProjects} />
+            <div className="grid gap-6 2xl:grid-cols-2">
+              <TicketsTable tickets={dashboard.recentSupportTickets} />
+              <ProjectsTable projects={dashboard.recentProjects} />
+            </div>
           </div>
         </>
       ) : null}
     </section>
+  )
+}
+
+function QuickActions() {
+  return (
+    <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
+      <div>
+        <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+        <p className="mt-1 text-sm text-slate-500">
+          Jump directly to common administration tasks.
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <ButtonLink
+          leadingIcon={<PackagePlus className="h-4 w-4" />}
+          size="sm"
+          to="/admin/packages"
+        >
+          Add Package
+        </ButtonLink>
+        <ButtonLink size="sm" to="/admin/tickets" variant="secondary">
+          View Tickets
+        </ButtonLink>
+        <ButtonLink size="sm" to="/admin/requests" variant="secondary">
+          View Requests
+        </ButtonLink>
+        <ButtonLink
+          leadingIcon={<Activity className="h-4 w-4" />}
+          size="sm"
+          to="/admin/website-check"
+          variant="secondary"
+        >
+          Run Website Check
+        </ButtonLink>
+      </div>
+    </div>
   )
 }
 
@@ -135,52 +199,63 @@ function RequestsTable({
 }) {
   return (
     <Card
+      action={
+        <ButtonLink size="sm" to="/admin/requests" variant="ghost">
+          View all requests
+        </ButtonLink>
+      }
       description="The latest customer requests requiring review."
-      title="Recent requests"
+      title="Recent project requests"
     >
       {requests.length === 0 ? (
         <EmptyState
           compact
-          description="No project requests have been submitted yet."
+          description="New customer requests will appear here."
+          icon={<ClipboardList className="h-5 w-5" />}
+          title="No project requests yet"
         />
       ) : (
         <DataTable>
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-5 py-3 font-semibold">Request</th>
-                <th className="px-5 py-3 font-semibold">Company</th>
-                <th className="px-5 py-3 font-semibold">Package</th>
-                <th className="px-5 py-3 font-semibold">Status</th>
-                <th className="px-5 py-3 font-semibold">Created</th>
+          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <tr>
+              <th className="px-5 py-3 font-semibold">Request</th>
+              <th className="px-5 py-3 font-semibold">Company</th>
+              <th className="px-5 py-3 font-semibold">Package</th>
+              <th className="px-5 py-3 font-semibold">Status</th>
+              <th className="px-5 py-3 font-semibold">Created</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {requests.map((request) => (
+              <tr
+                className="transition-colors hover:bg-slate-50"
+                key={request.id}
+              >
+                <td className="px-5 py-4">
+                  <p className="font-semibold text-slate-950">{request.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {request.customerEmail}
+                  </p>
+                </td>
+                <td className="px-5 py-4 text-slate-700">
+                  {request.companyName}
+                </td>
+                <td className="px-5 py-4 text-slate-700">
+                  {request.servicePackageName}
+                </td>
+                <td className="px-5 py-4">
+                  <StatusBadge
+                    label={request.status}
+                    showDot
+                    tone={getDashboardStatusTone(request.status)}
+                  />
+                </td>
+                <td className="whitespace-nowrap px-5 py-4 text-slate-500">
+                  {formatDashboardDate(request.createdAt)}
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {requests.map((request) => (
-                <tr key={request.id}>
-                  <td className="px-5 py-4">
-                    <p className="font-semibold text-slate-950">{request.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      {request.customerEmail}
-                    </p>
-                  </td>
-                  <td className="px-5 py-4 text-slate-700">
-                    {request.companyName}
-                  </td>
-                  <td className="px-5 py-4 text-slate-700">
-                    {request.servicePackageName}
-                  </td>
-                  <td className="px-5 py-4">
-                    <StatusBadge
-                      label={request.status}
-                      tone={getDashboardStatusTone(request.status)}
-                    />
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-slate-500">
-                    {formatDashboardDate(request.createdAt)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            ))}
+          </tbody>
         </DataTable>
       )}
     </Card>
@@ -190,55 +265,62 @@ function RequestsTable({
 function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
   return (
     <Card
-      description="Newest support conversations across customer accounts."
-      title="Recent tickets"
+      action={
+        <ButtonLink size="sm" to="/admin/tickets" variant="ghost">
+          View all
+        </ButtonLink>
+      }
+      description="Newest conversations across customer accounts."
+      title="Recent support tickets"
     >
       {tickets.length === 0 ? (
         <EmptyState
           compact
-          description="No support tickets have been created yet."
+          description="New support conversations will appear here."
+          icon={<TicketCheck className="h-5 w-5" />}
+          title="No support tickets yet"
         />
       ) : (
         <DataTable>
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-5 py-3 font-semibold">Ticket</th>
-                <th className="px-5 py-3 font-semibold">Company</th>
-                <th className="px-5 py-3 font-semibold">Priority</th>
-                <th className="px-5 py-3 font-semibold">Status</th>
-                <th className="px-5 py-3 font-semibold">Created</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {tickets.map((ticket) => (
-                <tr key={ticket.id}>
-                  <td className="px-5 py-4">
-                    <p className="font-semibold text-slate-950">{ticket.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      {ticket.customerEmail}
-                    </p>
-                  </td>
-                  <td className="px-5 py-4 text-slate-700">
+          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <tr>
+              <th className="px-5 py-3 font-semibold">Ticket</th>
+              <th className="px-5 py-3 font-semibold">Priority</th>
+              <th className="px-5 py-3 font-semibold">Status</th>
+              <th className="px-5 py-3 font-semibold">Created</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {tickets.map((ticket) => (
+              <tr
+                className="transition-colors hover:bg-slate-50"
+                key={ticket.id}
+              >
+                <td className="px-5 py-4">
+                  <p className="font-semibold text-slate-950">{ticket.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">
                     {ticket.companyName}
-                  </td>
-                  <td className="px-5 py-4">
-                    <StatusBadge
-                      label={ticket.priority}
-                      tone={getDashboardPriorityTone(ticket.priority)}
-                    />
-                  </td>
-                  <td className="px-5 py-4">
-                    <StatusBadge
-                      label={formatDashboardStatus(ticket.status)}
-                      tone={getDashboardStatusTone(ticket.status)}
-                    />
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-slate-500">
-                    {formatDashboardDate(ticket.createdAt)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                  </p>
+                </td>
+                <td className="px-5 py-4">
+                  <StatusBadge
+                    label={ticket.priority}
+                    tone={getDashboardPriorityTone(ticket.priority)}
+                  />
+                </td>
+                <td className="px-5 py-4">
+                  <StatusBadge
+                    label={formatDashboardStatus(ticket.status)}
+                    showDot
+                    tone={getDashboardStatusTone(ticket.status)}
+                  />
+                </td>
+                <td className="whitespace-nowrap px-5 py-4 text-slate-500">
+                  {formatDashboardDate(ticket.createdAt)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </DataTable>
       )}
     </Card>
@@ -248,42 +330,55 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
 function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
   return (
     <Card
-      description="Recently created projects and their current delivery stage."
+      action={
+        <ButtonLink size="sm" to="/admin/projects" variant="ghost">
+          View all
+        </ButtonLink>
+      }
+      description="Recently created work and its delivery stage."
       title="Recent projects"
     >
       {projects.length === 0 ? (
-        <EmptyState compact description="No projects have been created yet." />
+        <EmptyState
+          compact
+          description="Created projects will appear here."
+          icon={<FolderKanban className="h-5 w-5" />}
+          title="No projects yet"
+        />
       ) : (
         <DataTable>
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-5 py-3 font-semibold">Project</th>
-                <th className="px-5 py-3 font-semibold">Company</th>
-                <th className="px-5 py-3 font-semibold">Status</th>
-                <th className="px-5 py-3 font-semibold">Deadline</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {projects.map((project) => (
-                <tr key={project.id}>
-                  <td className="px-5 py-4 font-semibold text-slate-950">
-                    {project.title}
-                  </td>
-                  <td className="px-5 py-4 text-slate-700">
+          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <tr>
+              <th className="px-5 py-3 font-semibold">Project</th>
+              <th className="px-5 py-3 font-semibold">Status</th>
+              <th className="px-5 py-3 font-semibold">Deadline</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {projects.map((project) => (
+              <tr
+                className="transition-colors hover:bg-slate-50"
+                key={project.id}
+              >
+                <td className="px-5 py-4">
+                  <p className="font-semibold text-slate-950">{project.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">
                     {project.companyName}
-                  </td>
-                  <td className="px-5 py-4">
-                    <StatusBadge
-                      label={project.status}
-                      tone={getDashboardStatusTone(project.status)}
-                    />
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-slate-500">
-                    {formatDashboardDate(project.deadline)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                  </p>
+                </td>
+                <td className="px-5 py-4">
+                  <StatusBadge
+                    label={project.status}
+                    showDot
+                    tone={getDashboardStatusTone(project.status)}
+                  />
+                </td>
+                <td className="whitespace-nowrap px-5 py-4 text-slate-500">
+                  {formatDashboardDate(project.deadline)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </DataTable>
       )}
     </Card>
@@ -292,13 +387,11 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
 
 function DashboardLoading() {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-      {Array.from({ length: 5 }, (_, index) => (
-        <div
-          className="h-28 animate-pulse rounded-lg border border-slate-200 bg-white"
-          key={index}
-        />
-      ))}
+    <div className="mt-6 flex min-h-64 items-center justify-center rounded-lg border border-slate-200 bg-white">
+      <div className="flex flex-col items-center gap-3 text-sm font-medium text-slate-500">
+        <LoadingSpinner className="text-blue-600" label="Loading dashboard" size="lg" />
+        <span>Loading dashboard overview</span>
+      </div>
     </div>
   )
 }
