@@ -1,84 +1,50 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { Button } from '../components/ui/Button'
+import {
+  Activity,
+  Building2,
+  ClipboardList,
+  FolderKanban,
+  LayoutDashboard,
+  Package,
+  SearchCheck,
+  TicketCheck,
+  Wrench,
+} from 'lucide-react'
 import { useAuth } from '../context/useAuth'
-import { cn } from '../utils/cn'
+import { PortalShell, type PortalNavItem } from './PortalShell'
 
-const adminLinks = [
-  { to: '/admin/dashboard', label: 'Overview' },
-  { to: '/admin/packages', label: 'Packages' },
-  { to: '/admin/companies', label: 'Companies' },
-  { to: '/admin/requests', label: 'Requests' },
-  { to: '/admin/projects', label: 'Projects' },
-  { to: '/admin/tickets', label: 'Tickets' },
-  { to: '/admin/maintenance-logs', label: 'Maintenance' },
-  { to: '/admin/seo-reports', label: 'SEO Reports' },
-  { to: '/admin/website-check', label: 'Website Check' },
+const adminNavigation: PortalNavItem[] = [
+  {
+    to: '/admin/dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+  },
+  { to: '/admin/companies', label: 'Companies', icon: Building2 },
+  { to: '/admin/packages', label: 'Packages', icon: Package },
+  {
+    to: '/admin/requests',
+    label: 'Project Requests',
+    icon: ClipboardList,
+  },
+  { to: '/admin/projects', label: 'Projects', icon: FolderKanban },
+  { to: '/admin/tickets', label: 'Tickets', icon: TicketCheck },
+  {
+    to: '/admin/maintenance-logs',
+    label: 'Maintenance Logs',
+    icon: Wrench,
+  },
+  { to: '/admin/seo-reports', label: 'SEO Reports', icon: SearchCheck },
+  { to: '/admin/website-check', label: 'Website Check', icon: Activity },
 ]
 
 export function AdminLayout() {
   const { logout, user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-slate-200 bg-white p-5 lg:block">
-        <div className="mb-8">
-          <p className="text-lg font-semibold text-slate-950">NordicWebHub</p>
-          <p className="mt-1 text-sm text-slate-500">Admin portal</p>
-        </div>
-
-        <nav className="grid gap-1">
-          {adminLinks.map((link) => (
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                  isActive && 'bg-blue-50 text-blue-800',
-                )
-              }
-              key={link.to}
-              to={link.to}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-
-      <div className="lg:pl-64">
-        <header className="border-b border-slate-200 bg-white">
-          <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div>
-              <p className="text-sm font-medium text-slate-500">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-950">
-                {user?.fullName || user?.email}
-              </p>
-            </div>
-            <Button className="h-10 px-3" onClick={() => void logout()} variant="secondary">
-              Log out
-            </Button>
-          </div>
-          <nav className="flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 sm:px-6 lg:hidden">
-            {adminLinks.map((link) => (
-              <NavLink
-                className={({ isActive }) =>
-                  cn(
-                    'shrink-0 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                    isActive && 'bg-blue-50 text-blue-800',
-                  )
-                }
-                key={link.to}
-                to={link.to}
-              >
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
-        </header>
-
-        <main className="px-4 py-8 sm:px-6 lg:px-8">
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    <PortalShell
+      navigation={adminNavigation}
+      onLogout={logout}
+      portalLabel="Admin portal"
+      user={user}
+    />
   )
 }
