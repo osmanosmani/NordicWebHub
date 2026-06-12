@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { getPackages } from '../../api/packagesApi'
-import { Button } from '../../components/ui/Button'
+import { ButtonLink } from '../../components/ui/Button'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { useAuth } from '../../context/useAuth'
 import type { ServicePackage } from '../../types/servicePackage'
@@ -120,9 +119,12 @@ export function Pricing() {
               </dl>
 
               <div className="mt-auto pt-6">
-                <Link to={isAuthenticated ? '/customer/dashboard' : '/login'}>
-                  <Button className="w-full">Request this package</Button>
-                </Link>
+                <ButtonLink
+                  className="w-full"
+                  to={isAuthenticated ? '/customer/dashboard' : '/login'}
+                >
+                  Request this package
+                </ButtonLink>
               </div>
             </article>
           ))}

@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import { Button } from '../../components/ui/Button'
+import { ButtonLink } from '../../components/ui/Button'
 import { PageHeader } from '../../components/ui/PageHeader'
 
 const portalHighlights = [
@@ -28,14 +27,16 @@ export function Home() {
             title="NordicWebHub"
           />
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <Link to="/login">
-              <Button className="w-full sm:w-auto">Log in</Button>
-            </Link>
-            <Link to="/pricing">
-              <Button className="w-full sm:w-auto" variant="secondary">
-                View pricing
-              </Button>
-            </Link>
+            <ButtonLink className="w-full sm:w-auto" to="/login">
+              Log in
+            </ButtonLink>
+            <ButtonLink
+              className="w-full sm:w-auto"
+              to="/pricing"
+              variant="secondary"
+            >
+              View pricing
+            </ButtonLink>
           </div>
         </div>
 

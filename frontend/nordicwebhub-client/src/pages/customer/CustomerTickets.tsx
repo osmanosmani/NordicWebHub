@@ -12,9 +12,12 @@ import type {
   CreateSupportTicketDto,
   SupportTicket,
   TicketPriority,
-  TicketStatus,
 } from '../../types/supportTicket'
 import { getErrorMessage } from '../../utils/getErrorMessage'
+import {
+  getTicketStatusLabel,
+  getTicketStatusTone,
+} from '../../utils/ticketStatus'
 
 type TicketFormState = {
   title: string
@@ -283,7 +286,7 @@ function TicketList({
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-semibold text-slate-950">{ticket.title}</p>
                 <StatusBadge
-                  label={ticket.status}
+                  label={getTicketStatusLabel(ticket.status)}
                   tone={getTicketStatusTone(ticket.status)}
                 />
                 <StatusBadge
@@ -336,7 +339,7 @@ function TicketDetail({
           </div>
           <div className="flex flex-wrap gap-2">
             <StatusBadge
-              label={ticket.status}
+              label={getTicketStatusLabel(ticket.status)}
               tone={getTicketStatusTone(ticket.status)}
             />
             <StatusBadge
@@ -442,17 +445,6 @@ function formatDateTime(value: string) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value))
-}
-
-function getTicketStatusTone(status: TicketStatus) {
-  const tones: Record<TicketStatus, 'blue' | 'emerald' | 'amber' | 'slate'> = {
-    Closed: 'slate',
-    InProgress: 'blue',
-    Open: 'emerald',
-    WaitingForCustomer: 'amber',
-  }
-
-  return tones[status]
 }
 
 function getTicketPriorityTone(priority: TicketPriority) {

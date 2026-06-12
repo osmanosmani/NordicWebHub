@@ -1,4 +1,6 @@
 export type ApiErrorResponse = {
+  detail?: string
   message?: string
-  errors?: string[] | Record<string, string[]>
+  title?: string
+  errors?: string[] | Record<string, string[] | string>
 }

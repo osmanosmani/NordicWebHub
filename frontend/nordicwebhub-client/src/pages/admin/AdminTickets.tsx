@@ -14,13 +14,11 @@ import type {
   TicketStatus,
 } from '../../types/supportTicket'
 import { getErrorMessage } from '../../utils/getErrorMessage'
-
-const statuses: TicketStatus[] = [
-  'Open',
-  'InProgress',
-  'WaitingForCustomer',
-  'Closed',
-]
+import {
+  getTicketStatusLabel,
+  getTicketStatusTone,
+  ticketStatuses,
+} from '../../utils/ticketStatus'
 
 const priorities: TicketPriority[] = ['Low', 'Medium', 'High', 'Urgent']
 
@@ -285,9 +283,9 @@ function TicketTable({
                       }
                       value={ticket.status}
                     >
-                      {statuses.map((status) => (
+                      {ticketStatuses.map((status) => (
                         <option key={status} value={status}>
-                          {status}
+                          {getTicketStatusLabel(status)}
                         </option>
                       ))}
                     </select>
@@ -376,7 +374,7 @@ function TicketDetail({
           </div>
           <div className="flex flex-wrap gap-2">
             <StatusBadge
-              label={ticket.status}
+              label={getTicketStatusLabel(ticket.status)}
               tone={getTicketStatusTone(ticket.status)}
             />
             <StatusBadge
@@ -400,9 +398,9 @@ function TicketDetail({
               }
               value={ticket.status}
             >
-              {statuses.map((status) => (
+              {ticketStatuses.map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {getTicketStatusLabel(status)}
                 </option>
               ))}
             </select>
@@ -507,17 +505,6 @@ function formatDateTime(value: string) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value))
-}
-
-function getTicketStatusTone(status: TicketStatus) {
-  const tones: Record<TicketStatus, 'blue' | 'emerald' | 'amber' | 'slate'> = {
-    Closed: 'slate',
-    InProgress: 'blue',
-    Open: 'emerald',
-    WaitingForCustomer: 'amber',
-  }
-
-  return tones[status]
 }
 
 function getTicketPriorityTone(priority: TicketPriority) {

@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import { Button } from '../../components/ui/Button'
+import { ButtonLink } from '../../components/ui/Button'
 
 export function Unauthorized() {
   return (
@@ -13,9 +12,9 @@ export function Unauthorized() {
           Your current account does not have permission for that area.
         </p>
         <div className="mt-6 flex justify-center">
-          <Link to="/">
-            <Button variant="secondary">Go home</Button>
-          </Link>
+          <ButtonLink to="/" variant="secondary">
+            Go home
+          </ButtonLink>
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { Button } from '../components/ui/Button'
+import { ButtonLink } from '../components/ui/Button'
 import { cn } from '../utils/cn'
 
 const publicLinks = [
@@ -34,14 +34,12 @@ export function PublicLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link to="/login">
-              <Button className="h-10 px-3" variant="ghost">
-                Log in
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="h-10 px-3">Register</Button>
-            </Link>
+            <ButtonLink className="h-10 px-3" to="/login" variant="ghost">
+              Log in
+            </ButtonLink>
+            <ButtonLink className="h-10 px-3" to="/register">
+              Register
+            </ButtonLink>
           </div>
         </div>
       </header>

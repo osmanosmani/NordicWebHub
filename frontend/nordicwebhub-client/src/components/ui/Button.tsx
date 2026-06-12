@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react'
+import { Link, type LinkProps } from 'react-router-dom'
 import { cn } from '../../utils/cn'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost'
@@ -15,6 +16,14 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost: 'text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-200',
 }
 
+function getButtonClassName(variant: ButtonVariant, className?: string) {
+  return cn(
+    'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60',
+    variantClasses[variant],
+    className,
+  )
+}
+
 export function Button({
   className,
   variant = 'primary',
@@ -23,12 +32,25 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60',
-        variantClasses[variant],
-        className,
-      )}
+      className={getButtonClassName(variant, className)}
       type={type}
+      {...props}
+    />
+  )
+}
+
+type ButtonLinkProps = LinkProps & {
+  variant?: ButtonVariant
+}
+
+export function ButtonLink({
+  className,
+  variant = 'primary',
+  ...props
+}: ButtonLinkProps) {
+  return (
+    <Link
+      className={getButtonClassName(variant, className)}
       {...props}
     />
   )

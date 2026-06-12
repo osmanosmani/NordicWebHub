@@ -216,3 +216,7 @@ static bool IsUnsafeHttpMethod(string method)
         || HttpMethods.IsPatch(method)
         || HttpMethods.IsDelete(method);
 }
+
+public partial class Program
+{
+}

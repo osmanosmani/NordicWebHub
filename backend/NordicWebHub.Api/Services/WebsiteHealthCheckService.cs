@@ -36,8 +36,7 @@ public class WebsiteHealthCheckService(
         var activeFailureTickets = await dbContext.SupportTickets
             .Where(ticket =>
                 ticket.Title == HealthCheckTicketTitle
-                && ticket.Status != TicketStatus.Closed
-                && ticket.Status != TicketStatus.Resolved)
+                && ticket.Status != TicketStatus.Closed)
             .ToListAsync(cancellationToken);
 
         var activeTicketByCompany = activeFailureTickets
