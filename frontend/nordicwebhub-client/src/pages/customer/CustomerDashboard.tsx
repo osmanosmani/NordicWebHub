@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getCustomerDashboard } from '../../api/dashboardApi'
-import { Button } from '../../components/ui/Button'
+import { Button, ButtonLink } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import type {
@@ -63,26 +66,27 @@ export function CustomerDashboard() {
 
   return (
     <section>
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <PageHeader
-          description="Review your company, active work, requests, and support in one place."
-          eyebrow="Customer"
-          title="Dashboard"
-        />
-        <QuickActions />
-      </div>
+      <PageHeader
+        action={<QuickActions />}
+        description="Review your company, active work, requests, and support in one place."
+        eyebrow="Customer"
+        title="Dashboard"
+      />
 
       {error ? (
-        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between">
-          <span>{error}</span>
-          <Button
-            className="h-9 shrink-0 px-3"
-            onClick={() => setReloadKey((current) => current + 1)}
-            variant="secondary"
-          >
-            Try again
-          </Button>
-        </div>
+        <ErrorMessage
+          action={
+            <Button
+              onClick={() => setReloadKey((current) => current + 1)}
+              size="sm"
+              variant="secondary"
+            >
+              Try again
+            </Button>
+          }
+          className="mt-6"
+          message={error}
+        />
       ) : null}
 
       {isLoading ? <CustomerDashboardLoading /> : null}
@@ -114,17 +118,14 @@ function QuickActions() {
   return (
     <div className="flex flex-wrap gap-2">
       {actions.map((action, index) => (
-        <Link
-          className={
-            index === 0
-              ? 'inline-flex h-10 items-center justify-center rounded-lg bg-blue-700 px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200'
-              : 'inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200'
-          }
+        <ButtonLink
           key={action.to}
+          size="sm"
           to={action.to}
+          variant={index === 0 ? 'primary' : 'secondary'}
         >
           {action.label}
-        </Link>
+        </ButtonLink>
       ))}
     </div>
   )
@@ -150,7 +151,10 @@ function CompanyOverview({
           />
         </dl>
       ) : (
-        <EmptyState message="No company is connected to this account." />
+        <EmptyState
+          compact
+          description="No company is connected to this account."
+        />
       )}
     </Card>
   )
@@ -171,7 +175,10 @@ function ActiveProjects({ projects }: { projects: DashboardProject[] }) {
       title="Active projects"
     >
       {projects.length === 0 ? (
-        <EmptyState message="You do not have any active projects." />
+        <EmptyState
+          compact
+          description="You do not have any active projects."
+        />
       ) : (
         <div className="divide-y divide-slate-200">
           {projects.map((project) => (
@@ -212,7 +219,10 @@ function OpenTickets({ tickets }: { tickets: DashboardSupportTicket[] }) {
       title="Open tickets"
     >
       {tickets.length === 0 ? (
-        <EmptyState message="You do not have any open support tickets." />
+        <EmptyState
+          compact
+          description="You do not have any open support tickets."
+        />
       ) : (
         <div className="divide-y divide-slate-200">
           {tickets.map((ticket) => (
@@ -260,10 +270,12 @@ function RecentRequests({
       title="Recent requests"
     >
       {requests.length === 0 ? (
-        <EmptyState message="You have not submitted any project requests." />
+        <EmptyState
+          compact
+          description="You have not submitted any project requests."
+        />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <DataTable>
             <thead className="bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Request</th>
@@ -293,8 +305,7 @@ function RecentRequests({
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+        </DataTable>
       )}
     </Card>
   )
@@ -322,8 +333,4 @@ function CustomerDashboardLoading() {
       </div>
     </div>
   )
-}
-
-function EmptyState({ message }: { message: string }) {
-  return <p className="p-5 text-sm text-slate-600">{message}</p>
 }

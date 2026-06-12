@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import { getAdminDashboard } from '../../api/dashboardApi'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { StatCard } from '../../components/ui/StatCard'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import type {
   AdminDashboardData,
@@ -69,16 +73,19 @@ export function AdminDashboard() {
       />
 
       {error ? (
-        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between">
-          <span>{error}</span>
-          <Button
-            className="h-9 shrink-0 px-3"
-            onClick={() => setReloadKey((current) => current + 1)}
-            variant="secondary"
-          >
-            Try again
-          </Button>
-        </div>
+        <ErrorMessage
+          action={
+            <Button
+              onClick={() => setReloadKey((current) => current + 1)}
+              size="sm"
+              variant="secondary"
+            >
+              Try again
+            </Button>
+          }
+          className="mt-6"
+          message={error}
+        />
       ) : null}
 
       {isLoading ? <DashboardLoading /> : null}
@@ -87,14 +94,27 @@ export function AdminDashboard() {
         <>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             <StatCard label="Customers" value={dashboard.totalCustomers} />
-            <StatCard label="Companies" value={dashboard.totalCompanies} />
+            <StatCard
+              label="Companies"
+              tone="slate"
+              value={dashboard.totalCompanies}
+            />
             <StatCard
               detail={`${dashboard.totalProjectRequests} total`}
               label="Pending Requests"
+              tone="amber"
               value={dashboard.pendingProjectRequests}
             />
-            <StatCard label="Active Projects" value={dashboard.activeProjects} />
-            <StatCard label="Open Tickets" value={dashboard.openTickets} />
+            <StatCard
+              label="Active Projects"
+              tone="emerald"
+              value={dashboard.activeProjects}
+            />
+            <StatCard
+              label="Open Tickets"
+              tone="amber"
+              value={dashboard.openTickets}
+            />
           </div>
 
           <div className="mt-6 grid gap-6">
@@ -105,28 +125,6 @@ export function AdminDashboard() {
         </>
       ) : null}
     </section>
-  )
-}
-
-function StatCard({
-  detail,
-  label,
-  value,
-}: {
-  detail?: string
-  label: string
-  value: number
-}) {
-  return (
-    <Card className="p-5">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
-      <div className="mt-3 flex items-end justify-between gap-3">
-        <p className="text-3xl font-semibold text-slate-950">{value}</p>
-        {detail ? (
-          <p className="pb-1 text-xs font-medium text-slate-400">{detail}</p>
-        ) : null}
-      </div>
-    </Card>
   )
 }
 
@@ -141,10 +139,12 @@ function RequestsTable({
       title="Recent requests"
     >
       {requests.length === 0 ? (
-        <EmptyState message="No project requests have been submitted yet." />
+        <EmptyState
+          compact
+          description="No project requests have been submitted yet."
+        />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <DataTable>
             <thead className="bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Request</th>
@@ -181,8 +181,7 @@ function RequestsTable({
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+        </DataTable>
       )}
     </Card>
   )
@@ -195,10 +194,12 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
       title="Recent tickets"
     >
       {tickets.length === 0 ? (
-        <EmptyState message="No support tickets have been created yet." />
+        <EmptyState
+          compact
+          description="No support tickets have been created yet."
+        />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <DataTable>
             <thead className="bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Ticket</th>
@@ -238,8 +239,7 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+        </DataTable>
       )}
     </Card>
   )
@@ -252,10 +252,9 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
       title="Recent projects"
     >
       {projects.length === 0 ? (
-        <EmptyState message="No projects have been created yet." />
+        <EmptyState compact description="No projects have been created yet." />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <DataTable>
             <thead className="bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Project</th>
@@ -285,8 +284,7 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+        </DataTable>
       )}
     </Card>
   )
@@ -303,8 +301,4 @@ function DashboardLoading() {
       ))}
     </div>
   )
-}
-
-function EmptyState({ message }: { message: string }) {
-  return <p className="p-5 text-sm text-slate-600">{message}</p>
 }

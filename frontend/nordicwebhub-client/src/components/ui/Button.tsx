@@ -1,57 +1,127 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Link, type LinkProps } from 'react-router-dom'
 import { cn } from '../../utils/cn'
+import { LoadingSpinner } from './LoadingSpinner'
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type ButtonSize = 'sm' | 'md' | 'lg'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
+  size?: ButtonSize
+  isLoading?: boolean
+  loadingLabel?: string
+  leadingIcon?: ReactNode
+  trailingIcon?: ReactNode
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-blue-700 text-white shadow-sm hover:bg-blue-800 focus-visible:ring-blue-200',
+    'border border-blue-600 bg-blue-600 text-white shadow-sm hover:border-blue-700 hover:bg-blue-700 focus-visible:ring-blue-200',
   secondary:
-    'border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 focus-visible:ring-slate-200',
-  ghost: 'text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-200',
+    'border border-slate-300 bg-white text-slate-800 shadow-sm hover:border-slate-400 hover:bg-slate-50 focus-visible:ring-slate-200',
+  ghost:
+    'border border-transparent bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-200',
+  danger:
+    'border border-red-600 bg-red-600 text-white shadow-sm hover:border-red-700 hover:bg-red-700 focus-visible:ring-red-200',
 }
 
-function getButtonClassName(variant: ButtonVariant, className?: string) {
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: 'h-9 gap-2 px-3 text-sm',
+  md: 'h-11 gap-2 px-4 text-sm',
+  lg: 'h-12 gap-2.5 px-5 text-base',
+}
+
+function getButtonClassName(
+  variant: ButtonVariant,
+  size: ButtonSize,
+  className?: string,
+) {
   return cn(
-    'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60',
+    'inline-flex shrink-0 items-center justify-center rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-60',
     variantClasses[variant],
+    sizeClasses[size],
     className,
   )
 }
 
 export function Button({
   className,
+  disabled,
+  isLoading = false,
+  leadingIcon,
+  loadingLabel = 'Loading',
+  size = 'md',
+  trailingIcon,
   variant = 'primary',
   type = 'button',
+  children,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={getButtonClassName(variant, className)}
+      aria-busy={isLoading || undefined}
+      className={getButtonClassName(variant, size, className)}
+      disabled={disabled || isLoading}
       type={type}
       {...props}
-    />
+    >
+      {isLoading ? (
+        <>
+          <LoadingSpinner className="text-current" size="sm" />
+          <span>{loadingLabel}</span>
+        </>
+      ) : (
+        <>
+          {leadingIcon ? (
+            <span aria-hidden="true" className="shrink-0">
+              {leadingIcon}
+            </span>
+          ) : null}
+          {children}
+          {trailingIcon ? (
+            <span aria-hidden="true" className="shrink-0">
+              {trailingIcon}
+            </span>
+          ) : null}
+        </>
+      )}
+    </button>
   )
 }
 
 type ButtonLinkProps = LinkProps & {
   variant?: ButtonVariant
+  size?: ButtonSize
+  leadingIcon?: ReactNode
+  trailingIcon?: ReactNode
 }
 
 export function ButtonLink({
   className,
+  leadingIcon,
+  size = 'md',
+  trailingIcon,
   variant = 'primary',
+  children,
   ...props
 }: ButtonLinkProps) {
   return (
     <Link
-      className={getButtonClassName(variant, className)}
+      className={getButtonClassName(variant, size, className)}
       {...props}
-    />
+    >
+      {leadingIcon ? (
+        <span aria-hidden="true" className="shrink-0">
+          {leadingIcon}
+        </span>
+      ) : null}
+      {children}
+      {trailingIcon ? (
+        <span aria-hidden="true" className="shrink-0">
+          {trailingIcon}
+        </span>
+      ) : null}
+    </Link>
   )
 }
