@@ -21,42 +21,103 @@ public static class DbInitializer
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var logger = scope.ServiceProvider
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("NordicWebHub.Api.Data.DbInitializer");
+        var resetDemoData = configuration.GetValue<bool>("SeedData:ResetDemoData");
+
+        logger.LogInformation(
+            "Starting development demo seed. ResetDemoData: {ResetDemoData}.",
+            resetDemoData);
 
         await dbContext.Database.MigrateAsync();
 
-        await SeedRoleAsync(roleManager, AdminRole);
-        await SeedRoleAsync(roleManager, CustomerRole);
+        await SeedRoleAsync(roleManager, AdminRole, logger);
+        await SeedRoleAsync(roleManager, CustomerRole, logger);
 
-        var admin = await SeedUserAsync(userManager, AdminEmail, "Admin123!", "Saga", "Lind");
-        var customer = await SeedUserAsync(userManager, CustomerEmail, "Customer123!", "Erik", "Holm");
-        var demoCustomer = await SeedUserAsync(userManager, DemoCustomerEmail, "Customer123!", "Maja", "Berg");
+        var admin = await SeedUserAsync(
+            userManager,
+            AdminEmail,
+            "Admin123!",
+            "Saga",
+            "Lind",
+            resetDemoData,
+            logger);
+        var customer = await SeedUserAsync(
+            userManager,
+            CustomerEmail,
+            "Customer123!",
+            "Erik",
+            "Holm",
+            resetDemoData,
+            logger);
+        var demoCustomer = await SeedUserAsync(
+            userManager,
+            DemoCustomerEmail,
+            "Customer123!",
+            "Maja",
+            "Berg",
+            resetDemoData,
+            logger);
 
-        await AddUserToRoleAsync(userManager, admin, AdminRole);
-        await AddUserToRoleAsync(userManager, customer, CustomerRole);
-        await AddUserToRoleAsync(userManager, demoCustomer, CustomerRole);
+        await AddUserToRoleAsync(userManager, admin, AdminRole, logger);
+        await AddUserToRoleAsync(userManager, customer, CustomerRole, logger);
+        await AddUserToRoleAsync(userManager, demoCustomer, CustomerRole, logger);
 
-        var packages = await SeedServicePackagesAsync(dbContext);
-        var companies = await SeedCompaniesAsync(dbContext, customer.Id, demoCustomer.Id);
-        var requests = await SeedProjectRequestsAsync(dbContext, companies, packages, customer.Id, demoCustomer.Id);
-        var tickets = await SeedSupportTicketsAsync(dbContext, companies, customer.Id, demoCustomer.Id);
+        var packages = await SeedServicePackagesAsync(
+            dbContext,
+            resetDemoData,
+            logger);
+        var companies = await SeedCompaniesAsync(
+            dbContext,
+            customer.Id,
+            demoCustomer.Id,
+            resetDemoData,
+            logger);
+        var requests = await SeedProjectRequestsAsync(
+            dbContext,
+            companies,
+            packages,
+            customer.Id,
+            demoCustomer.Id,
+            resetDemoData);
+        var tickets = await SeedSupportTicketsAsync(
+            dbContext,
+            companies,
+            customer.Id,
+            demoCustomer.Id,
+            resetDemoData);
 
-        await SeedProjectsAsync(dbContext, companies, requests);
+        await SeedProjectsAsync(dbContext, companies, requests, resetDemoData);
         await SeedTicketRepliesAsync(dbContext, tickets, customer.Id, demoCustomer.Id, admin.Id);
-        await SeedMaintenanceLogsAsync(dbContext, companies);
-        await SeedHostingStatusesAsync(dbContext, companies);
-        await SeedSeoReportsAsync(dbContext, companies);
-        await SeedAiSeoRequestsAsync(dbContext, companies, customer.Id, demoCustomer.Id);
+        await SeedMaintenanceLogsAsync(dbContext, companies, resetDemoData);
+        await SeedHostingStatusesAsync(dbContext, companies, resetDemoData);
+        await SeedSeoReportsAsync(dbContext, companies, resetDemoData);
+        await SeedAiSeoRequestsAsync(
+            dbContext,
+            companies,
+            customer.Id,
+            demoCustomer.Id,
+            resetDemoData);
+
+        logger.LogInformation("Development demo seed completed.");
     }
 
-    private static async Task SeedRoleAsync(RoleManager<IdentityRole> roleManager, string roleName)
+    private static async Task SeedRoleAsync(
+        RoleManager<IdentityRole> roleManager,
+        string roleName,
+        ILogger logger)
     {
         if (await roleManager.RoleExistsAsync(roleName))
         {
+            logger.LogInformation("Demo seed role already exists: {RoleName}.", roleName);
             return;
         }
 
         var result = await roleManager.CreateAsync(new IdentityRole(roleName));
         ThrowIfFailed(result, $"Failed to create role '{roleName}'.");
+        logger.LogInformation("Demo seed role created: {RoleName}.", roleName);
     }
 
     private static async Task<ApplicationUser> SeedUserAsync(
@@ -64,18 +125,38 @@ public static class DbInitializer
         string email,
         string password,
         string firstName,
-        string lastName)
+        string lastName,
+        bool resetDemoData,
+        ILogger logger)
     {
         var user = await userManager.FindByEmailAsync(email);
         if (user is not null)
         {
-            user.FirstName = firstName;
-            user.LastName = lastName;
-            user.EmailConfirmed = true;
-            ResetDemoUserLockout(user);
+            var requiresUpdate = ResetDemoUserLockout(user);
 
-            var updateResult = await userManager.UpdateAsync(user);
-            ThrowIfFailed(updateResult, $"Failed to update demo user '{email}'.");
+            if (resetDemoData)
+            {
+                user.FirstName = firstName;
+                user.LastName = lastName;
+                user.EmailConfirmed = true;
+                requiresUpdate = true;
+            }
+
+            if (requiresUpdate)
+            {
+                var updateResult = await userManager.UpdateAsync(user);
+                ThrowIfFailed(updateResult, $"Failed to update demo user '{email}'.");
+            }
+
+            if (resetDemoData)
+            {
+                await ResetDemoUserPasswordAsync(userManager, user, password);
+                logger.LogInformation("Demo seed user reset: {Email}.", email);
+            }
+            else
+            {
+                logger.LogInformation("Demo seed user already exists: {Email}.", email);
+            }
 
             return user;
         }
@@ -95,32 +176,61 @@ public static class DbInitializer
 
         var createResult = await userManager.CreateAsync(user, password);
         ThrowIfFailed(createResult, $"Failed to create demo user '{email}'.");
+        logger.LogInformation("Demo seed user created: {Email}.", email);
 
         return user;
     }
 
-    private static void ResetDemoUserLockout(ApplicationUser user)
+    private static bool ResetDemoUserLockout(ApplicationUser user)
     {
+        var requiresUpdate = user.AccessFailedCount != 0
+            || user.LockoutEnd is not null
+            || !user.LockoutEnabled;
+
         user.AccessFailedCount = 0;
         user.LockoutEnd = null;
         user.LockoutEnabled = true;
+
+        return requiresUpdate;
+    }
+
+    private static async Task ResetDemoUserPasswordAsync(
+        UserManager<ApplicationUser> userManager,
+        ApplicationUser user,
+        string password)
+    {
+        var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await userManager.ResetPasswordAsync(user, resetToken, password);
+        ThrowIfFailed(result, $"Failed to reset demo user '{user.Email}'.");
     }
 
     private static async Task AddUserToRoleAsync(
         UserManager<ApplicationUser> userManager,
         ApplicationUser user,
-        string roleName)
+        string roleName,
+        ILogger logger)
     {
         if (await userManager.IsInRoleAsync(user, roleName))
         {
+            logger.LogInformation(
+                "Demo seed user {Email} already has role {RoleName}.",
+                user.Email,
+                roleName);
             return;
         }
 
         var result = await userManager.AddToRoleAsync(user, roleName);
         ThrowIfFailed(result, $"Failed to add user '{user.Email}' to role '{roleName}'.");
+        logger.LogInformation(
+            "Demo seed assigned role {RoleName} to {Email}.",
+            roleName,
+            user.Email);
     }
 
-    private static async Task<Dictionary<string, ServicePackage>> SeedServicePackagesAsync(ApplicationDbContext dbContext)
+    private static async Task<Dictionary<string, ServicePackage>> SeedServicePackagesAsync(
+        ApplicationDbContext dbContext,
+        bool resetDemoData,
+        ILogger logger)
     {
         var packages = new[]
         {
@@ -186,6 +296,8 @@ public static class DbInitializer
             }
         };
 
+        var seededPackages = new Dictionary<string, ServicePackage>();
+
         foreach (var servicePackage in packages)
         {
             var existingPackage = await dbContext.ServicePackages
@@ -195,28 +307,40 @@ public static class DbInitializer
             {
                 servicePackage.CreatedAt = DateTime.UtcNow;
                 dbContext.ServicePackages.Add(servicePackage);
+                seededPackages[servicePackage.Name] = servicePackage;
+                logger.LogInformation(
+                    "Demo seed package created: {PackageName}.",
+                    servicePackage.Name);
                 continue;
             }
 
-            existingPackage.Description = servicePackage.Description;
-            existingPackage.Category = servicePackage.Category;
-            existingPackage.MonthlyPrice = servicePackage.MonthlyPrice;
-            existingPackage.SetupFee = servicePackage.SetupFee;
-            existingPackage.DeliveryTime = servicePackage.DeliveryTime;
-            existingPackage.IsActive = servicePackage.IsActive;
+            seededPackages[servicePackage.Name] = existingPackage;
+            logger.LogInformation(
+                "Demo seed package already exists: {PackageName}.",
+                servicePackage.Name);
+
+            if (resetDemoData)
+            {
+                existingPackage.Description = servicePackage.Description;
+                existingPackage.Category = servicePackage.Category;
+                existingPackage.MonthlyPrice = servicePackage.MonthlyPrice;
+                existingPackage.SetupFee = servicePackage.SetupFee;
+                existingPackage.DeliveryTime = servicePackage.DeliveryTime;
+                existingPackage.IsActive = servicePackage.IsActive;
+            }
         }
 
         await dbContext.SaveChangesAsync();
 
-        return await dbContext.ServicePackages
-            .Where(package => packages.Select(seed => seed.Name).Contains(package.Name))
-            .ToDictionaryAsync(package => package.Name);
+        return seededPackages;
     }
 
     private static async Task<Dictionary<string, Company>> SeedCompaniesAsync(
         ApplicationDbContext dbContext,
         string customerId,
-        string demoCustomerId)
+        string demoCustomerId,
+        bool resetDemoData,
+        ILogger logger)
     {
         var companies = new[]
         {
@@ -242,6 +366,8 @@ public static class DbInitializer
             }
         };
 
+        var seededCompanies = new Dictionary<string, Company>();
+
         foreach (var company in companies)
         {
             var existingCompany = await dbContext.Companies
@@ -249,24 +375,48 @@ public static class DbInitializer
 
             if (existingCompany is null)
             {
+                existingCompany = await dbContext.Companies
+                    .FirstOrDefaultAsync(existing => existing.Name == company.Name);
+
+                if (existingCompany is not null
+                    && existingCompany.OwnerId != company.OwnerId)
+                {
+                    throw new InvalidOperationException(
+                        $"Demo company '{company.Name}' already belongs to another user.");
+                }
+            }
+
+            if (existingCompany is null)
+            {
                 company.CreatedAt = DateTime.UtcNow;
                 dbContext.Companies.Add(company);
+                seededCompanies[company.Name] = company;
+                logger.LogInformation(
+                    "Demo seed company created: {CompanyName}.",
+                    company.Name);
                 continue;
             }
 
-            existingCompany.Name = company.Name;
-            existingCompany.OrgNumber = company.OrgNumber;
-            existingCompany.WebsiteUrl = company.WebsiteUrl;
-            existingCompany.City = company.City;
-            existingCompany.Industry = company.Industry;
-            existingCompany.Phone = company.Phone;
+            seededCompanies[company.Name] = existingCompany;
+            logger.LogInformation(
+                "Demo seed company already exists for owner {OwnerId}: {CompanyName}.",
+                company.OwnerId,
+                existingCompany.Name);
+
+            if (resetDemoData)
+            {
+                existingCompany.Name = company.Name;
+                existingCompany.OrgNumber = company.OrgNumber;
+                existingCompany.WebsiteUrl = company.WebsiteUrl;
+                existingCompany.City = company.City;
+                existingCompany.Industry = company.Industry;
+                existingCompany.Phone = company.Phone;
+            }
         }
 
         await dbContext.SaveChangesAsync();
 
-        return await dbContext.Companies
-            .Where(company => companies.Select(seed => seed.Name).Contains(company.Name))
-            .ToDictionaryAsync(company => company.Name);
+        return seededCompanies;
     }
 
     private static async Task<Dictionary<string, ProjectRequest>> SeedProjectRequestsAsync(
@@ -274,7 +424,8 @@ public static class DbInitializer
         IReadOnlyDictionary<string, Company> companies,
         IReadOnlyDictionary<string, ServicePackage> packages,
         string customerId,
-        string demoCustomerId)
+        string demoCustomerId,
+        bool resetDemoData)
     {
         var projectRequests = new[]
         {
@@ -324,6 +475,8 @@ public static class DbInitializer
             }
         };
 
+        var seededRequests = new Dictionary<string, ProjectRequest>();
+
         foreach (var request in projectRequests)
         {
             var existingRequest = await dbContext.ProjectRequests
@@ -333,27 +486,33 @@ public static class DbInitializer
             if (existingRequest is null)
             {
                 dbContext.ProjectRequests.Add(request);
+                seededRequests[request.Title] = request;
                 continue;
             }
 
-            existingRequest.ServicePackageId = request.ServicePackageId;
-            existingRequest.CustomerId = request.CustomerId;
-            existingRequest.Description = request.Description;
-            existingRequest.BudgetRange = request.BudgetRange;
-            existingRequest.Status = request.Status;
+            seededRequests[request.Title] = existingRequest;
+
+            if (resetDemoData)
+            {
+                existingRequest.ServicePackageId = request.ServicePackageId;
+                existingRequest.CustomerId = request.CustomerId;
+                existingRequest.Description = request.Description;
+                existingRequest.BudgetRange = request.BudgetRange;
+                existingRequest.Status = request.Status;
+                existingRequest.CreatedAt = request.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
 
-        return await dbContext.ProjectRequests
-            .Where(request => projectRequests.Select(seed => seed.Title).Contains(request.Title))
-            .ToDictionaryAsync(request => request.Title);
+        return seededRequests;
     }
 
     private static async Task SeedProjectsAsync(
         ApplicationDbContext dbContext,
         IReadOnlyDictionary<string, Company> companies,
-        IReadOnlyDictionary<string, ProjectRequest> requests)
+        IReadOnlyDictionary<string, ProjectRequest> requests,
+        bool resetDemoData)
     {
         var projects = new[]
         {
@@ -434,11 +593,15 @@ public static class DbInitializer
                 continue;
             }
 
-            existingProject.ProjectRequestId = project.ProjectRequestId;
-            existingProject.Description = project.Description;
-            existingProject.Status = project.Status;
-            existingProject.StartDate = project.StartDate;
-            existingProject.Deadline = project.Deadline;
+            if (resetDemoData)
+            {
+                existingProject.ProjectRequestId = project.ProjectRequestId;
+                existingProject.Description = project.Description;
+                existingProject.Status = project.Status;
+                existingProject.StartDate = project.StartDate;
+                existingProject.Deadline = project.Deadline;
+                existingProject.CreatedAt = project.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
@@ -448,7 +611,8 @@ public static class DbInitializer
         ApplicationDbContext dbContext,
         IReadOnlyDictionary<string, Company> companies,
         string customerId,
-        string demoCustomerId)
+        string demoCustomerId,
+        bool resetDemoData)
     {
         var tickets = new[]
         {
@@ -495,6 +659,8 @@ public static class DbInitializer
             }
         };
 
+        var seededTickets = new Dictionary<string, SupportTicket>();
+
         foreach (var ticket in tickets)
         {
             var existingTicket = await dbContext.SupportTickets
@@ -504,21 +670,26 @@ public static class DbInitializer
             if (existingTicket is null)
             {
                 dbContext.SupportTickets.Add(ticket);
+                seededTickets[ticket.Title] = ticket;
                 continue;
             }
 
-            existingTicket.CustomerId = ticket.CustomerId;
-            existingTicket.Description = ticket.Description;
-            existingTicket.Status = ticket.Status;
-            existingTicket.Priority = ticket.Priority;
-            existingTicket.ClosedAt = ticket.ClosedAt;
+            seededTickets[ticket.Title] = existingTicket;
+
+            if (resetDemoData)
+            {
+                existingTicket.CustomerId = ticket.CustomerId;
+                existingTicket.Description = ticket.Description;
+                existingTicket.Status = ticket.Status;
+                existingTicket.Priority = ticket.Priority;
+                existingTicket.ClosedAt = ticket.ClosedAt;
+                existingTicket.CreatedAt = ticket.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
 
-        return await dbContext.SupportTickets
-            .Where(ticket => tickets.Select(seed => seed.Title).Contains(ticket.Title))
-            .ToDictionaryAsync(ticket => ticket.Title);
+        return seededTickets;
     }
 
     private static async Task SeedTicketRepliesAsync(
@@ -578,7 +749,8 @@ public static class DbInitializer
 
     private static async Task SeedMaintenanceLogsAsync(
         ApplicationDbContext dbContext,
-        IReadOnlyDictionary<string, Company> companies)
+        IReadOnlyDictionary<string, Company> companies,
+        bool resetDemoData)
     {
         var logs = new[]
         {
@@ -623,9 +795,13 @@ public static class DbInitializer
                 continue;
             }
 
-            existingLog.Description = log.Description;
-            existingLog.ActionTaken = log.ActionTaken;
-            existingLog.Result = log.Result;
+            if (resetDemoData)
+            {
+                existingLog.Description = log.Description;
+                existingLog.ActionTaken = log.ActionTaken;
+                existingLog.Result = log.Result;
+                existingLog.CreatedAt = log.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
@@ -633,7 +809,8 @@ public static class DbInitializer
 
     private static async Task SeedHostingStatusesAsync(
         ApplicationDbContext dbContext,
-        IReadOnlyDictionary<string, Company> companies)
+        IReadOnlyDictionary<string, Company> companies,
+        bool resetDemoData)
     {
         var statuses = new[]
         {
@@ -669,10 +846,13 @@ public static class DbInitializer
                 continue;
             }
 
-            existingStatus.IsOnline = status.IsOnline;
-            existingStatus.LastCheckedAt = status.LastCheckedAt;
-            existingStatus.StatusCode = status.StatusCode;
-            existingStatus.Notes = status.Notes;
+            if (resetDemoData)
+            {
+                existingStatus.IsOnline = status.IsOnline;
+                existingStatus.LastCheckedAt = status.LastCheckedAt;
+                existingStatus.StatusCode = status.StatusCode;
+                existingStatus.Notes = status.Notes;
+            }
         }
 
         await dbContext.SaveChangesAsync();
@@ -680,7 +860,8 @@ public static class DbInitializer
 
     private static async Task SeedSeoReportsAsync(
         ApplicationDbContext dbContext,
-        IReadOnlyDictionary<string, Company> companies)
+        IReadOnlyDictionary<string, Company> companies,
+        bool resetDemoData)
     {
         var reports = new[]
         {
@@ -716,9 +897,13 @@ public static class DbInitializer
                 continue;
             }
 
-            existingReport.SeoScore = report.SeoScore;
-            existingReport.TechnicalIssues = report.TechnicalIssues;
-            existingReport.Recommendations = report.Recommendations;
+            if (resetDemoData)
+            {
+                existingReport.SeoScore = report.SeoScore;
+                existingReport.TechnicalIssues = report.TechnicalIssues;
+                existingReport.Recommendations = report.Recommendations;
+                existingReport.CreatedAt = report.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
@@ -728,7 +913,8 @@ public static class DbInitializer
         ApplicationDbContext dbContext,
         IReadOnlyDictionary<string, Company> companies,
         string customerId,
-        string demoCustomerId)
+        string demoCustomerId,
+        bool resetDemoData)
     {
         var requests = new[]
         {
@@ -766,8 +952,12 @@ public static class DbInitializer
                 continue;
             }
 
-            existingRequest.CustomerId = request.CustomerId;
-            existingRequest.ResultJson = request.ResultJson;
+            if (resetDemoData)
+            {
+                existingRequest.CustomerId = request.CustomerId;
+                existingRequest.ResultJson = request.ResultJson;
+                existingRequest.CreatedAt = request.CreatedAt;
+            }
         }
 
         await dbContext.SaveChangesAsync();
