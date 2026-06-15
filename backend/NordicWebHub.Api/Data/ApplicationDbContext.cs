@@ -27,6 +27,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<AiSeoRequest> AiSeoRequests => Set<AiSeoRequest>();
 
+    public DbSet<ServiceOrder> ServiceOrders => Set<ServiceOrder>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -290,6 +292,51 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(aiSeoRequest => aiSeoRequest.Customer)
                 .WithMany(user => user.AiSeoRequests)
                 .HasForeignKey(aiSeoRequest => aiSeoRequest.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ServiceOrder>(entity =>
+        {
+            entity.ToTable(table =>
+                table.HasCheckConstraint(
+                    "CK_ServiceOrders_Amount_NonNegative",
+                    "[Amount] >= 0"));
+
+            entity.Property(serviceOrder => serviceOrder.Title)
+                .HasMaxLength(200);
+
+            entity.Property(serviceOrder => serviceOrder.Notes)
+                .HasMaxLength(2000);
+
+            entity.Property(serviceOrder => serviceOrder.Amount)
+                .HasPrecision(18, 2);
+
+            entity.Property(serviceOrder => serviceOrder.Status)
+                .HasConversion<string>()
+                .HasMaxLength(50);
+
+            entity.Property(serviceOrder => serviceOrder.PaymentReference)
+                .HasMaxLength(100);
+
+            entity.Property(serviceOrder => serviceOrder.CreatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.Property(serviceOrder => serviceOrder.UpdatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()");
+
+            entity.HasOne(serviceOrder => serviceOrder.Company)
+                .WithMany(company => company.ServiceOrders)
+                .HasForeignKey(serviceOrder => serviceOrder.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(serviceOrder => serviceOrder.Customer)
+                .WithMany(user => user.ServiceOrders)
+                .HasForeignKey(serviceOrder => serviceOrder.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(serviceOrder => serviceOrder.ServicePackage)
+                .WithMany(servicePackage => servicePackage.ServiceOrders)
+                .HasForeignKey(serviceOrder => serviceOrder.ServicePackageId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

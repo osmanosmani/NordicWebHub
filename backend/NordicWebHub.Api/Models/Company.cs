@@ -35,4 +35,6 @@ public class Company
     public ICollection<SeoReport> SeoReports { get; set; } = new List<SeoReport>();
 
     public ICollection<AiSeoRequest> AiSeoRequests { get; set; } = new List<AiSeoRequest>();
+
+    public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 }

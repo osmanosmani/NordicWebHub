@@ -75,6 +75,14 @@ public static class DbInitializer
             demoCustomer.Id,
             resetDemoData,
             logger);
+        await SeedServiceOrdersAsync(
+            dbContext,
+            companies,
+            packages,
+            customer.Id,
+            demoCustomer.Id,
+            resetDemoData,
+            logger);
         var requests = await SeedProjectRequestsAsync(
             dbContext,
             companies,
@@ -417,6 +425,110 @@ public static class DbInitializer
         await dbContext.SaveChangesAsync();
 
         return seededCompanies;
+    }
+
+    private static async Task SeedServiceOrdersAsync(
+        ApplicationDbContext dbContext,
+        IReadOnlyDictionary<string, Company> companies,
+        IReadOnlyDictionary<string, ServicePackage> packages,
+        string customerId,
+        string demoCustomerId,
+        bool resetDemoData,
+        ILogger logger)
+    {
+        var now = DateTime.UtcNow;
+        var orders = new[]
+        {
+            new ServiceOrder
+            {
+                CompanyId = companies["Nordic Build AB"].Id,
+                CustomerId = customerId,
+                ServicePackageId = packages["Business Website"].Id,
+                Title = "Business website service order",
+                Notes = "Demo order for a new company website with structured service and reference pages.",
+                Amount = GetPackageOrderAmount(packages["Business Website"]),
+                Status = ServiceOrderStatus.Pending,
+                PaymentReference = "DEMO-NB-WEB-001",
+                CreatedAt = now.AddDays(-6),
+                UpdatedAt = now.AddDays(-6)
+            },
+            new ServiceOrder
+            {
+                CompanyId = companies["Nordic Build AB"].Id,
+                CustomerId = customerId,
+                ServicePackageId = packages["Hosting & Maintenance"].Id,
+                Title = "Managed hosting service order",
+                Notes = "Demo order for managed hosting, updates, backups, and availability checks.",
+                Amount = GetPackageOrderAmount(packages["Hosting & Maintenance"]),
+                Status = ServiceOrderStatus.Paid,
+                PaymentReference = "DEMO-NB-HOST-001",
+                CreatedAt = now.AddDays(-20),
+                UpdatedAt = now.AddDays(-18),
+                PaidAt = now.AddDays(-18)
+            },
+            new ServiceOrder
+            {
+                CompanyId = companies["Skåne Clean Service AB"].Id,
+                CustomerId = demoCustomerId,
+                ServicePackageId = packages["SEO Growth"].Id,
+                Title = "SEO growth service order",
+                Notes = "Demo order for ongoing local SEO improvements and monthly reporting.",
+                Amount = GetPackageOrderAmount(packages["SEO Growth"]),
+                Status = ServiceOrderStatus.Approved,
+                PaymentReference = "DEMO-SC-SEO-001",
+                CreatedAt = now.AddDays(-10),
+                UpdatedAt = now.AddDays(-8)
+            }
+        };
+
+        foreach (var order in orders)
+        {
+            var existingOrder = await dbContext.ServiceOrders
+                .FirstOrDefaultAsync(existing =>
+                    existing.CompanyId == order.CompanyId
+                    && existing.Title == order.Title);
+
+            if (existingOrder is null)
+            {
+                dbContext.ServiceOrders.Add(order);
+                logger.LogInformation(
+                    "Demo seed service order created: {OrderTitle}.",
+                    order.Title);
+                continue;
+            }
+
+            logger.LogInformation(
+                "Demo seed service order already exists: {OrderTitle}.",
+                order.Title);
+
+            if (resetDemoData)
+            {
+                existingOrder.CustomerId = order.CustomerId;
+                existingOrder.ServicePackageId = order.ServicePackageId;
+                existingOrder.Notes = order.Notes;
+                existingOrder.Amount = order.Amount;
+                existingOrder.Status = order.Status;
+                existingOrder.PaymentReference = order.PaymentReference;
+                existingOrder.CreatedAt = order.CreatedAt;
+                existingOrder.UpdatedAt = order.UpdatedAt;
+                existingOrder.PaidAt = order.PaidAt;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static decimal GetPackageOrderAmount(ServicePackage servicePackage)
+    {
+        var amount = servicePackage.SetupFee + servicePackage.MonthlyPrice;
+
+        if (amount < 0)
+        {
+            throw new InvalidOperationException(
+                $"Demo package '{servicePackage.Name}' has an invalid negative order amount.");
+        }
+
+        return amount;
     }
 
     private static async Task<Dictionary<string, ProjectRequest>> SeedProjectRequestsAsync(

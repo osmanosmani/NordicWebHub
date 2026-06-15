@@ -297,7 +297,7 @@ public class CompaniesController(
         {
             return Conflict(new
             {
-                message = "Company cannot be deleted because it has related project, support, maintenance, hosting, SEO, or AI records."
+                message = "Company cannot be deleted because it has related order, project, support, maintenance, hosting, SEO, or AI records."
             });
         }
 
@@ -333,6 +333,7 @@ public class CompaniesController(
     {
         return await dbContext.ProjectRequests.AnyAsync(projectRequest => projectRequest.CompanyId == companyId)
             || await dbContext.Projects.AnyAsync(project => project.CompanyId == companyId)
+            || await dbContext.ServiceOrders.AnyAsync(order => order.CompanyId == companyId)
             || await dbContext.SupportTickets.AnyAsync(ticket => ticket.CompanyId == companyId)
             || await dbContext.MaintenanceLogs.AnyAsync(log => log.CompanyId == companyId)
             || await dbContext.HostingStatuses.AnyAsync(status => status.CompanyId == companyId)

@@ -21,4 +21,6 @@ public class ServicePackage
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<ProjectRequest> ProjectRequests { get; set; } = new List<ProjectRequest>();
+
+    public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 }

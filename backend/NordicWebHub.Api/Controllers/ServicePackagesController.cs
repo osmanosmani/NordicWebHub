@@ -133,8 +133,10 @@ public class ServicePackagesController(ApplicationDbContext dbContext) : Control
 
         var isUsedByProjectRequest = await dbContext.ProjectRequests
             .AnyAsync(projectRequest => projectRequest.ServicePackageId == id);
+        var isUsedByServiceOrder = await dbContext.ServiceOrders
+            .AnyAsync(serviceOrder => serviceOrder.ServicePackageId == id);
 
-        if (isUsedByProjectRequest)
+        if (isUsedByProjectRequest || isUsedByServiceOrder)
         {
             servicePackage.IsActive = false;
         }

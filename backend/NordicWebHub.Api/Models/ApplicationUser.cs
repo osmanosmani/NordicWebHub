@@ -19,4 +19,6 @@ public class ApplicationUser : IdentityUser
     public ICollection<TicketReply> TicketReplies { get; set; } = new List<TicketReply>();
 
     public ICollection<AiSeoRequest> AiSeoRequests { get; set; } = new List<AiSeoRequest>();
+
+    public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 }
