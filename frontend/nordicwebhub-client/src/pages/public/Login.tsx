@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { TextInput } from '../../components/ui/TextInput'
 import { useAuth } from '../../context/useAuth'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
@@ -60,13 +61,15 @@ export function Login() {
           />
 
           {error ? (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
+            <ErrorMessage message={error} />
           ) : null}
 
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? 'Signing in' : 'Sign in'}
+          <Button
+            isLoading={isSubmitting}
+            loadingLabel="Signing in"
+            type="submit"
+          >
+            Sign in
           </Button>
         </form>
 

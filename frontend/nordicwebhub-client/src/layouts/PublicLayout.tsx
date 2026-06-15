@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { ArrowRight, Menu, X } from 'lucide-react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Button, ButtonLink } from '../components/ui/Button'
+import { useAuth } from '../context/useAuth'
+import { getDefaultRouteForUser } from '../utils/authRoutes'
 import { cn } from '../utils/cn'
 
 const publicLinks = [
@@ -14,7 +16,9 @@ const publicLinks = [
 
 export function PublicLayout() {
   const location = useLocation()
+  const { user } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const portalRoute = user ? getDefaultRouteForUser(user) : null
 
   function isLinkActive(to: string) {
     const [pathname, hash = ''] = to.split('#')
@@ -67,20 +71,34 @@ export function PublicLayout() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <ButtonLink
-              size="sm"
-              to="/login"
-              variant={location.pathname === '/login' ? 'secondary' : 'ghost'}
-            >
-              Log in
-            </ButtonLink>
-            <ButtonLink
-              size="sm"
-              to="/register"
-              trailingIcon={<ArrowRight className="h-4 w-4" />}
-            >
-              Create account
-            </ButtonLink>
+            {portalRoute ? (
+              <ButtonLink
+                size="sm"
+                to={portalRoute}
+                trailingIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Open portal
+              </ButtonLink>
+            ) : (
+              <>
+                <ButtonLink
+                  size="sm"
+                  to="/login"
+                  variant={
+                    location.pathname === '/login' ? 'secondary' : 'ghost'
+                  }
+                >
+                  Log in
+                </ButtonLink>
+                <ButtonLink
+                  size="sm"
+                  to="/register"
+                  trailingIcon={<ArrowRight className="h-4 w-4" />}
+                >
+                  Create account
+                </ButtonLink>
+              </>
+            )}
           </div>
 
           <Button
@@ -117,21 +135,34 @@ export function PublicLayout() {
                 </Link>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-                <ButtonLink
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  size="sm"
-                  to="/login"
-                  variant="secondary"
-                >
-                  Log in
-                </ButtonLink>
-                <ButtonLink
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  size="sm"
-                  to="/register"
-                >
-                  Create account
-                </ButtonLink>
+                {portalRoute ? (
+                  <ButtonLink
+                    className="col-span-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    size="sm"
+                    to={portalRoute}
+                  >
+                    Open portal
+                  </ButtonLink>
+                ) : (
+                  <>
+                    <ButtonLink
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      size="sm"
+                      to="/login"
+                      variant="secondary"
+                    >
+                      Log in
+                    </ButtonLink>
+                    <ButtonLink
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      size="sm"
+                      to="/register"
+                    >
+                      Create account
+                    </ButtonLink>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -187,18 +218,29 @@ export function PublicLayout() {
             <p className="text-xs font-semibold uppercase text-slate-400">
               Account
             </p>
-            <Link
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
-              to="/login"
-            >
-              Portal login
-            </Link>
-            <Link
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
-              to="/register"
-            >
-              Create account
-            </Link>
+            {portalRoute ? (
+              <Link
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                to={portalRoute}
+              >
+                Open portal
+              </Link>
+            ) : (
+              <>
+                <Link
+                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                  to="/login"
+                >
+                  Portal login
+                </Link>
+                <Link
+                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                  to="/register"
+                >
+                  Create account
+                </Link>
+              </>
+            )}
           </nav>
         </div>
         <div className="border-t border-slate-100">

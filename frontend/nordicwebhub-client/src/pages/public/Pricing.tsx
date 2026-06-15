@@ -9,6 +9,7 @@ import { PageHeader } from '../../components/ui/PageHeader'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import { useAuth } from '../../context/useAuth'
 import type { ServicePackage } from '../../types/servicePackage'
+import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 const sekFormatter = new Intl.NumberFormat('sv-SE', {
@@ -18,7 +19,7 @@ const sekFormatter = new Intl.NumberFormat('sv-SE', {
 })
 
 export function Pricing() {
-  const { isAuthenticated } = useAuth()
+  const { user } = useAuth()
   const [packages, setPackages] = useState<ServicePackage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -128,7 +129,7 @@ export function Pricing() {
               <div className="mt-auto pt-6">
                 <ButtonLink
                   className="w-full"
-                  to={isAuthenticated ? '/customer/dashboard' : '/login'}
+                  to={user ? getDefaultRouteForUser(user) : '/login'}
                 >
                   Request this package
                 </ButtonLink>

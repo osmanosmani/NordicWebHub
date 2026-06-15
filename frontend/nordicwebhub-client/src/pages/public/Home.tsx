@@ -25,7 +25,9 @@ import { ButtonLink } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { useAuth } from '../../context/useAuth'
 import type { ServicePackage } from '../../types/servicePackage'
+import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 type Icon = ComponentType<{ className?: string }>
@@ -154,6 +156,7 @@ function SectionHeading({
 
 export function Home() {
   const { hash } = useLocation()
+  const { user } = useAuth()
   const [packages, setPackages] = useState<ServicePackage[]>([])
   const [isLoadingPackages, setIsLoadingPackages] = useState(true)
   const [packagesError, setPackagesError] = useState('')
@@ -695,7 +698,7 @@ export function Home() {
                     </dl>
                     <ButtonLink
                       className="mt-6 w-full"
-                      to="/register"
+                      to={user ? getDefaultRouteForUser(user) : '/register'}
                       variant={isRecommended ? 'primary' : 'secondary'}
                     >
                       Request this package

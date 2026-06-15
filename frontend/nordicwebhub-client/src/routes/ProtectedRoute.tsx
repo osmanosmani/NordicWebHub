@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { LoadingSpinner } from '../components/ui/LoadingSpinner'
 import { useAuth } from '../context/useAuth'
 import { Unauthorized } from '../pages/public/Unauthorized'
 import type { AuthRole } from '../types/auth'
@@ -14,8 +15,9 @@ export function ProtectedRoute({ allowedRole }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-700 shadow-sm">
-          Loading session
+        <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-700 shadow-sm">
+          <LoadingSpinner label="Loading session" />
+          <span>Loading session</span>
         </div>
       </div>
     )

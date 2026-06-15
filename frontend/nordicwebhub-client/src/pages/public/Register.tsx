@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { TextInput } from '../../components/ui/TextInput'
 import { useAuth } from '../../context/useAuth'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
@@ -84,13 +85,15 @@ export function Register() {
           />
 
           {error ? (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
+            <ErrorMessage message={error} />
           ) : null}
 
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? 'Creating account' : 'Create account'}
+          <Button
+            isLoading={isSubmitting}
+            loadingLabel="Creating account"
+            type="submit"
+          >
+            Create account
           </Button>
         </form>
 

@@ -31,12 +31,12 @@ type PortalShellProps = {
 const accentClasses = {
   blue: {
     brand: 'bg-blue-600 text-white',
-    active: 'bg-blue-50 text-blue-700',
+    active: 'border-blue-100 bg-blue-50 text-blue-700',
     icon: 'text-blue-600',
   },
   emerald: {
     brand: 'bg-emerald-600 text-white',
-    active: 'bg-emerald-50 text-emerald-700',
+    active: 'border-emerald-100 bg-emerald-50 text-emerald-700',
     icon: 'text-emerald-600',
   },
 }
@@ -63,6 +63,9 @@ export function PortalShell({
       return
     }
 
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setIsMobileNavigationOpen(false)
@@ -70,7 +73,10 @@ export function PortalShell({
     }
 
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [isMobileNavigationOpen])
 
   return (
@@ -84,7 +90,7 @@ export function PortalShell({
       {isMobileNavigationOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
-            aria-label="Close navigation"
+            aria-label="Close navigation backdrop"
             className="absolute inset-0 bg-slate-950/35 backdrop-blur-[1px]"
             onClick={() => setIsMobileNavigationOpen(false)}
             type="button"
@@ -269,8 +275,7 @@ function PortalNavigation({
                 className={({ isActive }) =>
                   cn(
                     'group flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950',
-                    isActive &&
-                      cn(accentClasses[accent].active, 'border-blue-100'),
+                    isActive && accentClasses[accent].active,
                   )
                 }
                 end={item.end}
