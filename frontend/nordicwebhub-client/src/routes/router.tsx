@@ -5,6 +5,7 @@ import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminCompanies } from '../pages/admin/AdminCompanies'
 import { AdminDashboard } from '../pages/admin/AdminDashboard'
 import { AdminMaintenanceLogs } from '../pages/admin/AdminMaintenanceLogs'
+import { AdminOrders } from '../pages/admin/AdminOrders'
 import { AdminPackages } from '../pages/admin/AdminPackages'
 import { AdminProjects } from '../pages/admin/AdminProjects'
 import { AdminRequests } from '../pages/admin/AdminRequests'
@@ -16,6 +17,7 @@ import { CustomerCompany } from '../pages/customer/CustomerCompany'
 import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { CustomerHostingStatus } from '../pages/customer/CustomerHostingStatus'
 import { CustomerMaintenanceLogs } from '../pages/customer/CustomerMaintenanceLogs'
+import { CustomerOrders } from '../pages/customer/CustomerOrders'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
 import { CustomerSeoReports } from '../pages/customer/CustomerSeoReports'
@@ -73,6 +75,10 @@ export const router = createBrowserRouter([
             element: <AdminPackages />,
           },
           {
+            path: 'orders',
+            element: <AdminOrders />,
+          },
+          {
             path: 'companies',
             element: <AdminCompanies />,
           },
@@ -126,6 +132,10 @@ export const router = createBrowserRouter([
           {
             path: 'requests',
             element: <CustomerRequests />,
+          },
+          {
+            path: 'orders',
+            element: <CustomerOrders />,
           },
           {
             path: 'projects',

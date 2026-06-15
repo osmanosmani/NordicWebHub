@@ -6,6 +6,7 @@ import {
   Globe2,
   LayoutDashboard,
   Package,
+  ReceiptText,
   SearchCheck,
   TicketCheck,
   Wrench,
@@ -32,6 +33,12 @@ const customerNavigation: PortalNavItem[] = [
     icon: Package,
     end: true,
     section: 'Company',
+  },
+  {
+    to: '/customer/orders',
+    label: 'Service Orders',
+    icon: ReceiptText,
+    section: 'My work',
   },
   {
     to: '/customer/requests',

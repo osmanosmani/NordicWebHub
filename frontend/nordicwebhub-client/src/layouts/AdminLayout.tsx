@@ -5,6 +5,7 @@ import {
   FolderKanban,
   LayoutDashboard,
   Package,
+  ReceiptText,
   SearchCheck,
   TicketCheck,
   Wrench,
@@ -25,7 +26,18 @@ const adminNavigation: PortalNavItem[] = [
     icon: Building2,
     section: 'Client work',
   },
-  { to: '/admin/packages', label: 'Packages', icon: Package, section: 'Client work' },
+  {
+    to: '/admin/packages',
+    label: 'Packages',
+    icon: Package,
+    section: 'Client work',
+  },
+  {
+    to: '/admin/orders',
+    label: 'Service Orders',
+    icon: ReceiptText,
+    section: 'Client work',
+  },
   {
     to: '/admin/requests',
     label: 'Project Requests',
