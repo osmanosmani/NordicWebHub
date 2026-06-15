@@ -25,20 +25,22 @@ export function PageHeader({
     >
       <div className="max-w-3xl">
         {eyebrow ? (
-          <p className="mb-2 text-xs font-semibold uppercase text-blue-700">
+          <p className="mb-2 text-sm font-semibold text-blue-700">
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
+        <h1 className="text-2xl font-semibold leading-tight text-slate-950 sm:text-3xl">
           {title}
         </h1>
         {description ? (
-          <p className="mt-3 text-base leading-7 text-slate-600">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             {description}
           </p>
         ) : null}
       </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
+      {action ? (
+        <div className="flex shrink-0 flex-wrap items-center gap-2">{action}</div>
+      ) : null}
     </header>
   )
 }

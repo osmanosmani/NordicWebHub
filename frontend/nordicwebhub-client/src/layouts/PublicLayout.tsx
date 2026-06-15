@@ -1,16 +1,29 @@
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { cn } from '../utils/cn'
 
 const publicLinks = [
   { to: '/', label: 'Home' },
+  { to: '/#services', label: 'Services' },
+  { to: '/#how-it-works', label: 'How it works' },
+  { to: '/#platform', label: 'Platform' },
   { to: '/pricing', label: 'Pricing' },
 ]
 
 export function PublicLayout() {
+  const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  function isLinkActive(to: string) {
+    const [pathname, hash = ''] = to.split('#')
+
+    return (
+      location.pathname === pathname &&
+      location.hash === (hash ? `#${hash}` : '')
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -30,19 +43,16 @@ export function PublicLayout() {
             className="hidden items-center gap-1 md:flex"
           >
             {publicLinks.map((link) => (
-              <NavLink
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950',
-                    isActive && 'bg-blue-50 text-blue-700',
-                  )
-                }
+              <Link
+                className={cn(
+                  'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950',
+                  isLinkActive(link.to) && 'bg-blue-50 text-blue-700',
+                )}
                 key={link.to}
                 to={link.to}
               >
                 {link.label}
-              </NavLink>
+              </Link>
             ))}
           </nav>
 
@@ -75,20 +85,17 @@ export function PublicLayout() {
           <div className="border-t border-slate-200 bg-white md:hidden">
             <div className="page-shell grid gap-1 py-3">
               {publicLinks.map((link) => (
-                <NavLink
-                  className={({ isActive }) =>
-                    cn(
-                      'rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                      isActive && 'bg-blue-50 text-blue-700',
-                    )
-                  }
-                  end={link.to === '/'}
+                <Link
+                  className={cn(
+                    'rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
+                    isLinkActive(link.to) && 'bg-blue-50 text-blue-700',
+                  )}
                   key={link.to}
                   onClick={() => setIsMobileMenuOpen(false)}
                   to={link.to}
                 >
                   {link.label}
-                </NavLink>
+                </Link>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
                 <ButtonLink

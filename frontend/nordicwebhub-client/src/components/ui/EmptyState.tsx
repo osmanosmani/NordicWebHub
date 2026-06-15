@@ -28,17 +28,17 @@ export function EmptyState({
       {...props}
     >
       {icon ? (
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500 [&>svg]:h-5 [&>svg]:w-5">
           {icon}
         </div>
       ) : null}
       {title ? (
-        <h3 className="text-sm font-semibold text-slate-950">{title}</h3>
+        <h3 className="text-base font-semibold text-slate-950">{title}</h3>
       ) : null}
       <p
         className={cn(
           'max-w-md text-sm leading-6 text-slate-500',
-          title && 'mt-1',
+          title && 'mt-1.5',
         )}
       >
         {description}

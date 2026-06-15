@@ -15,7 +15,13 @@ export function ErrorMessage({
   title,
 }: ErrorMessageProps) {
   return (
-    <Alert action={action} className={className} title={title} tone="error">
+    <Alert
+      action={action}
+      aria-live="polite"
+      className={className}
+      title={title}
+      tone="error"
+    >
       {message}
     </Alert>
   )

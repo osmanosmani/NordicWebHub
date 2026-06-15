@@ -19,13 +19,20 @@ export function LoadingSpinner({
 }: LoadingSpinnerProps) {
   return (
     <span
-      aria-label={label}
       className={cn(
-        'inline-block animate-spin rounded-full border-current border-r-transparent',
-        sizeClasses[size],
+        'inline-flex items-center justify-center',
         className,
       )}
       role="status"
-    />
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          'inline-block animate-spin rounded-full border-current border-r-transparent',
+          sizeClasses[size],
+        )}
+      />
+      <span className="sr-only">{label}</span>
+    </span>
   )
 }

@@ -28,18 +28,17 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <Card
-      accent={tone === 'slate' ? undefined : tone}
-      className={cn('p-5', className)}
+      className={cn('p-5 sm:p-6', className)}
       {...props}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-semibold leading-none text-slate-950">
+          <p className="text-sm font-medium leading-5 text-slate-500">{label}</p>
+          <p className="mt-2 text-2xl font-semibold leading-none text-slate-950 sm:text-3xl">
             {value}
           </p>
           {detail ? (
-            <div className="mt-2 text-xs font-medium text-slate-500">
+            <div className="mt-2 text-xs font-medium leading-5 text-slate-500">
               {detail}
             </div>
           ) : null}
@@ -47,7 +46,7 @@ export function StatCard({
         {icon ? (
           <div
             className={cn(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border',
+              'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border [&>svg]:h-5 [&>svg]:w-5',
               iconToneClasses[tone],
             )}
           >

@@ -20,7 +20,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm',
+        'overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]',
         accent === 'blue' && 'border-t-2 border-t-blue-600',
         accent === 'emerald' && 'border-t-2 border-t-emerald-600',
         accent === 'amber' && 'border-t-2 border-t-amber-500',
@@ -30,7 +30,7 @@ export function Card({
       {...props}
     >
       {title || description || action ? (
-        <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6">
+        <div className="flex flex-col gap-3 border-b border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6">
           <div className="min-w-0">
             {title ? (
               <h2 className="text-base font-semibold leading-6 text-slate-950">
@@ -38,7 +38,7 @@ export function Card({
               </h2>
             ) : null}
             {description ? (
-              <p className="mt-1 text-sm leading-5 text-slate-500">
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
                 {description}
               </p>
             ) : null}

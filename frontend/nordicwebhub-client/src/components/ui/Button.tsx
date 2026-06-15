@@ -17,13 +17,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'border border-blue-600 bg-blue-600 text-white shadow-sm hover:border-blue-700 hover:bg-blue-700 focus-visible:ring-blue-200',
+    'border border-blue-600 bg-blue-600 text-white shadow-sm hover:border-blue-700 hover:bg-blue-700 active:border-blue-800 active:bg-blue-800 focus-visible:ring-blue-200',
   secondary:
-    'border border-slate-300 bg-white text-slate-800 shadow-sm hover:border-slate-400 hover:bg-slate-50 focus-visible:ring-slate-200',
+    'border border-slate-300 bg-white text-slate-800 shadow-sm hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100 focus-visible:ring-slate-200',
   ghost:
-    'border border-transparent bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-200',
+    'border border-transparent bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-950 active:bg-slate-200 focus-visible:ring-slate-200',
   danger:
-    'border border-red-600 bg-red-600 text-white shadow-sm hover:border-red-700 hover:bg-red-700 focus-visible:ring-red-200',
+    'border border-red-600 bg-red-600 text-white shadow-sm hover:border-red-700 hover:bg-red-700 active:border-red-800 active:bg-red-800 focus-visible:ring-red-200',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -38,7 +38,7 @@ function getButtonClassName(
   className?: string,
 ) {
   return cn(
-    'inline-flex shrink-0 items-center justify-center rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-60',
+    'inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap rounded-lg font-semibold transition-[background-color,border-color,color,box-shadow] focus-visible:outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55',
     variantClasses[variant],
     sizeClasses[size],
     className,
@@ -107,10 +107,7 @@ export function ButtonLink({
   ...props
 }: ButtonLinkProps) {
   return (
-    <Link
-      className={getButtonClassName(variant, size, className)}
-      {...props}
-    >
+    <Link className={getButtonClassName(variant, size, className)} {...props}>
       {leadingIcon ? (
         <span aria-hidden="true" className="shrink-0">
           {leadingIcon}

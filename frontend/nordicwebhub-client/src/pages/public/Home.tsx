@@ -1,69 +1,639 @@
+import { useEffect, useState, type ComponentType } from 'react'
+import {
+  ArrowRight,
+  BarChart3,
+  Check,
+  CheckCircle2,
+  FolderKanban,
+  Globe2,
+  Headphones,
+  LayoutDashboard,
+  Search,
+  Server,
+  ShieldCheck,
+  TicketCheck,
+  Users,
+  Wrench,
+} from 'lucide-react'
+import { useLocation } from 'react-router-dom'
+import { getPackages } from '../../api/packagesApi'
 import { ButtonLink } from '../../components/ui/Button'
-import { PageHeader } from '../../components/ui/PageHeader'
+import { Card } from '../../components/ui/Card'
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
+import { StatusBadge } from '../../components/ui/StatusBadge'
+import type { ServicePackage } from '../../types/servicePackage'
+import { getErrorMessage } from '../../utils/getErrorMessage'
 
-const portalHighlights = [
+type Icon = ComponentType<{ className?: string }>
+
+const services: Array<{
+  title: string
+  description: string
+  icon: Icon
+}> = [
   {
-    title: 'Projects',
-    text: 'Track website, SEO, hosting, and support work in one place.',
+    title: 'Web Development',
+    description:
+      'Clear, responsive websites built around your business goals and customer journey.',
+    icon: Globe2,
   },
   {
-    title: 'Requests',
-    text: 'Send new service requests with clear status updates.',
+    title: 'SEO',
+    description:
+      'Practical local SEO work, technical reports, and recommendations you can follow.',
+    icon: Search,
   },
   {
-    title: 'Support',
-    text: 'Manage customer tickets and replies through a secure account.',
+    title: 'Hosting & Maintenance',
+    description:
+      'Website monitoring, maintenance history, fixes, and hosting status in one place.',
+    icon: Server,
+  },
+  {
+    title: 'Support Tickets',
+    description:
+      'A structured support channel with priorities, replies, and visible progress.',
+    icon: Headphones,
   },
 ]
 
-export function Home() {
+const steps = [
+  {
+    number: '01',
+    title: 'Choose a package',
+    description: 'Compare clear service packages and select the right starting point.',
+  },
+  {
+    number: '02',
+    title: 'Submit a request',
+    description: 'Share your goals, requirements, and budget through the client portal.',
+  },
+  {
+    number: '03',
+    title: 'Track progress',
+    description: 'Follow project status, deadlines, updates, and completed work.',
+  },
+  {
+    number: '04',
+    title: 'Get support',
+    description: 'Open support tickets and keep every reply connected to your company.',
+  },
+]
+
+const platformFeatures: Array<{
+  title: string
+  description: string
+  icon: Icon
+}> = [
+  {
+    title: 'Admin dashboard',
+    description: 'A complete overview of customers, requests, projects, and support.',
+    icon: LayoutDashboard,
+  },
+  {
+    title: 'Customer dashboard',
+    description: 'A focused workspace showing only your company and its activity.',
+    icon: Users,
+  },
+  {
+    title: 'Project tracking',
+    description: 'See project status, progress, start dates, and deadlines.',
+    icon: FolderKanban,
+  },
+  {
+    title: 'Support tickets',
+    description: 'Keep technical questions, priorities, and replies organized.',
+    icon: TicketCheck,
+  },
+  {
+    title: 'SEO reports',
+    description: 'Review SEO scores, issues, keywords, and recommended next steps.',
+    icon: BarChart3,
+  },
+  {
+    title: 'Website health',
+    description: 'See hosting checks, response status, and maintenance activity.',
+    icon: ShieldCheck,
+  },
+]
+
+const sekFormatter = new Intl.NumberFormat('sv-SE', {
+  currency: 'SEK',
+  maximumFractionDigits: 0,
+  style: 'currency',
+})
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string
+  title: string
+  description: string
+}) {
   return (
-    <section className="page-shell py-12 sm:py-16">
-      <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div>
-          <PageHeader
-            description="A focused client portal for digital agency work, built around secure accounts, project visibility, support, hosting, and SEO reporting."
-            eyebrow="Client portal"
-            title="NordicWebHub"
+    <div className="max-w-2xl">
+      <p className="text-sm font-semibold text-blue-700">{eyebrow}</p>
+      <h2 className="mt-2 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
+        {title}
+      </h2>
+      <p className="mt-4 text-base leading-7 text-slate-600">{description}</p>
+    </div>
+  )
+}
+
+export function Home() {
+  const { hash } = useLocation()
+  const [packages, setPackages] = useState<ServicePackage[]>([])
+  const [isLoadingPackages, setIsLoadingPackages] = useState(true)
+  const [packagesError, setPackagesError] = useState('')
+
+  useEffect(() => {
+    if (!hash) {
+      return
+    }
+
+    const section = document.getElementById(hash.slice(1))
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [hash])
+
+  useEffect(() => {
+    let isMounted = true
+
+    getPackages()
+      .then((servicePackages) => {
+        if (isMounted) {
+          setPackages(
+            servicePackages.filter((servicePackage) => servicePackage.isActive),
+          )
+          setPackagesError('')
+        }
+      })
+      .catch((error: unknown) => {
+        if (isMounted) {
+          setPackagesError(
+            getErrorMessage(
+              error,
+              'Packages are temporarily unavailable. You can still explore the platform.',
+            ),
+          )
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoadingPackages(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  return (
+    <>
+      <section className="overflow-hidden border-b border-slate-200 bg-white">
+        <div className="page-shell pb-2 pt-8 sm:pb-6 sm:pt-12">
+          <div className="mx-auto max-w-3xl text-center">
+            <StatusBadge
+              label="Digital agency services + client portal"
+              showDot
+              tone="blue"
+            />
+            <h1 className="mt-4 text-3xl font-semibold leading-tight text-slate-950 sm:mt-5 sm:text-5xl">
+              A clearer way to manage digital services
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-5 sm:text-lg sm:leading-8">
+              NordicWebHub brings websites, SEO, hosting, projects, and support
+              into one secure client portal built for Swedish small businesses.
+            </p>
+            <div className="mt-6 flex flex-col justify-center gap-3 sm:mt-8 sm:flex-row">
+              <ButtonLink
+                className="w-full sm:w-auto"
+                size="lg"
+                to="/pricing"
+                trailingIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                View Packages
+              </ButtonLink>
+              <ButtonLink
+                className="w-full sm:w-auto"
+                size="lg"
+                to="/register"
+                variant="secondary"
+              >
+                Create Account
+              </ButtonLink>
+            </div>
+            <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600 sm:mt-7">
+              {['Swedish SMB focus', 'Transparent progress', 'Secure client access'].map(
+                (item) => (
+                  <span className="inline-flex items-center gap-2" key={item}>
+                    <CheckCircle2
+                      aria-hidden="true"
+                      className="h-4 w-4 text-emerald-600"
+                    />
+                    {item}
+                  </span>
+                ),
+              )}
+            </div>
+          </div>
+
+          <div className="mx-auto mt-8 max-h-[180px] max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm sm:mt-8">
+            <div className="flex h-11 items-center justify-between border-b border-slate-200 bg-white px-4">
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              </div>
+              <span className="text-xs font-medium text-slate-500">
+                NordicWebHub customer portal
+              </span>
+              <span className="h-2 w-10 rounded-full bg-slate-200" />
+            </div>
+
+            <div className="grid sm:grid-cols-[160px_1fr]">
+              <aside className="hidden border-r border-slate-200 bg-white p-4 sm:block">
+                <div className="mb-5 flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">
+                    N
+                  </span>
+                  <span className="text-xs font-semibold text-slate-900">
+                    Portal
+                  </span>
+                </div>
+                <div className="grid gap-2">
+                  {['Overview', 'Projects', 'Tickets', 'SEO reports'].map(
+                    (item, index) => (
+                      <div
+                        className={
+                          index === 0
+                            ? 'rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700'
+                            : 'px-3 py-2 text-xs font-medium text-slate-500'
+                        }
+                        key={item}
+                      >
+                        {item}
+                      </div>
+                    ),
+                  )}
+                </div>
+              </aside>
+
+              <div className="p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500">Dashboard</p>
+                    <p className="mt-1 text-base font-semibold text-slate-950">
+                      Good morning, Anna
+                    </p>
+                  </div>
+                  <StatusBadge label="All systems online" showDot tone="emerald" />
+                </div>
+
+                <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+                  {[
+                    { label: 'Active projects', value: '2' },
+                    { label: 'Open tickets', value: '1' },
+                    { label: 'SEO score', value: '82' },
+                  ].map((stat) => (
+                    <div
+                      className="min-w-0 rounded-lg border border-slate-200 bg-white p-3"
+                      key={stat.label}
+                    >
+                      <p className="text-xl font-semibold text-slate-950">
+                        {stat.value}
+                      </p>
+                      <p className="mt-1 truncate text-xs text-slate-500">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-3 grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
+                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-slate-950">
+                        Business Website
+                      </p>
+                      <StatusBadge label="Development" tone="blue" />
+                    </div>
+                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-full w-3/5 rounded-full bg-blue-600" />
+                    </div>
+                    <div className="mt-3 flex justify-between text-xs text-slate-500">
+                      <span>60% complete</span>
+                      <span>Due 28 June</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-slate-950">
+                        Support
+                      </p>
+                      <Wrench
+                        aria-hidden="true"
+                        className="h-4 w-4 text-slate-400"
+                      />
+                    </div>
+                    <p className="mt-3 text-xs leading-5 text-slate-600">
+                      Mobile menu adjustment
+                    </p>
+                    <StatusBadge
+                      className="mt-3"
+                      label="In progress"
+                      tone="amber"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-slate-200 bg-slate-50">
+        <div className="page-shell grid gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-20">
+          <div>
+            <p className="text-sm font-semibold text-red-700">The common problem</p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl">
+              Agency work becomes difficult when updates are scattered
+            </h2>
+            <p className="mt-4 leading-7 text-slate-600">
+              Emails, files, support messages, and project updates often live in
+              different places. Customers lose visibility and agencies repeat
+              the same status information.
+            </p>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-emerald-700">
+              The NordicWebHub approach
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl">
+              One structured portal from request to ongoing support
+            </h2>
+            <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-700">
+              {[
+                'Clear service packages and project requests',
+                'Visible status, deadlines, and support communication',
+                'Company-specific maintenance, hosting, and SEO records',
+              ].map((item) => (
+                <li className="flex items-start gap-3" key={item}>
+                  <Check
+                    aria-hidden="true"
+                    className="mt-1 h-4 w-4 shrink-0 text-emerald-600"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="scroll-mt-24 bg-white" id="services">
+        <div className="page-shell py-16 lg:py-20">
+          <SectionHeading
+            description="Start with the service your business needs today, then keep future work and support connected to the same portal."
+            eyebrow="Services"
+            title="Digital services with practical delivery"
           />
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink className="w-full sm:w-auto" to="/login">
-              Log in
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => {
+              const IconComponent = service.icon
+
+              return (
+                <article
+                  className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+                  key={service.title}
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                    <IconComponent className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-5 text-base font-semibold text-slate-950">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {service.description}
+                  </p>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="scroll-mt-24 border-y border-slate-200 bg-slate-50"
+        id="how-it-works"
+      >
+        <div className="page-shell py-16 lg:py-20">
+          <SectionHeading
+            description="A simple workflow keeps expectations, progress, and communication visible from the beginning."
+            eyebrow="How it works"
+            title="Four steps from service choice to support"
+          />
+          <ol className="mt-10 grid border-y border-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step) => (
+              <li
+                className="border-b border-slate-200 py-6 sm:px-6 sm:first:pl-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:last:pr-0"
+                key={step.number}
+              >
+                <span className="text-sm font-semibold text-blue-700">
+                  {step.number}
+                </span>
+                <h3 className="mt-3 text-base font-semibold text-slate-950">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {step.description}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="scroll-mt-24 bg-white" id="platform">
+        <div className="page-shell py-16 lg:py-20">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <SectionHeading
+              description="The portal gives customers the information they need while the agency keeps delivery and communication organized."
+              eyebrow="Platform"
+              title="Visibility for customers, control for the agency"
+            />
+            <ButtonLink
+              className="w-full sm:w-auto"
+              to="/register"
+              variant="secondary"
+            >
+              Explore the client portal
             </ButtonLink>
+          </div>
+          <div className="mt-10 grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+            {platformFeatures.map((feature) => {
+              const IconComponent = feature.icon
+
+              return (
+                <div className="flex gap-4" key={feature.title}>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700">
+                    <IconComponent className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-950">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-slate-50">
+        <div className="page-shell py-16 lg:py-20">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <SectionHeading
+              description="Transparent starting points for websites, SEO, hosting, and digital support."
+              eyebrow="Packages"
+              title="Choose a service that fits your next step"
+            />
             <ButtonLink
               className="w-full sm:w-auto"
               to="/pricing"
               variant="secondary"
             >
-              View pricing
+              View all packages
             </ButtonLink>
           </div>
-        </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-5 flex items-center justify-between border-b border-slate-200 pb-4">
-            <div>
-              <p className="text-sm font-semibold text-slate-950">Portal overview</p>
-              <p className="text-sm text-slate-500">Demo foundation</p>
+          {isLoadingPackages ? (
+            <div className="mt-10 flex items-center justify-center gap-3 rounded-lg border border-slate-200 bg-white p-8 text-sm font-medium text-slate-600">
+              <LoadingSpinner label="Loading service packages" />
+              <span>Loading service packages</span>
             </div>
-            <span className="rounded-lg bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800">
-              Active
-            </span>
-          </div>
+          ) : null}
 
-          <div className="grid gap-3">
-            {portalHighlights.map((item) => (
-              <div
-                className="rounded-lg border border-slate-200 bg-slate-50 p-4"
-                key={item.title}
+          {!isLoadingPackages && packagesError ? (
+            <div className="mt-10 rounded-lg border border-amber-200 bg-amber-50 p-5">
+              <p className="text-sm font-semibold text-amber-900">
+                Package preview unavailable
+              </p>
+              <p className="mt-1 text-sm leading-6 text-amber-800">
+                {packagesError}
+              </p>
+            </div>
+          ) : null}
+
+          {!isLoadingPackages && !packagesError && packages.length === 0 ? (
+            <div className="mt-10 rounded-lg border border-slate-200 bg-white p-8 text-center">
+              <p className="text-sm font-semibold text-slate-950">
+                New service packages are being prepared
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                Please check the pricing page again soon.
+              </p>
+            </div>
+          ) : null}
+
+          {!isLoadingPackages && !packagesError && packages.length > 0 ? (
+            <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {packages.slice(0, 3).map((servicePackage, index) => (
+                <Card
+                  accent={index === 1 ? 'blue' : undefined}
+                  className="flex min-h-full flex-col"
+                  key={servicePackage.id}
+                >
+                  <div className="flex h-full flex-col p-5 sm:p-6">
+                    <StatusBadge
+                      className="self-start"
+                      label={servicePackage.category}
+                      tone={index === 1 ? 'blue' : 'slate'}
+                    />
+                    <h3 className="mt-4 text-xl font-semibold text-slate-950">
+                      {servicePackage.name}
+                    </h3>
+                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">
+                      {servicePackage.description}
+                    </p>
+                    <div className="mt-6 border-t border-slate-100 pt-5">
+                      <p className="text-2xl font-semibold text-slate-950">
+                        {sekFormatter.format(servicePackage.monthlyPrice)}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">per month</p>
+                    </div>
+                    <dl className="mt-5 grid gap-2 text-sm">
+                      <div className="flex justify-between gap-4">
+                        <dt className="text-slate-500">Setup</dt>
+                        <dd className="font-medium text-slate-900">
+                          {sekFormatter.format(servicePackage.setupFee)}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <dt className="text-slate-500">Delivery</dt>
+                        <dd className="font-medium text-slate-900">
+                          {servicePackage.deliveryTime}
+                        </dd>
+                      </div>
+                    </dl>
+                    <ButtonLink
+                      className="mt-6 w-full"
+                      to="/register"
+                      variant={index === 1 ? 'primary' : 'secondary'}
+                    >
+                      Request this package
+                    </ButtonLink>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="bg-slate-950 text-white">
+        <div className="page-shell py-14 sm:py-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold text-blue-300">
+                Ready for a clearer workflow?
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">
+                Bring your next digital project into one organized portal
+              </h2>
+              <p className="mt-4 leading-7 text-slate-300">
+                Create an account, choose a service package, and keep requests,
+                projects, support, and reports connected.
+              </p>
+            </div>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <ButtonLink
+                className="w-full border-white bg-white text-slate-950 hover:border-slate-200 hover:bg-slate-100 sm:w-auto"
+                size="lg"
+                to="/register"
               >
-                <h2 className="text-sm font-semibold text-slate-950">{item.title}</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-600">{item.text}</p>
-              </div>
-            ))}
+                Create Account
+              </ButtonLink>
+              <ButtonLink
+                className="w-full border-slate-600 bg-slate-900 text-white hover:border-slate-500 hover:bg-slate-800 sm:w-auto"
+                size="lg"
+                to="/pricing"
+                variant="secondary"
+              >
+                View Packages
+              </ButtonLink>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

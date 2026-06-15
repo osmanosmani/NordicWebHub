@@ -1,4 +1,5 @@
-import type { HTMLAttributes, ReactNode } from 'react'
+import type { ComponentType, HTMLAttributes, ReactNode } from 'react'
+import { CircleAlert, CircleCheck, Info, TriangleAlert } from 'lucide-react'
 import { cn } from '../../utils/cn'
 
 export type AlertTone = 'info' | 'success' | 'warning' | 'error'
@@ -16,11 +17,18 @@ const toneClasses: Record<AlertTone, string> = {
   warning: 'border-amber-200 bg-amber-50 text-amber-900',
 }
 
-const dotClasses: Record<AlertTone, string> = {
-  error: 'bg-red-600',
-  info: 'bg-blue-600',
-  success: 'bg-emerald-600',
-  warning: 'bg-amber-500',
+const iconClasses: Record<AlertTone, string> = {
+  error: 'text-red-600',
+  info: 'text-blue-600',
+  success: 'text-emerald-600',
+  warning: 'text-amber-600',
+}
+
+const toneIcons: Record<AlertTone, ComponentType<{ className?: string }>> = {
+  error: CircleAlert,
+  info: Info,
+  success: CircleCheck,
+  warning: TriangleAlert,
 }
 
 export function Alert({
@@ -31,10 +39,12 @@ export function Alert({
   tone = 'info',
   ...props
 }: AlertProps) {
+  const ToneIcon = toneIcons[tone]
+
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 rounded-lg border p-4 text-sm sm:flex-row sm:items-start sm:justify-between',
+        'flex flex-col gap-3 rounded-lg border p-4 text-sm shadow-[0_1px_2px_rgba(15,23,42,0.03)] sm:flex-row sm:items-start sm:justify-between',
         toneClasses[tone],
         className,
       )}
@@ -42,13 +52,13 @@ export function Alert({
       {...props}
     >
       <div className="flex min-w-0 gap-3">
-        <span
+        <ToneIcon
           aria-hidden="true"
-          className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', dotClasses[tone])}
+          className={cn('mt-0.5 h-5 w-5 shrink-0', iconClasses[tone])}
         />
         <div className="min-w-0">
           {title ? <p className="font-semibold">{title}</p> : null}
-          <div className={cn('leading-6', title && 'mt-0.5')}>{children}</div>
+          <div className={cn('leading-6', title && 'mt-1')}>{children}</div>
         </div>
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
