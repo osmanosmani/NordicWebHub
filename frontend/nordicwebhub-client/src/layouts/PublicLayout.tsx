@@ -29,12 +29,21 @@ export function PublicLayout() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)] backdrop-blur">
         <div className="page-shell flex h-16 items-center justify-between gap-4">
-          <Link className="flex shrink-0 items-center gap-3" to="/">
+          <Link
+            aria-label="NordicWebHub home"
+            className="flex shrink-0 items-center gap-3"
+            to="/"
+          >
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
               N
             </span>
-            <span className="text-base font-semibold text-slate-950">
-              NordicWebHub
+            <span className="grid">
+              <span className="text-base font-semibold leading-5 text-slate-950">
+                NordicWebHub
+              </span>
+              <span className="hidden text-[11px] font-medium leading-4 text-slate-500 sm:block">
+                Digital services portal
+              </span>
             </span>
           </Link>
 
@@ -70,7 +79,7 @@ export function PublicLayout() {
               to="/register"
               trailingIcon={<ArrowRight className="h-4 w-4" />}
             >
-              Register
+              Create account
             </ButtonLink>
           </div>
 
@@ -121,7 +130,7 @@ export function PublicLayout() {
                   size="sm"
                   to="/register"
                 >
-                  Register
+                  Create account
                 </ButtonLink>
               </div>
             </div>
@@ -134,9 +143,13 @@ export function PublicLayout() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="page-shell grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-start">
-          <div className="max-w-md">
-            <Link className="inline-flex items-center gap-3" to="/">
+        <div className="page-shell grid gap-10 py-12 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.4fr_0.6fr_0.6fr]">
+          <div className="max-w-sm">
+            <Link
+              aria-label="NordicWebHub home"
+              className="inline-flex items-center gap-3"
+              to="/"
+            >
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
                 N
               </span>
@@ -144,36 +157,54 @@ export function PublicLayout() {
                 NordicWebHub
               </span>
             </Link>
-            <p className="mt-1 max-w-md text-sm leading-6 text-slate-500">
-              A secure client portal for projects, support, hosting, and digital
-              agency services.
+            <p className="mt-4 text-sm leading-6 text-slate-500">
+              Digital agency services and a secure client portal for Swedish
+              small businesses.
             </p>
           </div>
-          <nav
-            aria-label="Footer navigation"
-            className="flex max-w-xl flex-wrap gap-x-5 gap-y-3 text-sm"
-          >
-            {publicLinks.map((link) => (
+
+          <nav aria-label="Services and platform" className="grid content-start gap-3">
+            <p className="text-xs font-semibold uppercase text-slate-400">
+              Explore
+            </p>
+            {[
+              { to: '/#services', label: 'Services' },
+              { to: '/#how-it-works', label: 'How it works' },
+              { to: '/#platform', label: 'Platform' },
+              { to: '/pricing', label: 'Pricing' },
+            ].map((link) => (
               <Link
-                className="font-medium text-slate-600 transition-colors hover:text-blue-700"
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
                 key={link.to}
                 to={link.to}
               >
                 {link.label}
               </Link>
             ))}
+          </nav>
+
+          <nav aria-label="Account navigation" className="grid content-start gap-3">
+            <p className="text-xs font-semibold uppercase text-slate-400">
+              Account
+            </p>
             <Link
-              className="font-medium text-slate-600 transition-colors hover:text-blue-700"
+              className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
               to="/login"
             >
               Portal login
             </Link>
+            <Link
+              className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+              to="/register"
+            >
+              Create account
+            </Link>
           </nav>
         </div>
         <div className="border-t border-slate-100">
-          <div className="page-shell flex flex-col gap-1 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="page-shell flex flex-col gap-1 py-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} NordicWebHub.</span>
-            <span>Demo client portal for Swedish digital services.</span>
+            <span>Portfolio demo with fictional Swedish business data.</span>
           </div>
         </div>
       </footer>

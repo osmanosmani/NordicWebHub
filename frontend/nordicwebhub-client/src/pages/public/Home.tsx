@@ -2,15 +2,19 @@ import { useEffect, useState, type ComponentType } from 'react'
 import {
   ArrowRight,
   BarChart3,
+  Building2,
   Check,
   CheckCircle2,
+  Clock3,
   FolderKanban,
   Globe2,
   Headphones,
   LayoutDashboard,
+  MessageSquareText,
   Search,
   Server,
   ShieldCheck,
+  Sparkles,
   TicketCheck,
   Users,
   Wrench,
@@ -30,30 +34,35 @@ const services: Array<{
   title: string
   description: string
   icon: Icon
+  highlights: string[]
 }> = [
   {
     title: 'Web Development',
     description:
       'Clear, responsive websites built around your business goals and customer journey.',
     icon: Globe2,
+    highlights: ['Business websites', 'E-commerce setup'],
   },
   {
     title: 'SEO',
     description:
       'Practical local SEO work, technical reports, and recommendations you can follow.',
     icon: Search,
+    highlights: ['Local visibility', 'Actionable reports'],
   },
   {
     title: 'Hosting & Maintenance',
     description:
       'Website monitoring, maintenance history, fixes, and hosting status in one place.',
     icon: Server,
+    highlights: ['Health monitoring', 'Documented maintenance'],
   },
   {
     title: 'Support Tickets',
     description:
       'A structured support channel with priorities, replies, and visible progress.',
     icon: Headphones,
+    highlights: ['Priority handling', 'Complete message history'],
   },
 ]
 
@@ -191,24 +200,31 @@ export function Home() {
     }
   }, [])
 
+  const previewPackages = packages.slice(0, 3)
+  const recommendedPackageId =
+    previewPackages.find((servicePackage) =>
+      /business|growth/i.test(servicePackage.name),
+    )?.id ?? previewPackages[1]?.id
+
   return (
     <>
       <section className="overflow-hidden border-b border-slate-200 bg-white">
-        <div className="page-shell pb-2 pt-8 sm:pb-6 sm:pt-12">
-          <div className="mx-auto max-w-3xl text-center">
+        <div className="page-shell pb-10 pt-10 sm:pb-14 sm:pt-14">
+          <div className="mx-auto max-w-4xl text-center">
             <StatusBadge
-              label="Digital agency services + client portal"
+              label="Digital services, delivered with clarity"
               showDot
               tone="blue"
             />
-            <h1 className="mt-4 text-3xl font-semibold leading-tight text-slate-950 sm:mt-5 sm:text-5xl">
-              A clearer way to manage digital services
+            <h1 className="mt-5 text-4xl font-semibold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">
+              Your digital agency work, finally in one place
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-5 sm:text-lg sm:leading-8">
-              NordicWebHub brings websites, SEO, hosting, projects, and support
-              into one secure client portal built for Swedish small businesses.
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+              Choose the services your business needs, submit requests, follow
+              delivery, and get support through one secure portal for Swedish
+              small businesses.
             </p>
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:mt-8 sm:flex-row">
+            <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:justify-center">
               <ButtonLink
                 className="w-full sm:w-auto"
                 size="lg"
@@ -227,21 +243,23 @@ export function Home() {
               </ButtonLink>
             </div>
             <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600 sm:mt-7">
-              {['Swedish SMB focus', 'Transparent progress', 'Secure client access'].map(
-                (item) => (
-                  <span className="inline-flex items-center gap-2" key={item}>
-                    <CheckCircle2
-                      aria-hidden="true"
-                      className="h-4 w-4 text-emerald-600"
-                    />
-                    {item}
-                  </span>
-                ),
-              )}
+              {[
+                'Built for Swedish SMBs',
+                'Transparent delivery',
+                'Secure client access',
+              ].map((item) => (
+                <span className="inline-flex items-center gap-2" key={item}>
+                  <CheckCircle2
+                    aria-hidden="true"
+                    className="h-4 w-4 text-emerald-600"
+                  />
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
-          <div className="mx-auto mt-8 max-h-[180px] max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm sm:mt-8">
+          <div className="mx-auto mt-10 max-h-[130px] max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-[0_18px_45px_-28px_rgba(15,23,42,0.35)] sm:max-h-none">
             <div className="flex h-11 items-center justify-between border-b border-slate-200 bg-white px-4">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
@@ -254,7 +272,7 @@ export function Home() {
               <span className="h-2 w-10 rounded-full bg-slate-200" />
             </div>
 
-            <div className="grid sm:grid-cols-[160px_1fr]">
+            <div className="grid min-h-[290px] sm:grid-cols-[172px_1fr]">
               <aside className="hidden border-r border-slate-200 bg-white p-4 sm:block">
                 <div className="mb-5 flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">
@@ -282,18 +300,24 @@ export function Home() {
                 </div>
               </aside>
 
-              <div className="p-4 sm:p-5">
+              <div className="p-4 sm:p-5 lg:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-medium text-slate-500">Dashboard</p>
-                    <p className="mt-1 text-base font-semibold text-slate-950">
-                      Good morning, Anna
+                    <p className="text-xs font-medium text-slate-500">
+                      Customer workspace
+                    </p>
+                    <p className="mt-1 text-base font-semibold text-slate-950 sm:text-lg">
+                      Nordic Build AB
                     </p>
                   </div>
-                  <StatusBadge label="All systems online" showDot tone="emerald" />
+                  <StatusBadge
+                    label="All systems online"
+                    showDot
+                    tone="emerald"
+                  />
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
                   {[
                     { label: 'Active projects', value: '2' },
                     { label: 'Open tickets', value: '1' },
@@ -313,7 +337,7 @@ export function Home() {
                   ))}
                 </div>
 
-                <div className="mt-3 grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
+                <div className="mt-3 grid gap-3 lg:grid-cols-[1.4fr_0.6fr]">
                   <div className="rounded-lg border border-slate-200 bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-semibold text-slate-950">
@@ -357,40 +381,60 @@ export function Home() {
       </section>
 
       <section className="border-b border-slate-200 bg-slate-50">
-        <div className="page-shell grid gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-20">
-          <div>
-            <p className="text-sm font-semibold text-red-700">The common problem</p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl">
-              Agency work becomes difficult when updates are scattered
-            </h2>
-            <p className="mt-4 leading-7 text-slate-600">
-              Emails, files, support messages, and project updates often live in
-              different places. Customers lose visibility and agencies repeat
-              the same status information.
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-emerald-700">
-              The NordicWebHub approach
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl">
-              One structured portal from request to ongoing support
-            </h2>
-            <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-700">
-              {[
-                'Clear service packages and project requests',
-                'Visible status, deadlines, and support communication',
-                'Company-specific maintenance, hosting, and SEO records',
-              ].map((item) => (
-                <li className="flex items-start gap-3" key={item}>
-                  <Check
-                    aria-hidden="true"
-                    className="mt-1 h-4 w-4 shrink-0 text-emerald-600"
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+        <div className="page-shell py-10 sm:py-16 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+            <div>
+              <p className="text-sm font-semibold text-slate-500">
+                The problem with traditional agency work
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
+                Less time searching for updates. More time moving forward.
+              </h2>
+              <p className="mt-4 leading-7 text-slate-600">
+                Project details, support conversations, reports, and deadlines
+                should not be spread across inboxes and disconnected documents.
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="border-l-2 border-slate-300 pl-5">
+                <MessageSquareText
+                  aria-hidden="true"
+                  className="h-5 w-5 text-slate-500"
+                />
+                <h3 className="mt-4 font-semibold text-slate-950">
+                  Without a portal
+                </h3>
+                <ul className="mt-3 grid gap-2 text-sm leading-6 text-slate-600">
+                  <li>Updates scattered across email and chat</li>
+                  <li>Unclear ownership, status, and next steps</li>
+                  <li>Support history difficult to follow</li>
+                </ul>
+              </div>
+              <div className="border-l-2 border-blue-600 pl-5">
+                <Sparkles
+                  aria-hidden="true"
+                  className="h-5 w-5 text-blue-700"
+                />
+                <h3 className="mt-4 font-semibold text-slate-950">
+                  With NordicWebHub
+                </h3>
+                <ul className="mt-3 grid gap-2 text-sm leading-6 text-slate-700">
+                  {[
+                    'One workspace for requests and delivery',
+                    'Visible progress, deadlines, and reports',
+                    'Structured support tied to your company',
+                  ].map((item) => (
+                    <li className="flex items-start gap-2" key={item}>
+                      <Check
+                        aria-hidden="true"
+                        className="mt-1 h-4 w-4 shrink-0 text-emerald-600"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -408,7 +452,7 @@ export function Home() {
 
               return (
                 <article
-                  className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+                  className="flex h-full flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
                   key={service.title}
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
@@ -420,6 +464,17 @@ export function Home() {
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     {service.description}
                   </p>
+                  <ul className="mt-5 grid gap-2 border-t border-slate-100 pt-4 text-sm text-slate-700">
+                    {service.highlights.map((highlight) => (
+                      <li className="flex items-center gap-2" key={highlight}>
+                        <Check
+                          aria-hidden="true"
+                          className="h-4 w-4 shrink-0 text-emerald-600"
+                        />
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
                 </article>
               )
             })}
@@ -440,10 +495,10 @@ export function Home() {
           <ol className="mt-10 grid border-y border-slate-200 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
               <li
-                className="border-b border-slate-200 py-6 sm:px-6 sm:first:pl-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:last:pr-0"
+                className="relative border-b border-slate-200 py-7 sm:px-6 sm:first:pl-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:last:pr-0"
                 key={step.number}
               >
-                <span className="text-sm font-semibold text-blue-700">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white">
                   {step.number}
                 </span>
                 <h3 className="mt-3 text-base font-semibold text-slate-950">
@@ -452,6 +507,12 @@ export function Home() {
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {step.description}
                 </p>
+                {step.number !== '04' ? (
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="absolute right-4 top-8 hidden h-4 w-4 text-slate-300 lg:block"
+                  />
+                ) : null}
               </li>
             ))}
           </ol>
@@ -489,6 +550,44 @@ export function Home() {
                     </h3>
                     <p className="mt-1 text-sm leading-6 text-slate-600">
                       {feature.description}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-10 grid gap-4 border-t border-slate-200 pt-8 sm:grid-cols-3">
+            {[
+              {
+                icon: Building2,
+                label: 'Company-specific',
+                text: 'Every customer sees only the information connected to their company.',
+              },
+              {
+                icon: Clock3,
+                label: 'Always current',
+                text: 'Statuses, deadlines, tickets, and reports stay available between meetings.',
+              },
+              {
+                icon: ShieldCheck,
+                label: 'Secure access',
+                text: 'Role-based portal access keeps admin and customer workflows separate.',
+              },
+            ].map((item) => {
+              const IconComponent = item.icon
+
+              return (
+                <div className="flex gap-3" key={item.label}>
+                  <IconComponent
+                    aria-hidden="true"
+                    className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-950">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                      {item.text}
                     </p>
                   </div>
                 </div>
@@ -546,18 +645,28 @@ export function Home() {
 
           {!isLoadingPackages && !packagesError && packages.length > 0 ? (
             <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {packages.slice(0, 3).map((servicePackage, index) => (
-                <Card
-                  accent={index === 1 ? 'blue' : undefined}
-                  className="flex min-h-full flex-col"
-                  key={servicePackage.id}
-                >
-                  <div className="flex h-full flex-col p-5 sm:p-6">
-                    <StatusBadge
-                      className="self-start"
-                      label={servicePackage.category}
-                      tone={index === 1 ? 'blue' : 'slate'}
-                    />
+              {previewPackages.map((servicePackage) => {
+                const isRecommended =
+                  servicePackage.id === recommendedPackageId
+
+                return (
+                  <Card
+                    accent={isRecommended ? 'blue' : undefined}
+                    className="flex min-h-full flex-col"
+                    key={servicePackage.id}
+                  >
+                    <div className="flex h-full flex-col p-5 sm:p-6">
+                      <div className="flex min-h-6 items-center justify-between gap-3">
+                        <StatusBadge
+                          label={servicePackage.category}
+                          tone={isRecommended ? 'blue' : 'slate'}
+                        />
+                        {isRecommended ? (
+                          <span className="text-xs font-semibold text-blue-700">
+                            Recommended
+                          </span>
+                        ) : null}
+                      </div>
                     <h3 className="mt-4 text-xl font-semibold text-slate-950">
                       {servicePackage.name}
                     </h3>
@@ -587,13 +696,14 @@ export function Home() {
                     <ButtonLink
                       className="mt-6 w-full"
                       to="/register"
-                      variant={index === 1 ? 'primary' : 'secondary'}
+                      variant={isRecommended ? 'primary' : 'secondary'}
                     >
                       Request this package
                     </ButtonLink>
-                  </div>
-                </Card>
-              ))}
+                    </div>
+                  </Card>
+                )
+              })}
             </div>
           ) : null}
         </div>
@@ -604,14 +714,14 @@ export function Home() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold text-blue-300">
-                Ready for a clearer workflow?
+                Start with what your business needs now
               </p>
               <h2 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">
-                Bring your next digital project into one organized portal
+                Turn your next digital project into a clear, trackable workflow
               </h2>
               <p className="mt-4 leading-7 text-slate-300">
-                Create an account, choose a service package, and keep requests,
-                projects, support, and reports connected.
+                Compare service packages or create an account to keep requests,
+                delivery, support, and reports connected from day one.
               </p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
