@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { ArrowRight, Menu, X } from 'lucide-react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { cn } from '../utils/cn'
@@ -27,9 +27,9 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)] backdrop-blur">
         <div className="page-shell flex h-16 items-center justify-between gap-4">
-          <Link className="flex items-center gap-3" to="/">
+          <Link className="flex shrink-0 items-center gap-3" to="/">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
               N
             </span>
@@ -46,7 +46,8 @@ export function PublicLayout() {
               <Link
                 className={cn(
                   'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950',
-                  isLinkActive(link.to) && 'bg-blue-50 text-blue-700',
+                  isLinkActive(link.to) &&
+                    'bg-blue-50 font-semibold text-blue-700',
                 )}
                 key={link.to}
                 to={link.to}
@@ -57,10 +58,18 @@ export function PublicLayout() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <ButtonLink size="sm" to="/login" variant="ghost">
+            <ButtonLink
+              size="sm"
+              to="/login"
+              variant={location.pathname === '/login' ? 'secondary' : 'ghost'}
+            >
               Log in
             </ButtonLink>
-            <ButtonLink size="sm" to="/register">
+            <ButtonLink
+              size="sm"
+              to="/register"
+              trailingIcon={<ArrowRight className="h-4 w-4" />}
+            >
               Register
             </ButtonLink>
           </div>
@@ -88,7 +97,8 @@ export function PublicLayout() {
                 <Link
                   className={cn(
                     'rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                    isLinkActive(link.to) && 'bg-blue-50 text-blue-700',
+                    isLinkActive(link.to) &&
+                      'bg-blue-50 font-semibold text-blue-700',
                   )}
                   key={link.to}
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -124,18 +134,28 @@ export function PublicLayout() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="page-shell grid gap-6 py-8 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div>
-            <p className="text-sm font-semibold text-slate-950">NordicWebHub</p>
+        <div className="page-shell grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-start">
+          <div className="max-w-md">
+            <Link className="inline-flex items-center gap-3" to="/">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
+                N
+              </span>
+              <span className="text-base font-semibold text-slate-950">
+                NordicWebHub
+              </span>
+            </Link>
             <p className="mt-1 max-w-md text-sm leading-6 text-slate-500">
               A secure client portal for projects, support, hosting, and digital
               agency services.
             </p>
           </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <nav
+            aria-label="Footer navigation"
+            className="flex max-w-xl flex-wrap gap-x-5 gap-y-3 text-sm"
+          >
             {publicLinks.map((link) => (
               <Link
-                className="font-medium text-slate-500 hover:text-slate-950"
+                className="font-medium text-slate-600 transition-colors hover:text-blue-700"
                 key={link.to}
                 to={link.to}
               >
@@ -143,16 +163,17 @@ export function PublicLayout() {
               </Link>
             ))}
             <Link
-              className="font-medium text-slate-500 hover:text-slate-950"
+              className="font-medium text-slate-600 transition-colors hover:text-blue-700"
               to="/login"
             >
               Portal login
             </Link>
-          </div>
+          </nav>
         </div>
         <div className="border-t border-slate-100">
-          <div className="page-shell py-4 text-xs text-slate-400">
-            © {new Date().getFullYear()} NordicWebHub. Demo client portal.
+          <div className="page-shell flex flex-col gap-1 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <span>© {new Date().getFullYear()} NordicWebHub.</span>
+            <span>Demo client portal for Swedish digital services.</span>
           </div>
         </div>
       </footer>

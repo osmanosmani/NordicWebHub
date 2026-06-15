@@ -1,7 +1,8 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { Fragment, useEffect, useState, type ReactNode } from 'react'
 import {
   LogOut,
   Menu,
+  ShieldCheck,
   X,
   type LucideIcon,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ export type PortalNavItem = {
   to: string
   icon: LucideIcon
   end?: boolean
+  section?: string
 }
 
 type PortalShellProps = {
@@ -83,14 +85,14 @@ export function PortalShell({
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             aria-label="Close navigation"
-            className="absolute inset-0 bg-slate-950/30"
+            className="absolute inset-0 bg-slate-950/35 backdrop-blur-[1px]"
             onClick={() => setIsMobileNavigationOpen(false)}
             type="button"
           />
           <aside
             aria-label={`${portalLabel} mobile navigation`}
             aria-modal="true"
-            className="relative flex h-full w-[min(19rem,85vw)] flex-col border-r border-slate-200 bg-white shadow-xl"
+            className="relative flex h-full w-[min(18rem,88vw)] flex-col border-r border-slate-200 bg-white shadow-xl"
             role="dialog"
           >
             <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
@@ -111,13 +113,24 @@ export function PortalShell({
               navigation={navigation}
               onNavigate={() => setIsMobileNavigationOpen(false)}
             />
-            <UserPanel className="border-t border-slate-200 p-4" user={user} />
+            <div className="border-t border-slate-200 p-4">
+              <UserPanel className="flex" user={user} />
+              <Button
+                className="mt-4 w-full"
+                leadingIcon={<LogOut className="h-4 w-4" />}
+                onClick={() => void onLogout()}
+                size="sm"
+                variant="secondary"
+              >
+                Log out
+              </Button>
+            </div>
           </aside>
         </div>
       ) : null}
 
-      <div className="lg:pl-72">
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="lg:pl-64">
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)] backdrop-blur">
           <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <Button
@@ -130,7 +143,7 @@ export function PortalShell({
                 <Menu aria-hidden="true" className="h-5 w-5" />
               </Button>
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase text-slate-500">
+                <p className="text-xs font-semibold text-slate-500">
                   {portalLabel}
                 </p>
                 <p className="truncate text-sm font-semibold text-slate-950">
@@ -157,7 +170,7 @@ export function PortalShell({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           <Outlet />
         </main>
       </div>
@@ -175,8 +188,8 @@ function PortalSidebar({
   portalLabel: string
 }) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      <div className="flex h-20 items-center border-b border-slate-200 px-5">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-slate-200 bg-white lg:flex lg:flex-col">
+      <div className="flex h-16 items-center border-b border-slate-200 px-5">
         <Brand portalLabel={portalLabel} tone={accent} />
       </div>
       <PortalNavigation
@@ -184,8 +197,9 @@ function PortalSidebar({
         className="flex-1 overflow-y-auto p-4"
         navigation={navigation}
       />
-      <div className="border-t border-slate-200 px-5 py-4 text-xs leading-5 text-slate-500">
-        Secure NordicWebHub workspace
+      <div className="flex items-center gap-2 border-t border-slate-200 px-5 py-4 text-xs leading-5 text-slate-500">
+        <ShieldCheck aria-hidden="true" className="h-4 w-4 text-slate-400" />
+        <span>Secure client workspace</span>
       </div>
     </aside>
   )
@@ -233,39 +247,50 @@ function PortalNavigation({
 }) {
   return (
     <nav aria-label="Portal navigation" className={className}>
-      <p className="mb-2 px-3 text-xs font-semibold uppercase text-slate-400">
-        Workspace
-      </p>
       <div className="grid gap-1">
-        {navigation.map((item) => {
+        {navigation.map((item, index) => {
           const Icon = item.icon
+          const showSection =
+            item.section && item.section !== navigation[index - 1]?.section
 
           return (
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'group flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950',
-                  isActive && accentClasses[accent].active,
-                )
-              }
-              end={item.end}
-              key={item.to}
-              onClick={onNavigate}
-              to={item.to}
-            >
-              {({ isActive }) => (
-                <>
-                  <Icon
-                    aria-hidden="true"
-                    className={cn(
-                      'h-[18px] w-[18px] shrink-0 text-slate-400 transition-colors group-hover:text-slate-700',
-                      isActive && accentClasses[accent].icon,
-                    )}
-                  />
-                  <span>{item.label}</span>
-                </>
-              )}
-            </NavLink>
+            <Fragment key={item.to}>
+              {showSection ? (
+                <p
+                  className={cn(
+                    'px-3 pb-1 text-xs font-semibold text-slate-400',
+                    index > 0 && 'mt-4',
+                  )}
+                >
+                  {item.section}
+                </p>
+              ) : null}
+              <NavLink
+                className={({ isActive }) =>
+                  cn(
+                    'group flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950',
+                    isActive &&
+                      cn(accentClasses[accent].active, 'border-blue-100'),
+                  )
+                }
+                end={item.end}
+                onClick={onNavigate}
+                to={item.to}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      aria-hidden="true"
+                      className={cn(
+                        'h-[18px] w-[18px] shrink-0 text-slate-400 transition-colors group-hover:text-slate-700',
+                        isActive && accentClasses[accent].icon,
+                      )}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            </Fragment>
           )
         })}
       </div>
