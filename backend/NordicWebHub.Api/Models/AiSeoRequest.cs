@@ -1,3 +1,5 @@
+using NordicWebHub.Api.Models.Enums;
+
 namespace NordicWebHub.Api.Models;
 
 public class AiSeoRequest
@@ -15,6 +17,10 @@ public class AiSeoRequest
     public string Industry { get; set; } = string.Empty;
 
     public string City { get; set; } = string.Empty;
+
+    public AiSeoRequestType RequestType { get; set; } = AiSeoRequestType.Seo;
+
+    public string? InputJson { get; set; }
 
     public string ResultJson { get; set; } = string.Empty;
 

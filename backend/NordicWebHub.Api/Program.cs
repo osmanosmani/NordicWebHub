@@ -57,6 +57,9 @@ builder.Services.AddHttpClient("OpenAI", client =>
 });
 
 builder.Services.AddScoped<IAiSeoService, AiSeoService>();
+builder.Services.AddScoped<
+    IAiServiceRecommendationService,
+    AiServiceRecommendationService>();
 
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>

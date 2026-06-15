@@ -78,7 +78,7 @@ const customerNavigation: PortalNavItem[] = [
   },
   {
     to: '/customer/ai-seo',
-    label: 'AI SEO Assistant',
+    label: 'AI Service Assistant',
     icon: BrainCircuit,
     section: 'Insights',
   },

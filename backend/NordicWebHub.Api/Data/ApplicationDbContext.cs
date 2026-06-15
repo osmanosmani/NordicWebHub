@@ -281,6 +281,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(aiSeoRequest => aiSeoRequest.City)
                 .HasMaxLength(100);
 
+            entity.Property(aiSeoRequest => aiSeoRequest.RequestType)
+                .HasConversion<string>()
+                .HasMaxLength(50);
+
             entity.Property(aiSeoRequest => aiSeoRequest.CreatedAt)
                 .HasDefaultValueSql("SYSUTCDATETIME()");
 
