@@ -20,14 +20,14 @@ export function DataTable({
   return (
     <div className={wrapperClassName}>
       {showMobileHint ? (
-        <p className="border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs font-medium text-slate-500 sm:hidden">
+        <p className="border-b border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-medium text-slate-500 sm:hidden">
           Swipe horizontally to view all columns.
         </p>
       ) : null}
       <div
         aria-label={scrollLabel}
         className={cn(
-          'w-0 min-w-full max-w-full overflow-x-auto overscroll-x-contain focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-blue-100',
+          'w-0 min-w-full max-w-full overflow-x-auto overscroll-x-contain scrollbar-thin focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-blue-100',
           containerClassName,
         )}
         role="region"
@@ -35,7 +35,7 @@ export function DataTable({
       >
         <table
           className={cn(
-            'min-w-full divide-y divide-slate-200 text-left text-sm',
+            'min-w-full divide-y divide-slate-200 text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-slate-50/70 [&_td]:leading-6 [&_th]:whitespace-nowrap [&_th]:tracking-normal',
             className,
           )}
           {...props}

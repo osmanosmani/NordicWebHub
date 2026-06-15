@@ -10,6 +10,8 @@ import {
 } from '../../api/aiSeoApi'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { TextInput } from '../../components/ui/TextInput'
 import type {
@@ -130,7 +132,7 @@ export function CustomerAiSeo() {
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[360px_1fr]">
         <form
-          className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -142,7 +144,7 @@ export function CustomerAiSeo() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             <TextInput
               autoComplete="organization-title"
               id="industry"
@@ -170,13 +172,16 @@ export function CustomerAiSeo() {
           </div>
 
           {generateError ? (
-            <div className="mt-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-700">
-              {generateError}
-            </div>
+            <ErrorMessage className="mt-5" message={generateError} />
           ) : null}
 
-          <Button className="mt-6 w-full" disabled={isGenerating} type="submit">
-            {isGenerating ? 'Generating SEO plan' : 'Generate SEO plan'}
+          <Button
+            className="mt-6 w-full"
+            isLoading={isGenerating}
+            loadingLabel="Generating SEO plan"
+            type="submit"
+          >
+            Generate SEO plan
           </Button>
         </form>
 
@@ -237,9 +242,7 @@ export function CustomerAiSeo() {
         </div>
 
         {historyError ? (
-          <div className="mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            {historyError}
-          </div>
+          <ErrorMessage className="mt-5" message={historyError} />
         ) : null}
 
         {isLoadingHistory ? (
@@ -256,10 +259,12 @@ export function CustomerAiSeo() {
         {!isLoadingHistory &&
         !historyError &&
         previousResults.length === 0 ? (
-          <Card className="mt-5 p-6">
-            <p className="text-sm text-slate-600">
-              No AI SEO plans have been generated yet.
-            </p>
+          <Card className="mt-5">
+            <EmptyState
+              compact
+              description="Generate your first local SEO plan using the form above."
+              title="No AI SEO plans yet"
+            />
           </Card>
         ) : null}
 
@@ -298,7 +303,7 @@ function AiSeoResultView({
     <Card className="h-fit">
       <div className="border-b border-slate-200 px-5 py-4">
         {context ? (
-          <p className="text-xs font-semibold uppercase text-emerald-700">
+          <p className="text-xs font-semibold text-blue-700">
             {context}
           </p>
         ) : null}
@@ -384,7 +389,7 @@ function ResultSection({
 }) {
   return (
     <section>
-      <h4 className="text-xs font-semibold uppercase text-slate-500">
+      <h4 className="text-xs font-semibold text-slate-500">
         {title}
       </h4>
       <div className="mt-2">{children}</div>

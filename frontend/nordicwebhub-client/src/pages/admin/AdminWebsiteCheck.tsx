@@ -4,7 +4,11 @@ import {
   runWebsiteCheck,
 } from '../../api/websiteCheckApi'
 import { Button } from '../../components/ui/Button'
+import { Alert } from '../../components/ui/Alert'
 import { Card } from '../../components/ui/Card'
+import { DataTable } from '../../components/ui/DataTable'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { HostingStatusBadge } from '../../components/ui/HostingStatusBadge'
 import { PageHeader } from '../../components/ui/PageHeader'
 import type {
@@ -105,22 +109,22 @@ export function AdminWebsiteCheck() {
         <Button
           className="shrink-0"
           disabled={isLoading || isRunning}
+          isLoading={isRunning}
+          loadingLabel="Running checks"
           onClick={() => void handleRunWebsiteCheck()}
         >
-          {isRunning ? 'Running checks' : 'Run Website Check'}
+          Run Website Check
         </Button>
       </div>
 
       {error ? (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
+        <ErrorMessage className="mt-6" message={error} />
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <Alert className="mt-6" tone="success">
           {successMessage}
-        </div>
+        </Alert>
       ) : null}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -155,23 +159,26 @@ export function AdminWebsiteCheck() {
         ) : null}
 
         {!isLoading && hostingStatuses.length === 0 ? (
-          <p className="p-5 text-sm text-slate-600">
-            No hosting statuses are available. Run the first website check to
-            create them.
-          </p>
+          <EmptyState
+            compact
+            description="Run the first website check to create hosting status records."
+            title="No hosting statuses available"
+          />
         ) : null}
 
         {!isLoading && hostingStatuses.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-              <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+          <DataTable
+            className="min-w-[900px]"
+            scrollLabel="Hosting statuses table"
+          >
+              <thead className="bg-slate-50 text-xs text-slate-500">
                 <tr>
-                  <th className="px-5 py-3">Company</th>
-                  <th className="px-5 py-3">Domain</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3">HTTP</th>
-                  <th className="px-5 py-3">Last checked</th>
-                  <th className="px-5 py-3">Notes</th>
+                  <th className="px-5 py-3 font-semibold">Company</th>
+                  <th className="px-5 py-3 font-semibold">Domain</th>
+                  <th className="px-5 py-3 font-semibold">Status</th>
+                  <th className="px-5 py-3 font-semibold">HTTP</th>
+                  <th className="px-5 py-3 font-semibold">Last checked</th>
+                  <th className="px-5 py-3 font-semibold">Notes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 bg-white">
@@ -201,8 +208,7 @@ export function AdminWebsiteCheck() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+          </DataTable>
         ) : null}
       </Card>
     </section>

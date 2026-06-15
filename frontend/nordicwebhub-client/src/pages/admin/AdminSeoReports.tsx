@@ -216,7 +216,7 @@ export function AdminSeoReports() {
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
         <form
-          className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -228,7 +228,7 @@ export function AdminSeoReports() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             <Select
               id="companyId"
               label="Company"
@@ -291,7 +291,7 @@ export function AdminSeoReports() {
             />
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="form-actions">
             <Button
               disabled={companies.length === 0}
               isLoading={isSaving}

@@ -167,7 +167,7 @@ export function AdminCompanies() {
 
       <div className="mt-8 grid gap-6 2xl:grid-cols-[390px_minmax(0,1fr)]">
         <form
-          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -179,7 +179,7 @@ export function AdminCompanies() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             <TextInput
               id="name"
               label="Name"
@@ -243,7 +243,7 @@ export function AdminCompanies() {
             />
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="form-actions">
             <Button isLoading={isSaving} loadingLabel="Saving" type="submit">
               {editingCompany ? 'Save changes' : 'Create company'}
             </Button>
@@ -322,7 +322,7 @@ export function AdminCompanies() {
                 showMobileHint={false}
                 wrapperClassName="hidden md:block"
               >
-                <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                <thead className="bg-slate-50 text-xs text-slate-500">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Company</th>
                     <th className="px-5 py-3 font-semibold">Org number</th>

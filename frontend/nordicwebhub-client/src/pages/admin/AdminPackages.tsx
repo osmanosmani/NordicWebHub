@@ -183,7 +183,7 @@ export function AdminPackages() {
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[380px_1fr]">
         <form
-          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -195,7 +195,7 @@ export function AdminPackages() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             <TextInput
               id="name"
               label="Name"
@@ -270,7 +270,7 @@ export function AdminPackages() {
             </label>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="form-actions">
             <Button
               isLoading={isSaving}
               loadingLabel="Saving"

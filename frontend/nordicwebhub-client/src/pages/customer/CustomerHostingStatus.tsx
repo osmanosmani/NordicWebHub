@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { getMyHostingStatuses } from '../../api/websiteCheckApi'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { HostingStatusBadge } from '../../components/ui/HostingStatusBadge'
 import { PageHeader } from '../../components/ui/PageHeader'
 import type { HostingStatus } from '../../types/hostingStatus'
@@ -58,16 +60,19 @@ export function CustomerHostingStatus() {
       />
 
       {error ? (
-        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between">
-          <span>{error}</span>
-          <Button
-            className="h-9 shrink-0 px-3"
-            onClick={() => setReloadKey((current) => current + 1)}
-            variant="secondary"
-          >
-            Try again
-          </Button>
-        </div>
+        <ErrorMessage
+          action={
+            <Button
+              onClick={() => setReloadKey((current) => current + 1)}
+              size="sm"
+              variant="secondary"
+            >
+              Try again
+            </Button>
+          }
+          className="mt-6"
+          message={error}
+        />
       ) : null}
 
       {isLoading ? (
@@ -82,10 +87,11 @@ export function CustomerHostingStatus() {
       ) : null}
 
       {!isLoading && !error && hostingStatuses.length === 0 ? (
-        <Card className="mt-8 p-6">
-          <p className="text-sm text-slate-600">
-            No hosting status has been recorded for your company yet.
-          </p>
+        <Card className="mt-8">
+          <EmptyState
+            description="The latest website health result will appear here after an administrator runs a check."
+            title="No hosting status recorded"
+          />
         </Card>
       ) : null}
 
@@ -95,7 +101,7 @@ export function CustomerHostingStatus() {
             <Card className="flex flex-col" key={status.id}>
               <div className="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase text-emerald-700">
+                  <p className="text-xs font-semibold text-blue-700">
                     {status.companyName}
                   </p>
                   <h2 className="mt-2 break-all text-lg font-semibold text-slate-950">
@@ -142,7 +148,7 @@ function StatusDetail({
 }) {
   return (
     <div className={className}>
-      <dt className="text-xs font-semibold uppercase text-slate-500">{label}</dt>
+      <dt className="text-xs font-semibold text-slate-500">{label}</dt>
       <dd className="mt-2 break-words text-sm leading-6 text-slate-700">
         {value}
       </dd>

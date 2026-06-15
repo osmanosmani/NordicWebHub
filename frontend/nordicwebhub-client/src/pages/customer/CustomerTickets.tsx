@@ -160,7 +160,7 @@ export function CustomerTickets() {
       <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
         <div className="grid gap-6">
           <form
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+            className="form-panel"
             onSubmit={handleSubmit}
           >
             <div className="mb-5">
@@ -170,7 +170,7 @@ export function CustomerTickets() {
               </p>
             </div>
 
-            <div className="grid gap-4">
+            <div className="form-stack">
               <TextInput
                 id="title"
                 label="Title"
@@ -212,7 +212,7 @@ export function CustomerTickets() {
               </Select>
             </div>
 
-            <div className="mt-6">
+            <div className="form-actions">
               <Button
                 isLoading={isSaving}
                 loadingLabel="Creating"
@@ -277,7 +277,7 @@ function TicketList({
             <button
               className={
                 ticket.id === selectedTicketId
-                  ? 'w-full bg-emerald-50 p-5 text-left'
+                  ? 'w-full bg-blue-50 p-5 text-left'
                   : 'w-full bg-white p-5 text-left hover:bg-slate-50'
               }
               key={ticket.id}
@@ -359,7 +359,7 @@ function TicketDetail({
         <p className="text-sm leading-6 text-slate-700">{ticket.description}</p>
 
         <div className="mt-6">
-          <h3 className="text-sm font-semibold uppercase text-slate-500">
+          <h3 className="text-sm font-semibold text-slate-700">
             Message thread
           </h3>
 
@@ -394,7 +394,7 @@ function TicketDetail({
               required
               value={replyMessage}
             />
-            <div className="mt-4">
+            <div className="form-actions mt-4">
               <Button
                 disabled={!replyMessage.trim()}
                 isLoading={isReplying}

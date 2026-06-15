@@ -279,7 +279,7 @@ export function AdminProjects() {
 
       <div className="mt-8 grid gap-6 2xl:grid-cols-[410px_minmax(0,1fr)]">
         <form
-          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -291,7 +291,7 @@ export function AdminProjects() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             {!editingProject ? (
               <Select
                 id="projectMode"
@@ -429,7 +429,7 @@ export function AdminProjects() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="form-actions">
             <Button isLoading={isSaving} loadingLabel="Saving" type="submit">
               {editingProject ? 'Save changes' : 'Create project'}
             </Button>
@@ -543,7 +543,7 @@ export function AdminProjects() {
                 showMobileHint={false}
                 wrapperClassName="hidden md:block"
               >
-                <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                <thead className="bg-slate-50 text-xs text-slate-500">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Project</th>
                     <th className="px-5 py-3 font-semibold">Company</th>

@@ -338,7 +338,7 @@ function TicketTable({
             showMobileHint={false}
             wrapperClassName="hidden md:block"
           >
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <thead className="bg-slate-50 text-xs text-slate-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Ticket</th>
                 <th className="px-5 py-3 font-semibold">Customer</th>

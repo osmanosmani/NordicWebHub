@@ -132,7 +132,7 @@ export function CustomerCompany() {
 
       {company ? (
         <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <Card className="p-5 sm:p-6">
             <h2 className="text-lg font-semibold text-slate-950">
               Company details
             </h2>
@@ -142,10 +142,10 @@ export function CustomerCompany() {
               <CompanyDetail label="Owner email" value={company.ownerEmail} />
               <CompanyDetail label="Created" value={formatDate(company.createdAt)} />
             </dl>
-          </div>
+          </Card>
 
           <form
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+            className="form-panel"
             onSubmit={handleSubmit}
           >
             <div className="mb-5">
@@ -163,7 +163,7 @@ export function CustomerCompany() {
               </Alert>
             ) : null}
 
-            <div className="grid gap-4">
+            <div className="form-stack">
               <TextInput
                 id="websiteUrl"
                 label="Website URL"
@@ -204,7 +204,7 @@ export function CustomerCompany() {
               />
             </div>
 
-            <div className="mt-6">
+            <div className="form-actions">
               <Button
                 isLoading={isSaving}
                 loadingLabel="Saving"

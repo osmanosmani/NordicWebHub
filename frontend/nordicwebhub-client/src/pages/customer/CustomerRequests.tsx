@@ -143,7 +143,7 @@ export function CustomerRequests() {
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[390px_1fr]">
         <form
-          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+          className="form-panel"
           onSubmit={handleSubmit}
         >
           <div className="mb-5">
@@ -155,7 +155,7 @@ export function CustomerRequests() {
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="form-stack">
             <Select
               disabled={packages.length === 0}
               id="servicePackageId"
@@ -221,7 +221,7 @@ export function CustomerRequests() {
             />
           </div>
 
-          <div className="mt-6">
+          <div className="form-actions">
             <Button
               disabled={packages.length === 0}
               isLoading={isSaving}
