@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Activity,
+  ArrowRight,
   Building2,
   ClipboardList,
   FolderKanban,
@@ -106,7 +107,21 @@ export function AdminDashboard() {
 
       {!isLoading && dashboard ? (
         <>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="mt-8 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-slate-950">
+                Business overview
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Current client activity and delivery workload.
+              </p>
+            </div>
+            <p className="hidden text-xs font-medium text-slate-400 sm:block">
+              Live portal data
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             <StatCard
               detail="Registered customer accounts"
               icon={<Users className={iconClassName} />}
@@ -143,7 +158,7 @@ export function AdminDashboard() {
             />
           </div>
 
-          <div className="mt-6 grid gap-6">
+          <div className="mt-8 grid gap-6">
             <RequestsTable requests={dashboard.recentProjectRequests} />
             <div className="grid gap-6 2xl:grid-cols-2">
               <TicketsTable tickets={dashboard.recentSupportTickets} />
@@ -158,37 +173,51 @@ export function AdminDashboard() {
 
 function QuickActions() {
   return (
-    <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
-      <div>
-        <p className="text-sm font-semibold text-slate-950">Quick actions</p>
-        <p className="mt-1 text-sm text-slate-500">
-          Jump directly to common administration tasks.
-        </p>
+    <Card className="mt-6">
+      <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        <div>
+          <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+          <p className="mt-1 text-sm leading-5 text-slate-500">
+            Jump directly to common administration tasks.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <ButtonLink
+            className="w-full sm:w-auto"
+            leadingIcon={<PackagePlus className="h-4 w-4" />}
+            size="sm"
+            to="/admin/packages"
+          >
+            Add Package
+          </ButtonLink>
+          <ButtonLink
+            className="w-full sm:w-auto"
+            size="sm"
+            to="/admin/tickets"
+            variant="secondary"
+          >
+            View Tickets
+          </ButtonLink>
+          <ButtonLink
+            className="w-full sm:w-auto"
+            size="sm"
+            to="/admin/requests"
+            variant="secondary"
+          >
+            View Requests
+          </ButtonLink>
+          <ButtonLink
+            className="col-span-2 w-full sm:w-auto"
+            leadingIcon={<Activity className="h-4 w-4" />}
+            size="sm"
+            to="/admin/website-check"
+            variant="secondary"
+          >
+            Run Website Check
+          </ButtonLink>
+        </div>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <ButtonLink
-          leadingIcon={<PackagePlus className="h-4 w-4" />}
-          size="sm"
-          to="/admin/packages"
-        >
-          Add Package
-        </ButtonLink>
-        <ButtonLink size="sm" to="/admin/tickets" variant="secondary">
-          View Tickets
-        </ButtonLink>
-        <ButtonLink size="sm" to="/admin/requests" variant="secondary">
-          View Requests
-        </ButtonLink>
-        <ButtonLink
-          leadingIcon={<Activity className="h-4 w-4" />}
-          size="sm"
-          to="/admin/website-check"
-          variant="secondary"
-        >
-          Run Website Check
-        </ButtonLink>
-      </div>
-    </div>
+    </Card>
   )
 }
 
@@ -200,8 +229,13 @@ function RequestsTable({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/admin/requests" variant="ghost">
-          View all requests
+        <ButtonLink
+          size="sm"
+          to="/admin/requests"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
+          View all
         </ButtonLink>
       }
       description="The latest customer requests requiring review."
@@ -216,7 +250,7 @@ function RequestsTable({
         />
       ) : (
         <DataTable>
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 text-xs text-slate-500">
             <tr>
               <th className="px-5 py-3 font-semibold">Request</th>
               <th className="px-5 py-3 font-semibold">Company</th>
@@ -266,7 +300,12 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/admin/tickets" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/admin/tickets"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -282,7 +321,7 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
         />
       ) : (
         <DataTable>
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 text-xs text-slate-500">
             <tr>
               <th className="px-5 py-3 font-semibold">Ticket</th>
               <th className="px-5 py-3 font-semibold">Priority</th>
@@ -331,7 +370,12 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/admin/projects" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/admin/projects"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -347,7 +391,7 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
         />
       ) : (
         <DataTable>
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 text-xs text-slate-500">
             <tr>
               <th className="px-5 py-3 font-semibold">Project</th>
               <th className="px-5 py-3 font-semibold">Status</th>
@@ -387,11 +431,15 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
 
 function DashboardLoading() {
   return (
-    <div className="mt-6 flex min-h-64 items-center justify-center rounded-lg border border-slate-200 bg-white">
+    <Card className="mt-6 flex min-h-64 items-center justify-center">
       <div className="flex flex-col items-center gap-3 text-sm font-medium text-slate-500">
-        <LoadingSpinner className="text-blue-600" label="Loading dashboard" size="lg" />
+        <LoadingSpinner
+          className="text-blue-600"
+          label="Loading dashboard"
+          size="lg"
+        />
         <span>Loading dashboard overview</span>
       </div>
-    </div>
+    </Card>
   )
 }

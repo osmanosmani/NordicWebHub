@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import {
+  ArrowRight,
   Building2,
   ClipboardPlus,
   FileClock,
@@ -23,6 +24,7 @@ import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { SeoScore } from '../../components/ui/SeoScore'
+import { StatCard } from '../../components/ui/StatCard'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import type {
   CustomerDashboardData,
@@ -172,32 +174,36 @@ export function CustomerDashboard() {
       {isLoading ? <CustomerDashboardLoading /> : null}
 
       {!isLoading && dashboard ? (
-        <div className="mt-6 grid gap-6 xl:grid-cols-12">
-          <ActiveProjects
-            className="xl:col-span-8"
-            projects={dashboard.activeProjects}
-          />
-          <CompanyOverview
-            className="xl:col-span-4"
-            company={dashboard.company}
-          />
-          <RecentRequests
-            className="xl:col-span-7"
-            requests={dashboard.recentProjectRequests}
-          />
-          <OpenTickets
-            className="xl:col-span-5"
-            tickets={dashboard.openTickets}
-          />
-          <LatestMaintenanceActivity
-            className="xl:col-span-6"
-            log={latestMaintenanceLog}
-          />
-          <LatestSeoReport
-            className="xl:col-span-6"
-            report={latestSeoReport}
-          />
-        </div>
+        <>
+          <CustomerOverviewStats dashboard={dashboard} />
+
+          <div className="mt-8 grid gap-6 xl:grid-cols-12">
+            <CompanyOverview
+              className="xl:col-span-4"
+              company={dashboard.company}
+            />
+            <ActiveProjects
+              className="xl:col-span-8"
+              projects={dashboard.activeProjects}
+            />
+            <RecentRequests
+              className="xl:col-span-7"
+              requests={dashboard.recentProjectRequests}
+            />
+            <OpenTickets
+              className="xl:col-span-5"
+              tickets={dashboard.openTickets}
+            />
+            <LatestMaintenanceActivity
+              className="xl:col-span-6"
+              log={latestMaintenanceLog}
+            />
+            <LatestSeoReport
+              className="xl:col-span-6"
+              report={latestSeoReport}
+            />
+          </div>
+        </>
       ) : null}
     </section>
   )
@@ -205,35 +211,90 @@ export function CustomerDashboard() {
 
 function QuickActions() {
   return (
-    <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
+    <Card className="mt-6">
+      <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        <div>
+          <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+          <p className="mt-1 text-sm leading-5 text-slate-500">
+            Start a request, contact support, or review active work.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <ButtonLink
+            className="w-full sm:w-auto"
+            leadingIcon={<ClipboardPlus className="h-4 w-4" />}
+            size="sm"
+            to="/customer/requests"
+          >
+            Create Request
+          </ButtonLink>
+          <ButtonLink
+            className="w-full sm:w-auto"
+            leadingIcon={<MessageSquarePlus className="h-4 w-4" />}
+            size="sm"
+            to="/customer/tickets"
+            variant="secondary"
+          >
+            Open Ticket
+          </ButtonLink>
+          <ButtonLink
+            className="w-full sm:w-auto"
+            size="sm"
+            to="/customer/projects"
+            variant="secondary"
+          >
+            View Projects
+          </ButtonLink>
+          <ButtonLink
+            className="w-full sm:w-auto"
+            size="sm"
+            to="/customer/seo-reports"
+            variant="secondary"
+          >
+            SEO Reports
+          </ButtonLink>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+function CustomerOverviewStats({
+  dashboard,
+}: {
+  dashboard: CustomerDashboardData
+}) {
+  return (
+    <div className="mt-8">
       <div>
-        <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+        <h2 className="text-base font-semibold text-slate-950">
+          Workspace overview
+        </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Start a request, contact support, or review active work.
+          Current activity connected to your company.
         </p>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <ButtonLink
-          leadingIcon={<ClipboardPlus className="h-4 w-4" />}
-          size="sm"
-          to="/customer/requests"
-        >
-          Create Request
-        </ButtonLink>
-        <ButtonLink
-          leadingIcon={<MessageSquarePlus className="h-4 w-4" />}
-          size="sm"
-          to="/customer/tickets"
-          variant="secondary"
-        >
-          Open Ticket
-        </ButtonLink>
-        <ButtonLink size="sm" to="/customer/projects" variant="secondary">
-          View Projects
-        </ButtonLink>
-        <ButtonLink size="sm" to="/customer/seo-reports" variant="secondary">
-          View SEO Reports
-        </ButtonLink>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <StatCard
+          detail="Currently in delivery"
+          icon={<FolderKanban className="h-5 w-5" />}
+          label="Active Projects"
+          value={dashboard.activeProjects.length}
+        />
+        <StatCard
+          detail="Support items requiring attention"
+          icon={<TicketCheck className="h-5 w-5" />}
+          label="Open Tickets"
+          tone="amber"
+          value={dashboard.openTickets.length}
+        />
+        <StatCard
+          detail="Latest submitted requests"
+          icon={<ClipboardPlus className="h-5 w-5" />}
+          label="Recent Requests"
+          tone="slate"
+          value={dashboard.recentProjectRequests.length}
+        />
       </div>
     </div>
   )
@@ -249,7 +310,12 @@ function CompanyOverview({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/company" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/company"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           Manage
         </ButtonLink>
       }
@@ -260,7 +326,7 @@ function CompanyOverview({
       {company ? (
         <div className="p-5">
           <div className="flex items-center gap-3 border-b border-slate-200 pb-5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700">
               <Building2 className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -317,7 +383,12 @@ function ActiveProjects({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/projects" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/projects"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -386,7 +457,7 @@ function ProjectProgress({ status }: { status: string }) {
         role="progressbar"
       >
         <div
-          className="h-full rounded bg-emerald-600"
+          className="h-full rounded bg-blue-600"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -408,7 +479,12 @@ function OpenTickets({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/tickets" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/tickets"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -471,7 +547,12 @@ function RecentRequests({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/requests" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/requests"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -493,7 +574,7 @@ function RecentRequests({
         />
       ) : (
         <DataTable>
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 text-xs text-slate-500">
             <tr>
               <th className="px-5 py-3 font-semibold">Request</th>
               <th className="px-5 py-3 font-semibold">Package</th>
@@ -542,7 +623,12 @@ function LatestMaintenanceActivity({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/maintenance-logs" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/maintenance-logs"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -567,7 +653,7 @@ function LatestMaintenanceActivity({
             {log.description}
           </p>
           <div className="mt-5 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
-            <p className="text-xs font-semibold uppercase text-emerald-700">
+            <p className="text-xs font-semibold text-emerald-700">
               Result
             </p>
             <p className="mt-2 text-sm leading-6 text-emerald-900">
@@ -597,7 +683,12 @@ function LatestSeoReport({
   return (
     <Card
       action={
-        <ButtonLink size="sm" to="/customer/seo-reports" variant="ghost">
+        <ButtonLink
+          size="sm"
+          to="/customer/seo-reports"
+          trailingIcon={<ArrowRight className="h-4 w-4" />}
+          variant="ghost"
+        >
           View all
         </ButtonLink>
       }
@@ -625,7 +716,7 @@ function LatestSeoReport({
           </div>
           <dl className="mt-5 grid gap-4">
             <div>
-              <dt className="text-xs font-semibold uppercase text-slate-500">
+              <dt className="text-xs font-semibold text-slate-500">
                 Top keywords
               </dt>
               <dd className="mt-2 text-sm leading-6 text-slate-700">
@@ -633,7 +724,7 @@ function LatestSeoReport({
               </dd>
             </div>
             <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">
-              <dt className="text-xs font-semibold uppercase text-blue-700">
+              <dt className="text-xs font-semibold text-blue-700">
                 Recommended next step
               </dt>
               <dd className="mt-2 text-sm leading-6 text-blue-950">
@@ -678,16 +769,16 @@ function CompanyDetail({
 
 function CustomerDashboardLoading() {
   return (
-    <div className="mt-6 flex min-h-64 items-center justify-center rounded-lg border border-slate-200 bg-white">
+    <Card className="mt-6 flex min-h-64 items-center justify-center">
       <div className="flex flex-col items-center gap-3 text-sm font-medium text-slate-500">
         <LoadingSpinner
-          className="text-emerald-600"
+          className="text-blue-600"
           label="Loading dashboard"
           size="lg"
         />
         <span>Loading your workspace</span>
       </div>
-    </div>
+    </Card>
   )
 }
 
