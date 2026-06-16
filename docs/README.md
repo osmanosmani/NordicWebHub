@@ -12,6 +12,7 @@ This folder contains project documentation for NordicWebHub.
 - [Authentication and security](./authentication-and-security.md)
 - [Testing](./testing.md)
 - [Future improvements](./future-improvements.md)
+- [Final presentation material](./presentation.md)
 
 ## Screenshot Folder
 
