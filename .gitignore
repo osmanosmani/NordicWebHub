@@ -22,10 +22,17 @@ coverage/
 
 # ASP.NET local settings and secrets
 **/appsettings.Development.json
+**/appsettings.Production.json
+**/appsettings.Staging.json
 **/appsettings.Local.json
 **/appsettings.*.local.json
 **/Properties/launchSettings.json
 secrets.json
+
+# Publish profiles and deployment credentials
+*.pubxml
+*.pubxml.user
+*.PublishSettings
 
 # ---------------------------------------------------------------------------
 # Visual Studio
@@ -96,6 +103,26 @@ pnpm-debug.log*
 !.env.example
 !.env.template
 !.env.sample
+
+# ---------------------------------------------------------------------------
+# Databases, backups, exports, and certificates
+# ---------------------------------------------------------------------------
+*.bak
+*.bacpac
+*.dacpac
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+*.sql
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+*.crt
 
 # ---------------------------------------------------------------------------
 # VS Code

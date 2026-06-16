@@ -12,6 +12,8 @@ public static class DbInitializer
     private const string AdminEmail = "admin@nordicwebhub.se";
     private const string CustomerEmail = "customer@nordicwebhub.se";
     private const string DemoCustomerEmail = "demo@nordicwebhub.se";
+    private const string AdminPasswordConfigKey = "SeedData:AdminPassword";
+    private const string CustomerPasswordConfigKey = "SeedData:CustomerPassword";
 
     // Development/demo seed data only. Do not use these credentials or records in production.
     public static async Task InitializeAsync(IServiceProvider serviceProvider)
@@ -26,6 +28,12 @@ public static class DbInitializer
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger("NordicWebHub.Api.Data.DbInitializer");
         var resetDemoData = configuration.GetValue<bool>("SeedData:ResetDemoData");
+        var adminPassword = GetRequiredConfigurationValue(
+            configuration,
+            AdminPasswordConfigKey);
+        var customerPassword = GetRequiredConfigurationValue(
+            configuration,
+            CustomerPasswordConfigKey);
 
         logger.LogInformation(
             "Starting development demo seed. ResetDemoData: {ResetDemoData}.",
@@ -39,7 +47,7 @@ public static class DbInitializer
         var admin = await SeedUserAsync(
             userManager,
             AdminEmail,
-            "Admin123!",
+            adminPassword,
             "Saga",
             "Lind",
             resetDemoData,
@@ -47,7 +55,7 @@ public static class DbInitializer
         var customer = await SeedUserAsync(
             userManager,
             CustomerEmail,
-            "Customer123!",
+            customerPassword,
             "Erik",
             "Holm",
             resetDemoData,
@@ -55,7 +63,7 @@ public static class DbInitializer
         var demoCustomer = await SeedUserAsync(
             userManager,
             DemoCustomerEmail,
-            "Customer123!",
+            customerPassword,
             "Maja",
             "Berg",
             resetDemoData,
@@ -110,6 +118,20 @@ public static class DbInitializer
             resetDemoData);
 
         logger.LogInformation("Development demo seed completed.");
+    }
+
+    private static string GetRequiredConfigurationValue(
+        IConfiguration configuration,
+        string key)
+    {
+        var value = configuration[key];
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        throw new InvalidOperationException(
+            $"Missing development seed configuration '{key}'. Configure it in appsettings.Development.json, user secrets, or an environment variable before running the API in Development.");
     }
 
     private static async Task SeedRoleAsync(
