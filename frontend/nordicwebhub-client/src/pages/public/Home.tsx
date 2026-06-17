@@ -144,12 +144,14 @@ function SectionHeading({
   description: string
 }) {
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <p className="text-sm font-semibold text-blue-700">{eyebrow}</p>
-      <h2 className="mt-2 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
+      <h2 className="mt-3 text-3xl font-semibold leading-[1.08] text-slate-950 sm:text-4xl">
         {title}
       </h2>
-      <p className="mt-4 text-base leading-7 text-slate-600">{description}</p>
+      <p className="mt-4 text-base leading-8 text-slate-600 sm:text-lg">
+        {description}
+      </p>
     </div>
   )
 }
@@ -211,25 +213,25 @@ export function Home() {
 
   return (
     <>
-      <section className="overflow-hidden border-b border-slate-200 bg-white">
-        <div className="page-shell pb-10 pt-10 sm:pb-14 sm:pt-14">
-          <div className="mx-auto max-w-4xl text-center">
+      <section className="overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-white to-slate-50">
+        <div className="page-shell pb-14 pt-12 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20">
+          <div className="mx-auto max-w-5xl text-center">
             <StatusBadge
               label="Digital services, delivered with clarity"
               showDot
               tone="blue"
             />
-            <h1 className="mt-5 text-4xl font-semibold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">
+            <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] text-slate-950 sm:text-5xl lg:text-6xl">
               Your digital agency work, finally in one place
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg sm:leading-8">
               Choose the services your business needs, submit requests, follow
               delivery, and get support through one secure portal for Swedish
               small businesses.
             </p>
-            <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:justify-center">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <ButtonLink
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto sm:min-w-40"
                 size="lg"
                 to="/pricing"
                 trailingIcon={<ArrowRight className="h-4 w-4" />}
@@ -237,7 +239,7 @@ export function Home() {
                 View Packages
               </ButtonLink>
               <ButtonLink
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto sm:min-w-40"
                 size="lg"
                 to="/register"
                 variant="secondary"
@@ -262,7 +264,7 @@ export function Home() {
             </div>
           </div>
 
-          <div className="mx-auto mt-10 max-h-[130px] max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-[0_18px_45px_-28px_rgba(15,23,42,0.35)] sm:max-h-none">
+          <div className="mx-auto mt-12 max-h-[150px] max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_24px_70px_-38px_rgba(15,23,42,0.42)] ring-1 ring-slate-100 sm:max-h-none">
             <div className="flex h-11 items-center justify-between border-b border-slate-200 bg-white px-4">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
@@ -303,7 +305,7 @@ export function Home() {
                 </div>
               </aside>
 
-              <div className="p-4 sm:p-5 lg:p-6">
+              <div className="bg-slate-50/80 p-4 sm:p-5 lg:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-medium text-slate-500">
@@ -327,7 +329,7 @@ export function Home() {
                     { label: 'SEO score', value: '82' },
                   ].map((stat) => (
                     <div
-                      className="min-w-0 rounded-lg border border-slate-200 bg-white p-3"
+                      className="min-w-0 rounded-xl border border-slate-200 bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
                       key={stat.label}
                     >
                       <p className="text-xl font-semibold text-slate-950">
@@ -341,7 +343,7 @@ export function Home() {
                 </div>
 
                 <div className="mt-3 grid gap-3 lg:grid-cols-[1.4fr_0.6fr]">
-                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-semibold text-slate-950">
                         Business Website
@@ -357,7 +359,7 @@ export function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-slate-950">
                         Support
@@ -384,22 +386,22 @@ export function Home() {
       </section>
 
       <section className="border-b border-slate-200 bg-slate-50">
-        <div className="page-shell py-10 sm:py-16 lg:py-20">
+        <div className="page-shell py-12 sm:py-16 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
             <div>
               <p className="text-sm font-semibold text-slate-500">
                 The problem with traditional agency work
               </p>
-              <h2 className="mt-2 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-[1.08] text-slate-950 sm:text-4xl">
                 Less time searching for updates. More time moving forward.
               </h2>
-              <p className="mt-4 leading-7 text-slate-600">
+              <p className="mt-5 text-base leading-8 text-slate-600">
                 Project details, support conversations, reports, and deadlines
                 should not be spread across inboxes and disconnected documents.
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
-              <div className="border-l-2 border-slate-300 pl-5">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 <MessageSquareText
                   aria-hidden="true"
                   className="h-5 w-5 text-slate-500"
@@ -407,13 +409,13 @@ export function Home() {
                 <h3 className="mt-4 font-semibold text-slate-950">
                   Without a portal
                 </h3>
-                <ul className="mt-3 grid gap-2 text-sm leading-6 text-slate-600">
+                <ul className="mt-4 grid gap-3 text-sm leading-6 text-slate-600">
                   <li>Updates scattered across email and chat</li>
                   <li>Unclear ownership, status, and next steps</li>
                   <li>Support history difficult to follow</li>
                 </ul>
               </div>
-              <div className="border-l-2 border-blue-600 pl-5">
+              <div className="rounded-2xl border border-blue-200 bg-white p-6 shadow-[0_12px_35px_-28px_rgba(37,99,235,0.45)]">
                 <Sparkles
                   aria-hidden="true"
                   className="h-5 w-5 text-blue-700"
@@ -421,7 +423,7 @@ export function Home() {
                 <h3 className="mt-4 font-semibold text-slate-950">
                   With NordicWebHub
                 </h3>
-                <ul className="mt-3 grid gap-2 text-sm leading-6 text-slate-700">
+                <ul className="mt-4 grid gap-3 text-sm leading-6 text-slate-700">
                   {[
                     'One workspace for requests and delivery',
                     'Visible progress, deadlines, and reports',
@@ -455,19 +457,19 @@ export function Home() {
 
               return (
                 <article
-                  className="flex h-full flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                  className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_18px_45px_-35px_rgba(15,23,42,0.45)]"
                   key={service.title}
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-1 ring-blue-100">
                     <IconComponent className="h-5 w-5" />
                   </span>
-                  <h3 className="mt-5 text-base font-semibold text-slate-950">
+                  <h3 className="mt-6 text-lg font-semibold text-slate-950">
                     {service.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                  <p className="mt-3 text-sm leading-7 text-slate-600">
                     {service.description}
                   </p>
-                  <ul className="mt-5 grid gap-2 border-t border-slate-100 pt-4 text-sm text-slate-700">
+                  <ul className="mt-6 grid gap-2 border-t border-slate-100 pt-4 text-sm leading-6 text-slate-700">
                     {service.highlights.map((highlight) => (
                       <li className="flex items-center gap-2" key={highlight}>
                         <Check
@@ -495,25 +497,25 @@ export function Home() {
             eyebrow="How it works"
             title="Four steps from service choice to support"
           />
-          <ol className="mt-10 grid border-y border-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
               <li
-                className="relative border-b border-slate-200 py-7 sm:px-6 sm:first:pl-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:last:pr-0"
+                className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
                 key={step.number}
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-xs font-semibold text-white shadow-sm">
                   {step.number}
                 </span>
-                <h3 className="mt-3 text-base font-semibold text-slate-950">
+                <h3 className="mt-4 text-base font-semibold text-slate-950">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 text-sm leading-7 text-slate-600">
                   {step.description}
                 </p>
                 {step.number !== '04' ? (
                   <ArrowRight
                     aria-hidden="true"
-                    className="absolute right-4 top-8 hidden h-4 w-4 text-slate-300 lg:block"
+                    className="absolute right-5 top-7 hidden h-4 w-4 text-slate-300 lg:block"
                   />
                 ) : null}
               </li>
@@ -543,15 +545,18 @@ export function Home() {
               const IconComponent = feature.icon
 
               return (
-                <div className="flex gap-4" key={feature.title}>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700">
+                <div
+                  className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300 hover:bg-slate-50/60"
+                  key={feature.title}
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700">
                     <IconComponent className="h-5 w-5" />
                   </span>
                   <div>
                     <h3 className="text-base font-semibold text-slate-950">
                       {feature.title}
                     </h3>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                    <p className="mt-2 text-sm leading-7 text-slate-600">
                       {feature.description}
                     </p>
                   </div>
@@ -580,7 +585,11 @@ export function Home() {
               const IconComponent = item.icon
 
               return (
-                <div className="flex gap-3" key={item.label}>
+                <div
+                  className="rounded-xl border border-slate-200 bg-white p-4"
+                  key={item.label}
+                >
+                  <div className="flex gap-3">
                   <IconComponent
                     aria-hidden="true"
                     className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
@@ -592,6 +601,7 @@ export function Home() {
                     <p className="mt-1 text-sm leading-6 text-slate-600">
                       {item.text}
                     </p>
+                  </div>
                   </div>
                 </div>
               )
@@ -655,54 +665,58 @@ export function Home() {
                 return (
                   <Card
                     accent={isRecommended ? 'blue' : undefined}
-                    className="flex min-h-full flex-col"
+                    className={
+                      isRecommended
+                        ? 'flex min-h-full flex-col rounded-2xl border-blue-300 shadow-[0_22px_55px_-36px_rgba(37,99,235,0.5)] ring-2 ring-blue-100'
+                        : 'flex min-h-full flex-col rounded-2xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300 hover:shadow-[0_18px_45px_-36px_rgba(15,23,42,0.35)]'
+                    }
                     key={servicePackage.id}
                   >
-                    <div className="flex h-full flex-col p-5 sm:p-6">
+                    <div className="flex h-full flex-col p-6 sm:p-7">
                       <div className="flex min-h-6 items-center justify-between gap-3">
                         <StatusBadge
                           label={servicePackage.category}
                           tone={isRecommended ? 'blue' : 'slate'}
                         />
                         {isRecommended ? (
-                          <span className="text-xs font-semibold text-blue-700">
+                          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
                             Recommended
                           </span>
                         ) : null}
                       </div>
-                    <h3 className="mt-4 text-xl font-semibold text-slate-950">
-                      {servicePackage.name}
-                    </h3>
-                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">
-                      {servicePackage.description}
-                    </p>
-                    <div className="mt-6 border-t border-slate-100 pt-5">
-                      <p className="text-2xl font-semibold text-slate-950">
-                        {sekFormatter.format(servicePackage.monthlyPrice)}
+                      <h3 className="mt-5 text-xl font-semibold text-slate-950">
+                        {servicePackage.name}
+                      </h3>
+                      <p className="mt-3 line-clamp-3 text-sm leading-7 text-slate-600">
+                        {servicePackage.description}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">per month</p>
-                    </div>
-                    <dl className="mt-5 grid gap-2 text-sm">
-                      <div className="flex justify-between gap-4">
-                        <dt className="text-slate-500">Setup</dt>
-                        <dd className="font-medium text-slate-900">
-                          {sekFormatter.format(servicePackage.setupFee)}
-                        </dd>
+                      <div className="mt-7 border-t border-slate-100 pt-6">
+                        <p className="text-3xl font-semibold text-slate-950">
+                          {sekFormatter.format(servicePackage.monthlyPrice)}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-500">per month</p>
                       </div>
-                      <div className="flex justify-between gap-4">
-                        <dt className="text-slate-500">Delivery</dt>
-                        <dd className="font-medium text-slate-900">
-                          {servicePackage.deliveryTime}
-                        </dd>
-                      </div>
-                    </dl>
-                    <ButtonLink
-                      className="mt-6 w-full"
-                      to={user ? getDefaultRouteForUser(user) : '/register'}
-                      variant={isRecommended ? 'primary' : 'secondary'}
-                    >
-                      Request this package
-                    </ButtonLink>
+                      <dl className="mt-5 grid gap-3 text-sm">
+                        <div className="flex justify-between gap-4 rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-slate-600">Setup</dt>
+                          <dd className="font-semibold text-slate-900">
+                            {sekFormatter.format(servicePackage.setupFee)}
+                          </dd>
+                        </div>
+                        <div className="flex justify-between gap-4 rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-slate-600">Delivery</dt>
+                          <dd className="font-semibold text-slate-900">
+                            {servicePackage.deliveryTime}
+                          </dd>
+                        </div>
+                      </dl>
+                      <ButtonLink
+                        className="mt-7 w-full"
+                        to={user ? getDefaultRouteForUser(user) : '/register'}
+                        variant={isRecommended ? 'primary' : 'secondary'}
+                      >
+                        Request this package
+                      </ButtonLink>
                     </div>
                   </Card>
                 )
@@ -713,35 +727,35 @@ export function Home() {
       </section>
 
       <section className="bg-slate-950 text-white">
-        <div className="page-shell py-14 sm:py-16">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="page-shell py-16 sm:py-20">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.9)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold text-blue-300">
                 Start with what your business needs now
               </p>
-              <h2 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-[1.08] text-white sm:text-4xl">
                 Turn your next digital project into a clear, trackable workflow
               </h2>
-              <p className="mt-4 leading-7 text-slate-300">
+              <p className="mt-5 text-base leading-8 text-slate-300">
                 Compare service packages or create an account to keep requests,
                 delivery, support, and reports connected from day one.
               </p>
             </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row lg:mt-0 lg:w-auto">
               <ButtonLink
-                className="w-full border-white bg-white text-slate-950 hover:border-slate-200 hover:bg-slate-100 sm:w-auto"
-                size="lg"
-                to="/register"
-              >
-                Create Account
-              </ButtonLink>
-              <ButtonLink
-                className="w-full border-slate-600 bg-slate-900 text-white hover:border-slate-500 hover:bg-slate-800 sm:w-auto"
+                className="w-full !border-white !bg-white !text-slate-950 hover:!border-slate-200 hover:!bg-slate-100 focus-visible:!ring-white/30 sm:w-auto sm:min-w-40"
                 size="lg"
                 to="/pricing"
+              >
+                View packages
+              </ButtonLink>
+              <ButtonLink
+                className="w-full !border-white/25 !bg-transparent !text-white hover:!border-white/45 hover:!bg-white/10 focus-visible:!ring-white/20 sm:w-auto sm:min-w-40"
+                size="lg"
+                to="/register"
                 variant="secondary"
               >
-                View Packages
+                Create account
               </ButtonLink>
             </div>
           </div>

@@ -174,7 +174,7 @@ export function PublicLayout() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="page-shell grid gap-10 py-12 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.4fr_0.6fr_0.6fr]">
+        <div className="page-shell grid gap-10 py-14 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.4fr_0.6fr_0.6fr] lg:py-16">
           <div className="max-w-sm">
             <Link
               aria-label="NordicWebHub home"
@@ -188,14 +188,17 @@ export function PublicLayout() {
                 NordicWebHub
               </span>
             </Link>
-            <p className="mt-4 text-sm leading-6 text-slate-500">
+            <p className="mt-5 text-sm leading-7 text-slate-600">
               Digital agency services and a secure client portal for Swedish
               small businesses.
             </p>
           </div>
 
-          <nav aria-label="Services and platform" className="grid content-start gap-3">
-            <p className="text-xs font-semibold uppercase text-slate-400">
+          <nav
+            aria-label="Services and platform"
+            className="grid content-start gap-3"
+          >
+            <p className="text-xs font-semibold uppercase text-slate-500">
               Explore
             </p>
             {[
@@ -205,7 +208,7 @@ export function PublicLayout() {
               { to: '/pricing', label: 'Pricing' },
             ].map((link) => (
               <Link
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                 key={link.to}
                 to={link.to}
               >
@@ -214,13 +217,16 @@ export function PublicLayout() {
             ))}
           </nav>
 
-          <nav aria-label="Account navigation" className="grid content-start gap-3">
-            <p className="text-xs font-semibold uppercase text-slate-400">
+          <nav
+            aria-label="Account navigation"
+            className="grid content-start gap-3"
+          >
+            <p className="text-xs font-semibold uppercase text-slate-500">
               Account
             </p>
             {portalRoute ? (
               <Link
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                 to={portalRoute}
               >
                 Open portal
@@ -228,13 +234,13 @@ export function PublicLayout() {
             ) : (
               <>
                 <Link
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                   to="/login"
                 >
                   Portal login
                 </Link>
                 <Link
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
+                  className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                   to="/register"
                 >
                   Create account
@@ -244,7 +250,7 @@ export function PublicLayout() {
           </nav>
         </div>
         <div className="border-t border-slate-100">
-          <div className="page-shell flex flex-col gap-1 py-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="page-shell flex flex-col gap-2 py-5 text-xs leading-5 text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} NordicWebHub.</span>
             <span>Portfolio demo with fictional Swedish business data.</span>
           </div>
