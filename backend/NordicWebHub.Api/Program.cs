@@ -10,6 +10,7 @@ const string reactFrontendCorsPolicy = "ReactFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
+var allowedFrontendOrigins = GetAllowedFrontendOrigins(builder.Configuration);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
@@ -115,7 +116,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(reactFrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins(allowedFrontendOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -218,6 +219,24 @@ static bool IsUnsafeHttpMethod(string method)
         || HttpMethods.IsPut(method)
         || HttpMethods.IsPatch(method)
         || HttpMethods.IsDelete(method);
+}
+
+static string[] GetAllowedFrontendOrigins(IConfiguration configuration)
+{
+    var configuredOrigins = configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>();
+
+    if (configuredOrigins is { Length: > 0 })
+    {
+        return configuredOrigins
+            .Where(origin => !string.IsNullOrWhiteSpace(origin))
+            .Select(origin => origin.Trim().TrimEnd('/'))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    return ["http://localhost:5173"];
 }
 
 public partial class Program

@@ -5,8 +5,11 @@ bin/
 obj/
 out/
 publish/
+Publish/
 artifacts/
 TestResults/
+logs/
+LogFiles/
 *.trx
 *.coverage
 *.coveragexml
@@ -68,6 +71,8 @@ node_modules/
 dist/
 build/
 .vite/
+.vite-temp/
+.vercel/
 .next/
 .nuxt/
 .svelte-kit/
@@ -116,6 +121,8 @@ pnpm-debug.log*
 *.sqlite3
 *.db
 *.db3
+*.sqlite-journal
+*.db-journal
 *.sql
 *.pfx
 *.p12
