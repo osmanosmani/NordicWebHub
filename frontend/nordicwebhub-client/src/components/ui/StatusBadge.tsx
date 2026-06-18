@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'react'
+import { useLanguage } from '../../context/useLanguage'
 import { cn } from '../../utils/cn'
 
 type StatusBadgeProps = HTMLAttributes<HTMLSpanElement> & {
@@ -30,6 +31,8 @@ export function StatusBadge({
   tone = 'slate',
   ...props
 }: StatusBadgeProps) {
+  const { translateStatus } = useLanguage()
+
   return (
     <span
       className={cn(
@@ -45,7 +48,7 @@ export function StatusBadge({
           className={cn('h-1.5 w-1.5 rounded-full', dotClasses[tone])}
         />
       ) : null}
-      {label}
+      {translateStatus(label)}
     </span>
   )
 }

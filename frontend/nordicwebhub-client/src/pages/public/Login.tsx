@@ -4,11 +4,13 @@ import { Button } from '../../components/ui/Button'
 import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { TextInput } from '../../components/ui/TextInput'
 import { useAuth } from '../../context/useAuth'
+import { useLanguage } from '../../context/useLanguage'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 export function Login() {
   const { login } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,9 +36,11 @@ export function Login() {
     <section className="page-shell flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
       <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-950">Log in</h1>
+          <h1 className="text-2xl font-semibold text-slate-950">
+            {t('auth.loginTitle')}
+          </h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Access your NordicWebHub client portal account.
+            {t('auth.loginDescription')}
           </p>
         </div>
 
@@ -44,7 +48,7 @@ export function Login() {
           <TextInput
             autoComplete="email"
             id="email"
-            label="Email"
+            label={t('common.email')}
             onChange={(event) => setEmail(event.target.value)}
             required
             type="email"
@@ -53,7 +57,7 @@ export function Login() {
           <TextInput
             autoComplete="current-password"
             id="password"
-            label="Password"
+            label={t('common.password')}
             onChange={(event) => setPassword(event.target.value)}
             required
             type="password"
@@ -66,17 +70,17 @@ export function Login() {
 
           <Button
             isLoading={isSubmitting}
-            loadingLabel="Signing in"
+            loadingLabel={t('auth.signingIn')}
             type="submit"
           >
-            Sign in
+            {t('common.signIn')}
           </Button>
         </form>
 
         <p className="mt-5 text-sm text-slate-600">
-          New customer?{' '}
+          {t('auth.newCustomer')}{' '}
           <Link className="font-semibold text-blue-700 hover:text-blue-800" to="/register">
-            Create an account
+            {t('common.createAccount')}
           </Link>
         </p>
       </div>

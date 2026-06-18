@@ -11,79 +11,86 @@ import {
   Wrench,
 } from 'lucide-react'
 import { useAuth } from '../context/useAuth'
+import { useLanguage } from '../context/useLanguage'
 import { PortalShell, type PortalNavItem } from './PortalShell'
 
-const adminNavigation: PortalNavItem[] = [
+const adminNavigationConfig = [
   {
     to: '/admin/dashboard',
-    label: 'Dashboard',
+    labelKey: 'common.dashboard',
     icon: LayoutDashboard,
-    section: 'Overview',
+    sectionKey: 'portal.overview',
   },
   {
     to: '/admin/companies',
-    label: 'Companies',
+    labelKey: 'portal.companies',
     icon: Building2,
-    section: 'Client work',
+    sectionKey: 'portal.clientWork',
   },
   {
     to: '/admin/packages',
-    label: 'Packages',
+    labelKey: 'portal.packages',
     icon: Package,
-    section: 'Client work',
+    sectionKey: 'portal.clientWork',
   },
   {
     to: '/admin/orders',
-    label: 'Service Orders',
+    labelKey: 'portal.serviceOrders',
     icon: ReceiptText,
-    section: 'Client work',
+    sectionKey: 'portal.clientWork',
   },
   {
     to: '/admin/requests',
-    label: 'Project Requests',
+    labelKey: 'portal.projectRequests',
     icon: ClipboardList,
-    section: 'Client work',
+    sectionKey: 'portal.clientWork',
   },
   {
     to: '/admin/projects',
-    label: 'Projects',
+    labelKey: 'portal.projects',
     icon: FolderKanban,
-    section: 'Client work',
+    sectionKey: 'portal.clientWork',
   },
   {
     to: '/admin/tickets',
-    label: 'Tickets',
+    labelKey: 'portal.tickets',
     icon: TicketCheck,
-    section: 'Support',
+    sectionKey: 'portal.support',
   },
   {
     to: '/admin/maintenance-logs',
-    label: 'Maintenance Logs',
+    labelKey: 'portal.maintenanceLogs',
     icon: Wrench,
-    section: 'Support',
+    sectionKey: 'portal.support',
   },
   {
     to: '/admin/seo-reports',
-    label: 'SEO Reports',
+    labelKey: 'portal.seoReports',
     icon: SearchCheck,
-    section: 'Insights',
+    sectionKey: 'portal.insights',
   },
   {
     to: '/admin/website-check',
-    label: 'Website Check',
+    labelKey: 'portal.websiteCheck',
     icon: Activity,
-    section: 'Insights',
+    sectionKey: 'portal.insights',
   },
 ]
 
 export function AdminLayout() {
   const { logout, user } = useAuth()
+  const { t } = useLanguage()
+  const adminNavigation: PortalNavItem[] = adminNavigationConfig.map((item) => ({
+    ...item,
+    label: t(item.labelKey),
+    section: t(item.sectionKey),
+  }))
 
   return (
     <PortalShell
       navigation={adminNavigation}
       onLogout={logout}
-      portalLabel="Admin portal"
+      portalLabel={t('common.adminPortal')}
       user={user}
     />
   )

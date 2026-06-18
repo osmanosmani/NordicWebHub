@@ -19,6 +19,7 @@ import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import { useAuth } from '../../context/useAuth'
+import { useLanguage } from '../../context/useLanguage'
 import type { ServicePackage } from '../../types/servicePackage'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { cn } from '../../utils/cn'
@@ -131,6 +132,7 @@ function getRequestRoute(servicePackageId: number, user: ReturnType<typeof useAu
 
 export function Pricing() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const [packages, setPackages] = useState<ServicePackage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -183,15 +185,13 @@ export function Pricing() {
         <div className="page-shell relative z-10 py-14 text-center sm:py-20">
           <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/70 px-4 py-2 text-sm font-semibold text-blue-800 shadow-sm">
             <Sparkles aria-hidden="true" className="h-4 w-4" />
-            Service packages for a clearer digital workflow
+            {t('pricing.badge')}
           </span>
           <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-            Practical digital services, connected to one client portal
+            {t('pricing.title')}
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-700 sm:text-lg">
-            Choose a starting package, send requests from the portal, and keep
-            delivery, support, reports, and service orders organized from day
-            one.
+            {t('pricing.subtitle')}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <ButtonLink
@@ -200,7 +200,7 @@ export function Pricing() {
               to={user ? getDefaultRouteForUser(user) : '/register'}
               trailingIcon={<ArrowRight className="h-4 w-4" />}
             >
-              {user ? 'Open portal' : 'Create account'}
+              {user ? t('common.openPortal') : t('common.createAccount')}
             </ButtonLink>
             <ButtonLink
               className="w-full sm:w-auto"
@@ -208,7 +208,7 @@ export function Pricing() {
               to="#packages"
               variant="secondary"
             >
-              Compare packages
+              {t('pricing.compare')}
             </ButtonLink>
           </div>
         </div>
@@ -245,12 +245,14 @@ export function Pricing() {
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <div>
-            <p className="text-sm font-semibold text-blue-700">Packages</p>
+            <p className="text-sm font-semibold text-blue-700">
+              {t('pricing.packages')}
+            </p>
             <h2
               className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl"
               id="packages"
             >
-              Choose a service that fits your next step
+              {t('pricing.choose')}
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
               The packages are demo-friendly starting points for Swedish small
@@ -334,7 +336,7 @@ export function Pricing() {
                 >
                   {isRecommended ? (
                     <span className="absolute right-4 top-4 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
-                      Recommended
+                      {t('pricing.recommended')}
                     </span>
                   ) : null}
 
@@ -353,18 +355,24 @@ export function Pricing() {
                     <p className="text-3xl font-semibold tracking-tight text-slate-950">
                       {sekFormatter.format(servicePackage.monthlyPrice)}
                     </p>
-                    <p className="mt-1 text-sm text-slate-500">per month</p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {t('pricing.perMonth')}
+                    </p>
                   </div>
 
                   <dl className="mt-5 grid gap-3 text-sm">
                     <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
-                      <dt className="text-slate-500">Setup fee</dt>
+                      <dt className="text-slate-500">
+                        {t('pricing.setupFee')}
+                      </dt>
                       <dd className="font-semibold text-slate-950">
                         {sekFormatter.format(servicePackage.setupFee)}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
-                      <dt className="text-slate-500">Delivery time</dt>
+                      <dt className="text-slate-500">
+                        {t('pricing.deliveryTime')}
+                      </dt>
                       <dd className="font-semibold text-slate-950">
                         {servicePackage.deliveryTime}
                       </dd>
@@ -377,7 +385,7 @@ export function Pricing() {
                       to={getRequestRoute(servicePackage.id, user)}
                       trailingIcon={<ArrowRight className="h-4 w-4" />}
                     >
-                      Request this package
+                      {t('pricing.requestPackage')}
                     </ButtonLink>
                   </div>
                 </article>
@@ -422,7 +430,7 @@ export function Pricing() {
 
           <Card
             className="rounded-2xl shadow-[0_20px_70px_-50px_rgba(15,23,42,0.5)]"
-            title="Questions before choosing a package"
+            title={t('pricing.questionsTitle')}
             description="Practical answers for small businesses comparing digital services, support, and ongoing website work."
           >
             <div className="bg-slate-50/60 px-5 py-4 sm:px-6">
@@ -459,11 +467,10 @@ export function Pricing() {
         <div className="mt-14 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-6 text-white shadow-[0_28px_90px_-55px_rgba(15,23,42,0.9)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-10">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold text-cyan-300">
-              Ready to explore the portal?
+              {t('home.finalEyebrow')}
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Compare services, create an account, and keep the whole workflow
-              in one place.
+              {t('pricing.ctaTitle')}
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-300">
               This is a portfolio demo with fictional Swedish business data,
@@ -475,14 +482,14 @@ export function Pricing() {
               className="!border-white !bg-white !text-slate-950 hover:!bg-slate-100"
               to={user ? getDefaultRouteForUser(user) : '/register'}
             >
-              {user ? 'Open portal' : 'Create account'}
+              {user ? t('common.openPortal') : t('common.createAccount')}
             </ButtonLink>
             <ButtonLink
               className="!border-white/20 !bg-white/[0.06] !text-white hover:!bg-white/[0.12]"
               to="/#platform"
               variant="secondary"
             >
-              See platform
+              {t('pricing.seePlatform')}
             </ButtonLink>
           </div>
         </div>

@@ -19,6 +19,7 @@ import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { StatCard } from '../../components/ui/StatCard'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { useLanguage } from '../../context/useLanguage'
 import type {
   AdminDashboardData,
   DashboardProject,
@@ -36,6 +37,7 @@ import { getErrorMessage } from '../../utils/getErrorMessage'
 const iconClassName = 'h-5 w-5'
 
 export function AdminDashboard() {
+  const { t } = useLanguage()
   const [dashboard, setDashboard] = useState<AdminDashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -80,9 +82,9 @@ export function AdminDashboard() {
   return (
     <section>
       <PageHeader
-        description="Monitor customer activity, delivery work, incoming requests, and support."
-        eyebrow="Admin"
-        title="Dashboard"
+        description={t('dashboard.adminDescription')}
+        eyebrow={t('common.admin')}
+        title={t('common.dashboard')}
       />
 
       <QuickActions />
@@ -95,7 +97,7 @@ export function AdminDashboard() {
               size="sm"
               variant="secondary"
             >
-              Try again
+              {t('common.tryAgain')}
             </Button>
           }
           className="mt-6"
@@ -110,14 +112,14 @@ export function AdminDashboard() {
           <div className="mt-8 flex items-end justify-between gap-4 rounded-2xl border border-white/70 bg-white/55 px-5 py-4 shadow-[0_18px_60px_-52px_rgba(15,23,42,0.5)]">
             <div>
               <h2 className="text-base font-semibold text-slate-950">
-                Business overview
+                {t('dashboard.businessOverview')}
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Current client activity and delivery workload.
+                {t('dashboard.businessOverviewText')}
               </p>
             </div>
             <p className="hidden text-xs font-medium text-slate-400 sm:block">
-              Live portal data
+              {t('dashboard.liveData')}
             </p>
           </div>
 
@@ -125,34 +127,34 @@ export function AdminDashboard() {
             <StatCard
               detail="Registered customer accounts"
               icon={<Users className={iconClassName} />}
-              label="Customers"
+              label={t('dashboard.customers')}
               value={dashboard.totalCustomers}
             />
             <StatCard
               detail="Managed business profiles"
               icon={<Building2 className={iconClassName} />}
-              label="Companies"
+              label={t('dashboard.companies')}
               tone="slate"
               value={dashboard.totalCompanies}
             />
             <StatCard
               detail={`${dashboard.totalProjectRequests} total requests`}
               icon={<ClipboardList className={iconClassName} />}
-              label="Pending Requests"
+              label={t('dashboard.pendingRequests')}
               tone="amber"
               value={dashboard.pendingProjectRequests}
             />
             <StatCard
               detail="Projects currently in delivery"
               icon={<FolderKanban className={iconClassName} />}
-              label="Active Projects"
+              label={t('dashboard.activeProjects')}
               tone="emerald"
               value={dashboard.activeProjects}
             />
             <StatCard
               detail="Support items requiring attention"
               icon={<TicketCheck className={iconClassName} />}
-              label="Open Tickets"
+              label={t('dashboard.openTickets')}
               tone="amber"
               value={dashboard.openTickets}
             />
@@ -172,13 +174,17 @@ export function AdminDashboard() {
 }
 
 function QuickActions() {
+  const { t } = useLanguage()
+
   return (
     <Card className="mt-6 border-blue-100 bg-gradient-to-r from-white to-blue-50/45">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <div>
-          <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+          <p className="text-sm font-semibold text-slate-950">
+            {t('dashboard.quickActions')}
+          </p>
           <p className="mt-1 text-sm leading-5 text-slate-500">
-            Manage the most common agency tasks from one workspace.
+            {t('dashboard.adminQuickText')}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
@@ -188,7 +194,7 @@ function QuickActions() {
             size="sm"
             to="/admin/packages"
           >
-            Add Package
+            {t('dashboard.addPackage')}
           </ButtonLink>
           <ButtonLink
             className="w-full sm:w-auto"
@@ -196,7 +202,7 @@ function QuickActions() {
             to="/admin/tickets"
             variant="secondary"
           >
-            View Tickets
+            {t('dashboard.viewTickets')}
           </ButtonLink>
           <ButtonLink
             className="w-full sm:w-auto"
@@ -204,7 +210,7 @@ function QuickActions() {
             to="/admin/requests"
             variant="secondary"
           >
-            View Requests
+            {t('dashboard.viewRequests')}
           </ButtonLink>
           <ButtonLink
             className="col-span-2 w-full sm:w-auto"
@@ -213,7 +219,7 @@ function QuickActions() {
             to="/admin/website-check"
             variant="secondary"
           >
-            Run Website Check
+            {t('dashboard.runWebsiteCheck')}
           </ButtonLink>
         </div>
       </div>
@@ -226,6 +232,8 @@ function RequestsTable({
 }: {
   requests: DashboardProjectRequest[]
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -235,11 +243,11 @@ function RequestsTable({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       description="The latest customer requests requiring review."
-      title="Recent project requests"
+      title={t('dashboard.recentProjectRequests')}
     >
       {requests.length === 0 ? (
         <EmptyState
@@ -297,6 +305,8 @@ function RequestsTable({
 }
 
 function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -306,11 +316,11 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       description="Newest conversations across customer accounts."
-      title="Recent support tickets"
+      title={t('dashboard.recentTickets')}
     >
       {tickets.length === 0 ? (
         <EmptyState
@@ -367,6 +377,8 @@ function TicketsTable({ tickets }: { tickets: DashboardSupportTicket[] }) {
 }
 
 function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -376,11 +388,11 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       description="Recently created work and its delivery stage."
-      title="Recent projects"
+      title={t('dashboard.recentProjects')}
     >
       {projects.length === 0 ? (
         <EmptyState
@@ -430,15 +442,17 @@ function ProjectsTable({ projects }: { projects: DashboardProject[] }) {
 }
 
 function DashboardLoading() {
+  const { t } = useLanguage()
+
   return (
     <Card className="mt-6 flex min-h-64 items-center justify-center">
       <div className="flex flex-col items-center gap-3 text-sm font-medium text-slate-500">
         <LoadingSpinner
           className="text-blue-600"
-          label="Loading dashboard"
+          label={t('common.loading')}
           size="lg"
         />
-        <span>Loading dashboard overview</span>
+        <span>{t('dashboard.loadingOverview')}</span>
       </div>
     </Card>
   )

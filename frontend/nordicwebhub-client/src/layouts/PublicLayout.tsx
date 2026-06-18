@@ -2,21 +2,24 @@ import { useState } from 'react'
 import { ArrowRight, Menu, X } from 'lucide-react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Button, ButtonLink } from '../components/ui/Button'
+import { LanguageToggle } from '../components/ui/LanguageToggle'
 import { useAuth } from '../context/useAuth'
+import { useLanguage } from '../context/useLanguage'
 import { getDefaultRouteForUser } from '../utils/authRoutes'
 import { cn } from '../utils/cn'
 
 const publicLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/#services', label: 'Services' },
-  { to: '/#how-it-works', label: 'How it works' },
-  { to: '/#platform', label: 'Platform' },
-  { to: '/pricing', label: 'Pricing' },
+  { to: '/', labelKey: 'nav.home' },
+  { to: '/#services', labelKey: 'nav.services' },
+  { to: '/#how-it-works', labelKey: 'nav.howItWorks' },
+  { to: '/#platform', labelKey: 'nav.platform' },
+  { to: '/pricing', labelKey: 'nav.pricing' },
 ]
 
 export function PublicLayout() {
   const location = useLocation()
   const { user } = useAuth()
+  const { t } = useLanguage()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const portalRoute = user ? getDefaultRouteForUser(user) : null
   const isHomePage = location.pathname === '/'
@@ -71,7 +74,7 @@ export function PublicLayout() {
                   isHomePage ? 'text-slate-300' : 'text-slate-500',
                 )}
               >
-                Digital services portal
+                {t('nav.clientPortal')}
               </span>
             </span>
           </Link>
@@ -95,12 +98,13 @@ export function PublicLayout() {
                 key={link.to}
                 to={link.to}
               >
-                {link.label}
+                {t(link.labelKey)}
               </Link>
             ))}
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <LanguageToggle inverted={isHomePage} />
             {portalRoute ? (
               <ButtonLink
                 size="sm"
@@ -112,7 +116,7 @@ export function PublicLayout() {
                     : undefined
                 }
               >
-                Open portal
+                {t('common.openPortal')}
               </ButtonLink>
             ) : (
               <>
@@ -128,7 +132,7 @@ export function PublicLayout() {
                     location.pathname === '/login' ? 'secondary' : 'ghost'
                   }
                 >
-                  Log in
+                  {t('common.logIn')}
                 </ButtonLink>
                 <ButtonLink
                   className={
@@ -140,7 +144,7 @@ export function PublicLayout() {
                   to="/register"
                   trailingIcon={<ArrowRight className="h-4 w-4" />}
                 >
-                  Create account
+                  {t('common.createAccount')}
                 </ButtonLink>
               </>
             )}
@@ -203,7 +207,7 @@ export function PublicLayout() {
                       : 'bg-blue-50 text-blue-700',
                   )}
                 >
-                  Navigation
+                  {t('nav.navigation')}
                 </div>
 
                 <nav
@@ -226,7 +230,7 @@ export function PublicLayout() {
                       onClick={() => setIsMobileMenuOpen(false)}
                       to={link.to}
                     >
-                      <span>{link.label}</span>
+                      <span>{t(link.labelKey)}</span>
                       <ArrowRight
                         aria-hidden="true"
                         className="h-4 w-4 opacity-60"
@@ -241,6 +245,9 @@ export function PublicLayout() {
                     isHomePage ? 'border-white/10' : 'border-slate-200',
                   )}
                 >
+                  <div className="col-span-2">
+                    <LanguageToggle compact inverted={isHomePage} />
+                  </div>
                   {portalRoute ? (
                     <ButtonLink
                       className="col-span-2"
@@ -249,7 +256,7 @@ export function PublicLayout() {
                       to={portalRoute}
                       trailingIcon={<ArrowRight className="h-4 w-4" />}
                     >
-                      Open portal
+                      {t('common.openPortal')}
                     </ButtonLink>
                   ) : (
                     <>
@@ -264,7 +271,7 @@ export function PublicLayout() {
                         to="/login"
                         variant="secondary"
                       >
-                        Log in
+                        {t('common.logIn')}
                       </ButtonLink>
                       <ButtonLink
                         className={
@@ -277,7 +284,7 @@ export function PublicLayout() {
                         to="/register"
                         trailingIcon={<ArrowRight className="h-4 w-4" />}
                       >
-                        Create account
+                        {t('common.createAccount')}
                       </ButtonLink>
                     </>
                   )}
@@ -308,8 +315,7 @@ export function PublicLayout() {
               </span>
             </Link>
             <p className="mt-5 text-sm leading-7 text-slate-600">
-              Digital agency services and a secure client portal for Swedish
-              small businesses.
+              {t('home.subtitle')}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {['Web', 'SEO', 'Hosting', 'Support'].map((item) => (
@@ -328,13 +334,13 @@ export function PublicLayout() {
             className="grid content-start gap-3"
           >
             <p className="text-xs font-semibold uppercase text-slate-500">
-              Platform
+              {t('nav.platform')}
             </p>
             {[
-              { to: '/#platform', label: 'Platform' },
-              { to: '/#how-it-works', label: 'How it works' },
-              { to: '/pricing', label: 'Pricing' },
-              { to: portalRoute ?? '/login', label: 'Client portal' },
+              { to: '/#platform', label: t('nav.platform') },
+              { to: '/#how-it-works', label: t('nav.howItWorks') },
+              { to: '/pricing', label: t('nav.pricing') },
+              { to: portalRoute ?? '/login', label: t('nav.clientPortal') },
             ].map((link) => (
               <Link
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
@@ -351,7 +357,7 @@ export function PublicLayout() {
             className="grid content-start gap-3"
           >
             <p className="text-xs font-semibold uppercase text-slate-500">
-              Services
+              {t('nav.services')}
             </p>
             {[
               { to: '/#services', label: 'Web Development' },
@@ -374,14 +380,14 @@ export function PublicLayout() {
             className="grid content-start gap-3"
           >
             <p className="text-xs font-semibold uppercase text-slate-500">
-              Account
+              {t('common.account')}
             </p>
             {portalRoute ? (
               <Link
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                 to={portalRoute}
               >
-                Open portal
+                {t('common.openPortal')}
               </Link>
             ) : (
               <>
@@ -389,13 +395,13 @@ export function PublicLayout() {
                   className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                   to="/login"
                 >
-                  Portal login
+                  {t('nav.portalLogin')}
                 </Link>
                 <Link
                   className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                   to="/register"
                 >
-                  Create account
+                  {t('common.createAccount')}
                 </Link>
               </>
             )}

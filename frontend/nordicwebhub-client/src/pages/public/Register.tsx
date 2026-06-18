@@ -4,11 +4,13 @@ import { Button } from '../../components/ui/Button'
 import { ErrorMessage } from '../../components/ui/ErrorMessage'
 import { TextInput } from '../../components/ui/TextInput'
 import { useAuth } from '../../context/useAuth'
+import { useLanguage } from '../../context/useLanguage'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 export function Register() {
   const { register } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -38,9 +40,11 @@ export function Register() {
     <section className="page-shell flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
       <div className="w-full max-w-xl rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-950">Register</h1>
+          <h1 className="text-2xl font-semibold text-slate-950">
+            {t('auth.registerTitle')}
+          </h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Create a customer account for the NordicWebHub portal.
+            {t('auth.registerDescription')}
           </p>
         </div>
 
@@ -49,7 +53,7 @@ export function Register() {
             <TextInput
               autoComplete="given-name"
               id="firstName"
-              label="First name"
+              label={t('auth.firstName')}
               onChange={(event) => setFirstName(event.target.value)}
               required
               value={firstName}
@@ -57,7 +61,7 @@ export function Register() {
             <TextInput
               autoComplete="family-name"
               id="lastName"
-              label="Last name"
+              label={t('auth.lastName')}
               onChange={(event) => setLastName(event.target.value)}
               required
               value={lastName}
@@ -67,7 +71,7 @@ export function Register() {
           <TextInput
             autoComplete="email"
             id="registerEmail"
-            label="Email"
+            label={t('common.email')}
             onChange={(event) => setEmail(event.target.value)}
             required
             type="email"
@@ -76,7 +80,7 @@ export function Register() {
           <TextInput
             autoComplete="new-password"
             id="registerPassword"
-            label="Password"
+            label={t('common.password')}
             minLength={8}
             onChange={(event) => setPassword(event.target.value)}
             required
@@ -90,17 +94,17 @@ export function Register() {
 
           <Button
             isLoading={isSubmitting}
-            loadingLabel="Creating account"
+            loadingLabel={t('auth.creatingAccount')}
             type="submit"
           >
-            Create account
+            {t('common.createAccount')}
           </Button>
         </form>
 
         <p className="mt-5 text-sm text-slate-600">
-          Already registered?{' '}
+          {t('auth.alreadyRegistered')}{' '}
           <Link className="font-semibold text-blue-700 hover:text-blue-800" to="/login">
-            Log in
+            {t('common.logIn')}
           </Link>
         </p>
       </div>

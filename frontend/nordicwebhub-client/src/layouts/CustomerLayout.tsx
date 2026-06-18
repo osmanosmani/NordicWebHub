@@ -12,85 +12,92 @@ import {
   Wrench,
 } from 'lucide-react'
 import { useAuth } from '../context/useAuth'
+import { useLanguage } from '../context/useLanguage'
 import { PortalShell, type PortalNavItem } from './PortalShell'
 
-const customerNavigation: PortalNavItem[] = [
+const customerNavigationConfig = [
   {
     to: '/customer/dashboard',
-    label: 'Dashboard',
+    labelKey: 'common.dashboard',
     icon: LayoutDashboard,
-    section: 'Overview',
+    sectionKey: 'portal.overview',
   },
   {
     to: '/customer/company',
-    label: 'My Company',
+    labelKey: 'portal.myCompany',
     icon: Building2,
-    section: 'Company',
+    sectionKey: 'portal.company',
   },
   {
     to: '/customer/packages',
-    label: 'Packages',
+    labelKey: 'portal.packages',
     icon: Package,
-    section: 'Company',
+    sectionKey: 'portal.company',
   },
   {
     to: '/customer/orders',
-    label: 'Service Orders',
+    labelKey: 'portal.serviceOrders',
     icon: ReceiptText,
-    section: 'My work',
+    sectionKey: 'portal.myWork',
   },
   {
     to: '/customer/requests',
-    label: 'My Requests',
+    labelKey: 'portal.myRequests',
     icon: ClipboardList,
-    section: 'My work',
+    sectionKey: 'portal.myWork',
   },
   {
     to: '/customer/projects',
-    label: 'My Projects',
+    labelKey: 'portal.myProjects',
     icon: FolderKanban,
-    section: 'My work',
+    sectionKey: 'portal.myWork',
   },
   {
     to: '/customer/tickets',
-    label: 'Support Tickets',
+    labelKey: 'portal.supportTickets',
     icon: TicketCheck,
-    section: 'Support',
+    sectionKey: 'portal.support',
   },
   {
     to: '/customer/maintenance-logs',
-    label: 'Maintenance Logs',
+    labelKey: 'portal.maintenanceLogs',
     icon: Wrench,
-    section: 'Support',
+    sectionKey: 'portal.support',
   },
   {
     to: '/customer/seo-reports',
-    label: 'SEO Reports',
+    labelKey: 'portal.seoReports',
     icon: SearchCheck,
-    section: 'Insights',
+    sectionKey: 'portal.insights',
   },
   {
     to: '/customer/hosting-status',
-    label: 'Hosting Status',
+    labelKey: 'portal.hostingStatus',
     icon: Globe2,
-    section: 'Insights',
+    sectionKey: 'portal.insights',
   },
   {
     to: '/customer/ai-seo',
-    label: 'AI Service Assistant',
+    labelKey: 'portal.aiAssistant',
     icon: BrainCircuit,
-    section: 'Insights',
+    sectionKey: 'portal.insights',
   },
 ]
 
 export function CustomerLayout() {
   const { logout, user } = useAuth()
+  const { t } = useLanguage()
+  const customerNavigation: PortalNavItem[] = customerNavigationConfig.map((item) => ({
+    ...item,
+    label: t(item.labelKey),
+    section: t(item.sectionKey),
+  }))
 
   return (
     <PortalShell
       navigation={customerNavigation}
       onLogout={logout}
-      portalLabel="Customer portal"
+      portalLabel={t('common.customerPortal')}
       user={user}
     />
   )

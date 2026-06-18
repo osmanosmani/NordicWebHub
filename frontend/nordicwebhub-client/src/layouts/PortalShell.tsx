@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
+import { LanguageToggle } from '../components/ui/LanguageToggle'
+import { useLanguage } from '../context/useLanguage'
 import type { AuthUser } from '../types/auth'
 import { cn } from '../utils/cn'
 
@@ -52,6 +54,7 @@ export function PortalShell({
   user,
   utility,
 }: PortalShellProps) {
+  const { t } = useLanguage()
   const location = useLocation()
   const [isMobileNavigationOpen, setIsMobileNavigationOpen] = useState(false)
   const currentItem =
@@ -124,6 +127,9 @@ export function PortalShell({
             />
             <div className="border-t border-slate-200/80 bg-white/45 p-4">
               <UserPanel className="flex" user={user} />
+              <div className="mt-4">
+                <LanguageToggle />
+              </div>
               <Button
                 className="mt-4 w-full"
                 leadingIcon={<LogOut className="h-4 w-4" />}
@@ -131,7 +137,7 @@ export function PortalShell({
                 size="sm"
                 variant="secondary"
               >
-                Log out
+                {t('common.logOut')}
               </Button>
             </div>
           </aside>
@@ -163,17 +169,18 @@ export function PortalShell({
 
             <div className="flex items-center gap-3">
               {utility}
+              <LanguageToggle compact />
               <UserPanel className="hidden sm:flex" compact user={user} />
               <Button
-                aria-label="Log out"
+                aria-label={t('common.logOut')}
                 className="h-10 px-3"
                 leadingIcon={<LogOut className="h-4 w-4" />}
                 onClick={() => void onLogout()}
                 size="sm"
-                title="Log out"
+                title={t('common.logOut')}
                 variant="secondary"
               >
-                <span className="hidden md:inline">Log out</span>
+                <span className="hidden md:inline">{t('common.logOut')}</span>
               </Button>
             </div>
           </div>
@@ -196,6 +203,8 @@ function PortalSidebar({
   navigation: PortalNavItem[]
   portalLabel: string
 }) {
+  const { t } = useLanguage()
+
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-slate-200/80 bg-[#fffdf8]/95 shadow-[18px_0_55px_-50px_rgba(15,23,42,0.55)] backdrop-blur lg:flex lg:flex-col">
       <div className="flex h-16 items-center border-b border-slate-200/80 px-5">
@@ -209,7 +218,7 @@ function PortalSidebar({
       <div className="border-t border-slate-200/80 bg-white/45 px-5 py-4">
         <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs leading-5 text-slate-600 shadow-sm">
           <ShieldCheck aria-hidden="true" className="h-4 w-4 text-blue-600" />
-          <span>Secure client workspace</span>
+          <span>{t('common.secureWorkspace')}</span>
         </div>
       </div>
     </aside>

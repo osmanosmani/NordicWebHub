@@ -26,6 +26,7 @@ import { PageHeader } from '../../components/ui/PageHeader'
 import { SeoScore } from '../../components/ui/SeoScore'
 import { StatCard } from '../../components/ui/StatCard'
 import { StatusBadge } from '../../components/ui/StatusBadge'
+import { useLanguage } from '../../context/useLanguage'
 import type {
   CustomerDashboardData,
   DashboardProject,
@@ -52,6 +53,7 @@ const projectStatuses = [
 ]
 
 export function CustomerDashboard() {
+  const { t } = useLanguage()
   const [dashboard, setDashboard] = useState<CustomerDashboardData | null>(null)
   const [latestMaintenanceLog, setLatestMaintenanceLog] =
     useState<MaintenanceLog | null>(null)
@@ -131,9 +133,9 @@ export function CustomerDashboard() {
   return (
     <section>
       <PageHeader
-        description="Review your company, active work, requests, and support in one place."
-        eyebrow="Customer"
-        title="Dashboard"
+        description={t('dashboard.customerDescription')}
+        eyebrow={t('common.customer')}
+        title={t('common.dashboard')}
       />
 
       <QuickActions />
@@ -146,7 +148,7 @@ export function CustomerDashboard() {
               size="sm"
               variant="secondary"
             >
-              Try again
+              {t('common.tryAgain')}
             </Button>
           }
           className="mt-6"
@@ -162,7 +164,7 @@ export function CustomerDashboard() {
               size="sm"
               variant="secondary"
             >
-              Retry
+              {t('common.retry')}
             </Button>
           }
           className="mt-6"
@@ -210,13 +212,17 @@ export function CustomerDashboard() {
 }
 
 function QuickActions() {
+  const { t } = useLanguage()
+
   return (
     <Card className="mt-6 border-blue-100 bg-gradient-to-r from-white to-blue-50/45">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <div>
-          <p className="text-sm font-semibold text-slate-950">Quick actions</p>
+          <p className="text-sm font-semibold text-slate-950">
+            {t('dashboard.quickActions')}
+          </p>
           <p className="mt-1 text-sm leading-5 text-slate-500">
-            Start a request, contact support, or review your active workspace.
+            {t('dashboard.customerQuickText')}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
@@ -226,7 +232,7 @@ function QuickActions() {
             size="sm"
             to="/customer/requests"
           >
-            Create Request
+            {t('dashboard.createRequest')}
           </ButtonLink>
           <ButtonLink
             className="w-full sm:w-auto"
@@ -235,7 +241,7 @@ function QuickActions() {
             to="/customer/tickets"
             variant="secondary"
           >
-            Open Ticket
+            {t('dashboard.openTicket')}
           </ButtonLink>
           <ButtonLink
             className="w-full sm:w-auto"
@@ -243,7 +249,7 @@ function QuickActions() {
             to="/customer/projects"
             variant="secondary"
           >
-            View Projects
+            {t('dashboard.viewProjects')}
           </ButtonLink>
           <ButtonLink
             className="w-full sm:w-auto"
@@ -251,7 +257,7 @@ function QuickActions() {
             to="/customer/seo-reports"
             variant="secondary"
           >
-            SEO Reports
+            {t('dashboard.seoReports')}
           </ButtonLink>
         </div>
       </div>
@@ -264,34 +270,36 @@ function CustomerOverviewStats({
 }: {
   dashboard: CustomerDashboardData
 }) {
+  const { t } = useLanguage()
+
   return (
     <div className="mt-8">
       <div className="rounded-2xl border border-white/70 bg-white/55 px-5 py-4 shadow-[0_18px_60px_-52px_rgba(15,23,42,0.5)]">
         <h2 className="text-base font-semibold text-slate-950">
-          Workspace overview
+          {t('dashboard.workspaceOverview')}
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Current activity, delivery work, and support connected to your company.
+          {t('dashboard.workspaceOverviewText')}
         </p>
       </div>
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
         <StatCard
           detail="Currently in delivery"
           icon={<FolderKanban className="h-5 w-5" />}
-          label="Active Projects"
+          label={t('dashboard.activeProjects')}
           value={dashboard.activeProjects.length}
         />
         <StatCard
           detail="Support items requiring attention"
           icon={<TicketCheck className="h-5 w-5" />}
-          label="Open Tickets"
+          label={t('dashboard.openTickets')}
           tone="amber"
           value={dashboard.openTickets.length}
         />
         <StatCard
           detail="Latest submitted requests"
           icon={<ClipboardPlus className="h-5 w-5" />}
-          label="Recent Requests"
+          label={t('dashboard.recentRequests')}
           tone="slate"
           value={dashboard.recentProjectRequests.length}
         />
@@ -307,6 +315,8 @@ function CompanyOverview({
   className?: string
   company: CustomerDashboardData['company']
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -316,12 +326,12 @@ function CompanyOverview({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          Manage
+          {t('common.manage')}
         </ButtonLink>
       }
       className={className}
       description="The business connected to your portal account."
-      title="Company overview"
+      title={t('dashboard.companyOverview')}
     >
       {company ? (
         <div className="p-5">
@@ -380,6 +390,8 @@ function ActiveProjects({
   className?: string
   projects: DashboardProject[]
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -389,18 +401,18 @@ function ActiveProjects({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       className={className}
       description="Current delivery work and upcoming deadlines."
-      title="Active project progress"
+      title={t('dashboard.activeProjectProgress')}
     >
       {projects.length === 0 ? (
         <EmptyState
           action={
             <ButtonLink size="sm" to="/customer/requests">
-              Create Request
+              {t('dashboard.createRequest')}
             </ButtonLink>
           }
           compact
@@ -476,6 +488,8 @@ function OpenTickets({
   className?: string
   tickets: DashboardSupportTicket[]
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -485,24 +499,24 @@ function OpenTickets({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       className={className}
       description="Support items still requiring attention."
-      title="Open tickets"
+      title={t('dashboard.openTickets')}
     >
       {tickets.length === 0 ? (
         <EmptyState
           action={
             <ButtonLink size="sm" to="/customer/tickets">
-              Open Ticket
+              {t('dashboard.openTicket')}
             </ButtonLink>
           }
           compact
           description="You do not have any unresolved support tickets."
           icon={<TicketCheck className="h-5 w-5" />}
-          title="All clear"
+          title={t('common.allClear')}
         />
       ) : (
         <div className="divide-y divide-slate-200">
@@ -544,6 +558,8 @@ function RecentRequests({
   className?: string
   requests: DashboardProjectRequest[]
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -553,18 +569,18 @@ function RecentRequests({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       className={className}
       description="Your most recently submitted project requests."
-      title="Recent requests"
+      title={t('dashboard.recentRequests')}
     >
       {requests.length === 0 ? (
         <EmptyState
           action={
             <ButtonLink size="sm" to="/customer/requests">
-              Create Request
+              {t('dashboard.createRequest')}
             </ButtonLink>
           }
           compact
@@ -620,6 +636,8 @@ function LatestMaintenanceActivity({
   className?: string
   log: MaintenanceLog | null
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -629,12 +647,12 @@ function LatestMaintenanceActivity({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       className={className}
       description="The latest technical work completed for your company."
-      title="Latest maintenance activity"
+      title={t('dashboard.latestMaintenance')}
     >
       {log ? (
         <div className="p-5 sm:p-6">
@@ -680,6 +698,8 @@ function LatestSeoReport({
   className?: string
   report: SeoReport | null
 }) {
+  const { t } = useLanguage()
+
   return (
     <Card
       action={
@@ -689,12 +709,12 @@ function LatestSeoReport({
           trailingIcon={<ArrowRight className="h-4 w-4" />}
           variant="ghost"
         >
-          View all
+          {t('common.viewAll')}
         </ButtonLink>
       }
       className={className}
       description="Your latest organic search assessment and next steps."
-      title="Latest SEO report"
+      title={t('dashboard.latestSeo')}
     >
       {report ? (
         <div className="p-5 sm:p-6">
@@ -768,15 +788,17 @@ function CompanyDetail({
 }
 
 function CustomerDashboardLoading() {
+  const { t } = useLanguage()
+
   return (
     <Card className="mt-6 flex min-h-64 items-center justify-center">
       <div className="flex flex-col items-center gap-3 text-sm font-medium text-slate-500">
         <LoadingSpinner
           className="text-blue-600"
-          label="Loading dashboard"
+          label={t('common.loading')}
           size="lg"
         />
-        <span>Loading your workspace</span>
+        <span>{t('dashboard.loadingWorkspace')}</span>
       </div>
     </Card>
   )

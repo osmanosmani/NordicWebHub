@@ -24,6 +24,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import { ButtonLink } from '../../components/ui/Button'
 import { useAuth } from '../../context/useAuth'
+import { useLanguage } from '../../context/useLanguage'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { cn } from '../../utils/cn'
 
@@ -569,8 +570,9 @@ function ServiceCard({
 export function Home() {
   const { hash } = useLocation()
   const { user } = useAuth()
+  const { t } = useLanguage()
   const portalRoute = user ? getDefaultRouteForUser(user) : '/register'
-  const portalLabel = user ? 'Open portal' : 'Create Account'
+  const portalLabel = user ? t('common.openPortal') : t('common.createAccount')
 
   useEffect(() => {
     if (!hash) {
@@ -606,16 +608,13 @@ export function Home() {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_30px_rgba(34,211,238,0.12)] backdrop-blur">
               <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.9)]" />
-              Built for digital services, delivery and support
+              {t('home.badge')}
             </span>
             <h1 className="mt-7 text-[2.25rem] font-semibold leading-[1.03] tracking-tight text-white sm:text-5xl lg:text-[4.15rem]">
-              One portal for websites, SEO, hosting and support.
+              {t('home.title')}
             </h1>
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
-              NordicWebHub helps Swedish small businesses choose packages,
-              submit requests, track projects, manage support tickets, follow
-              service orders, and get AI-assisted recommendations in one
-              organized workspace.
+              {t('home.subtitle')}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ButtonLink
@@ -632,14 +631,14 @@ export function Home() {
                 to="/pricing"
                 variant="secondary"
               >
-                View Packages
+                {t('home.viewPackages')}
               </ButtonLink>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
               {[
-                'Built for Swedish SMEs',
-                'Admin and Customer roles',
-                'Secure client access',
+                t('home.builtFor'),
+                t('home.roles'),
+                t('home.secure'),
               ].map((item) => (
                 <span className="inline-flex items-center gap-2" key={item}>
                   <CheckCircle2 className="h-4 w-4 text-emerald-300" />
@@ -664,15 +663,13 @@ export function Home() {
           <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
             <div>
               <p className="text-sm font-semibold text-blue-700">
-                Portal workflow
+                {t('home.workflowEyebrow')}
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                What the portal connects from day one.
+                {t('home.workflowTitle')}
               </h2>
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Instead of showing fake client logos, this section explains the
-                real workflow NordicWebHub gives a new customer: package,
-                request, delivery, support, and reporting in one place.
+                {t('home.workflowText')}
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -715,9 +712,9 @@ export function Home() {
         <div className="page-shell py-16 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <SectionHeading
-              description="NordicWebHub turns digital service delivery into a visible portal workflow where every request, project, ticket, order, and report has a place."
-              eyebrow="Problem / Solution"
-              title="No more messy emails, scattered updates or unclear service status."
+              description={t('home.problemText')}
+              eyebrow={t('home.problemEyebrow')}
+              title={t('home.problemTitle')}
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-4">
@@ -775,9 +772,9 @@ export function Home() {
         />
         <div className="page-shell relative z-10 py-16 lg:py-24">
           <SectionHeading
-            description="Each service is designed as a clear starting point that can become a request, project, ticket, service order, report, or support flow."
-            eyebrow="Services"
-            title="Practical digital services with a portal workflow behind them."
+            description={t('home.servicesText')}
+            eyebrow={t('home.servicesEyebrow')}
+            title={t('home.servicesTitle')}
           />
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((service) => (
@@ -811,9 +808,9 @@ export function Home() {
         <div className="page-shell relative z-10 py-16 lg:py-24">
           <SectionHeading
             align="center"
-            description="The workflow is simple enough for a school MVP, but realistic enough to show how a digital agency can organize client delivery."
-            eyebrow="How it works"
-            title="From service choice to support, every step stays visible."
+            description={t('home.howText')}
+            eyebrow={t('home.howEyebrow')}
+            title={t('home.howTitle')}
             tone="dark"
           />
 
@@ -877,9 +874,9 @@ export function Home() {
         <div className="page-shell relative z-10 py-16 lg:py-24">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
-              description="NordicWebHub is not only a marketing page. It connects the public package flow with a working Admin and Customer portal."
-              eyebrow="Platform preview"
-              title="Two portal roles, one connected delivery system."
+              description={t('home.platformText')}
+              eyebrow={t('home.platformEyebrow')}
+              title={t('home.platformTitle')}
             />
             <ButtonLink
               className="w-full sm:w-auto"
@@ -887,7 +884,7 @@ export function Home() {
               trailingIcon={<ArrowRight className="h-4 w-4" />}
               variant="secondary"
             >
-              Explore the portal
+              {t('home.explorePortal')}
             </ButtonLink>
           </div>
 
@@ -980,15 +977,13 @@ export function Home() {
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_28px_90px_-50px_rgba(14,165,233,0.55)] backdrop-blur sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold text-cyan-300">
-                Ready to explore the portal?
+                {t('home.finalEyebrow')}
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-[1.08] text-white sm:text-4xl">
-                Bring your next digital project into one organized portal.
+                {t('home.finalTitle')}
               </h2>
               <p className="mt-5 text-base leading-8 text-slate-300">
-                Create an account or compare packages to see how requests,
-                delivery, service orders, support, reports, and AI assistance
-                can stay connected.
+                {t('home.finalText')}
               </p>
             </div>
             <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row lg:mt-0 lg:w-auto">
@@ -1005,7 +1000,7 @@ export function Home() {
                 to="/pricing"
                 variant="secondary"
               >
-                View Packages
+                {t('home.viewPackages')}
               </ButtonLink>
             </div>
           </div>
