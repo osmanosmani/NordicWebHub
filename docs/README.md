@@ -18,6 +18,7 @@ This folder contains project documentation for NordicWebHub.
 - [Project status](./project-status.md)
 - [Future improvements](./future-improvements.md)
 - [Final presentation material](./presentation.md)
+- [Technical presentation guide](./technical-presentation.md)
 
 ## Screenshot Folder
 

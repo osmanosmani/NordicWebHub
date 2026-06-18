@@ -228,6 +228,7 @@ More documentation is available in [docs](docs/README.md):
 - Testing
 - Screenshot checklist
 - Final presentation material
+- Technical presentation guide
 
 ## Project Status
 

@@ -1,6 +1,8 @@
 # NordicWebHub Final Presentation
 
-This document contains material for a 3-5 minute final school presentation, portfolio explanation, and GitHub project walkthrough.
+This document contains material for a short final school presentation, portfolio explanation, and GitHub project walkthrough.
+
+
 
 ## 1. Presentation Outline
 
@@ -111,27 +113,8 @@ This document contains material for a 3-5 minute final school presentation, port
 - NordicWebHub demonstrates a complete full-stack workflow for a digital agency portal.
 - It combines practical business features, role-based security, clean UI, and realistic technical architecture.
 
-## 2. Short Speaking Script
 
-Hello, my project is called NordicWebHub. It is a full-stack client portal for a digital agency that works with small and medium-sized businesses.
 
-The idea behind the project is that agency communication can easily become scattered. A customer might send project requests by email, ask for support in another channel, receive SEO reports separately, and have no clear overview of current work. NordicWebHub brings these workflows into one portal.
-
-The application has two main user roles. The Admin represents the agency team, and the Customer represents a business client. The Admin can manage companies, service packages, project requests, active projects, support tickets, service orders, maintenance logs, SEO reports, and website health checks. The Customer can view only their own company data, create project requests, follow project progress, open tickets, view reports, create service orders, and use the AI Service Assistant.
-
-The frontend is built with React, TypeScript, Vite, and Tailwind CSS. The backend is built with ASP.NET Core Web API, Entity Framework Core, SQL Server, and ASP.NET Core Identity. Authentication uses HttpOnly cookies instead of storing tokens in localStorage. I also added CSRF protection for unsafe requests, login lockout, role-based authorization, and customer data isolation.
-
-One important rule in the MVP is that one Customer belongs to one Company. This makes the data isolation clear: Admin users can access all data, but Customer users only see data connected to their own company.
-
-Two extra features I added are Service Orders and the AI Service Assistant. Service Orders show a demo payment status workflow where a customer can request a package and an Admin can update the order status. The AI Service Assistant is a safe demo feature that uses rule-based logic to generate recommendations for a customer's website and service needs.
-
-The project is not meant to be production-ready yet, but it is a complete demo-ready MVP. It includes backend tests, frontend build and lint checks, documentation, and a clean UI for presentation. Future improvements would include real payment integration, real AI integration, email notifications, file uploads, production deployment, and more automated tests.
-
-Overall, NordicWebHub shows how a realistic agency client portal can be built with a modern full-stack architecture, clear user roles, secure authentication, and practical business workflows.
-
-## 3. Live Demo Flow
-
-Use this flow for a 3-5 minute live demo. Keep it focused and avoid opening every page in detail.
 
 ## Before the Demo
 
@@ -254,36 +237,3 @@ Main features include Admin and Customer dashboards, companies, service packages
 
 This project helped me practice building a realistic full-stack SaaS-style application with secure authentication, structured backend APIs, reusable frontend components, and a professional user interface.
 
-## 6. Future Improvements
-
-- Real payment integration such as Stripe
-- Real AI integration with OpenAI or Azure OpenAI
-- Email notifications
-- Production deployment
-- Stronger analytics and reporting
-- More automated integration tests
-- File uploads for projects and support tickets
-- Team/member accounts for agency staff
-- Customer onboarding flow
-- Scheduled background website checks
-- PDF exports for reports and orders
-- Better audit logging for status changes
-
-## 7. Slide Suggestion
-
-For a simple 6-slide presentation:
-
-1. Title and short idea
-2. Problem and solution
-3. Tech stack and architecture
-4. Customer workflow
-5. Admin workflow
-6. Security, testing, and future improvements
-
-For a live demo-focused presentation:
-
-1. Explain the problem briefly
-2. Show landing and pricing
-3. Show Customer flow
-4. Show Admin flow
-5. End with security and future improvements
