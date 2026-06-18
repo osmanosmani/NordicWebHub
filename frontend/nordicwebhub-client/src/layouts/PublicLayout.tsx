@@ -36,11 +36,11 @@ export function PublicLayout() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors supports-[backdrop-filter]:bg-opacity-90 md:sticky',
           isHomePage
-            ? 'border-white/10 bg-slate-950/90 shadow-[0_1px_0_rgba(255,255,255,0.05)]'
-            : 'border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)]',
+            ? 'border-white/10 bg-slate-950/95 shadow-[0_16px_45px_-35px_rgba(14,165,233,0.65)]'
+            : 'border-slate-200 bg-white/95 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.3)]',
         )}
       >
-        <div className="page-shell flex h-16 items-center justify-between gap-4">
+        <div className="page-shell flex h-[4.5rem] items-center justify-between gap-4">
           <Link
             aria-label="NordicWebHub home"
             className="flex shrink-0 items-center gap-3"
@@ -48,7 +48,7 @@ export function PublicLayout() {
           >
             <span
               className={cn(
-                'flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm',
+                'flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-white shadow-sm ring-1 ring-white/10',
                 isHomePage
                   ? 'bg-gradient-to-br from-blue-500 to-cyan-400'
                   : 'bg-blue-600',
@@ -59,7 +59,7 @@ export function PublicLayout() {
             <span className="grid">
               <span
                 className={cn(
-                  'text-base font-semibold leading-5',
+                  'text-[17px] font-semibold leading-5',
                   isHomePage ? 'text-white' : 'text-slate-950',
                 )}
               >
@@ -67,7 +67,7 @@ export function PublicLayout() {
               </span>
               <span
                 className={cn(
-                  'hidden text-[11px] font-medium leading-4 sm:block',
+                  'hidden text-[12px] font-medium leading-4 sm:block',
                   isHomePage ? 'text-slate-300' : 'text-slate-500',
                 )}
               >
@@ -83,9 +83,9 @@ export function PublicLayout() {
             {publicLinks.map((link) => (
               <Link
                 className={cn(
-                  'rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4',
+                  'rounded-xl px-3.5 py-2.5 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4',
                   isHomePage
-                    ? 'text-slate-300 hover:bg-white/10 hover:text-white focus-visible:ring-cyan-300/20'
+                    ? 'text-slate-100 hover:bg-white/10 hover:text-white focus-visible:ring-cyan-300/20'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus-visible:ring-blue-100',
                   isLinkActive(link.to) &&
                     (isHomePage
@@ -180,13 +180,13 @@ export function PublicLayout() {
           <>
             <button
               aria-label="Close mobile menu overlay"
-              className="fixed inset-0 top-16 z-40 bg-slate-950/45 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 top-[4.5rem] z-40 bg-slate-950/45 backdrop-blur-sm md:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
               type="button"
             />
             <div
               className={cn(
-                'fixed left-3 right-3 top-[4.75rem] z-[60] overflow-hidden rounded-2xl border shadow-[0_24px_70px_-34px_rgba(15,23,42,0.65)] ring-1 md:hidden',
+                'fixed left-3 right-3 top-[5.25rem] z-[60] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-2xl border shadow-[0_24px_70px_-34px_rgba(15,23,42,0.65)] ring-1 md:hidden',
                 isHomePage
                   ? 'border-white/10 bg-slate-950/95 text-white ring-cyan-300/10'
                   : 'border-slate-200 bg-white text-slate-900 ring-slate-900/5',
@@ -288,22 +288,22 @@ export function PublicLayout() {
         ) : null}
       </header>
 
-      <main className="pt-16 md:pt-0">
+      <main className="pt-[4.5rem] md:pt-0">
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="page-shell grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_0.8fr_0.75fr] lg:py-16">
+      <footer className="border-t border-slate-200 bg-gradient-to-b from-white to-slate-50">
+        <div className="page-shell grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_0.8fr_0.75fr] lg:py-18">
           <div className="max-w-md">
             <Link
               aria-label="NordicWebHub home"
               className="inline-flex items-center gap-3"
               to="/"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">
                 N
               </span>
-              <span className="text-base font-semibold text-slate-950">
+              <span className="text-[17px] font-semibold text-slate-950">
                 NordicWebHub
               </span>
             </Link>

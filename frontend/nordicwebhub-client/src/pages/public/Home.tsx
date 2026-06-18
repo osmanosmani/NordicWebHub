@@ -38,6 +38,33 @@ const capabilityChips = [
   'AI Assistant',
 ]
 
+const portalWorkflowHighlights: Array<{
+  title: string
+  description: string
+  icon: Icon
+}> = [
+  {
+    title: 'Package choice',
+    description: 'Start from a clear service package instead of a vague email.',
+    icon: PackageCheck,
+  },
+  {
+    title: 'Structured request',
+    description: 'Collect goals, scope, budget, and timeline in one place.',
+    icon: ClipboardCheck,
+  },
+  {
+    title: 'Visible delivery',
+    description: 'Turn approved work into projects, tickets, orders, and reports.',
+    icon: FolderKanban,
+  },
+  {
+    title: 'Ongoing support',
+    description: 'Keep support, hosting status, and maintenance history connected.',
+    icon: Headphones,
+  },
+]
+
 const floatingSignals: Array<{
   title: string
   description: string
@@ -367,7 +394,7 @@ function HeroDashboardMockup() {
             <span className="h-2 w-12 rounded-full bg-cyan-200/20" />
           </div>
 
-          <div className="grid min-h-[420px] md:grid-cols-[178px_1fr]">
+          <div className="grid min-h-[320px] sm:min-h-[360px] md:min-h-[420px] md:grid-cols-[178px_1fr]">
             <aside className="hidden border-r border-white/10 bg-slate-950/85 p-4 md:block">
               <div className="mb-6 flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 text-xs font-bold text-white">
@@ -467,7 +494,7 @@ function HeroDashboardMockup() {
                 </div>
               </div>
 
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="mt-3 hidden gap-3 sm:grid sm:grid-cols-2">
                 <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-white">
                     <Sparkles className="h-4 w-4 text-violet-200" />
@@ -492,15 +519,11 @@ function HeroDashboardMockup() {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:absolute lg:-left-16 lg:top-14 lg:mt-0 lg:w-60">
-        {floatingSignals.slice(0, 2).map((signal) => (
-          <HeroSignalCard key={signal.title} {...signal} />
-        ))}
+      <div className="pointer-events-none hidden lg:absolute lg:-left-10 lg:top-20 lg:block lg:w-60">
+        <HeroSignalCard {...floatingSignals[0]} />
       </div>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:absolute lg:-right-10 lg:bottom-12 lg:mt-0 lg:w-64">
-        {floatingSignals.slice(2).map((signal) => (
-          <HeroSignalCard key={signal.title} {...signal} />
-        ))}
+      <div className="pointer-events-none hidden lg:absolute lg:-right-8 lg:bottom-16 lg:block lg:w-64">
+        <HeroSignalCard {...floatingSignals[1]} />
       </div>
     </div>
   )
@@ -514,14 +537,18 @@ function ServiceCard({
   highlights,
 }: (typeof services)[number]) {
   return (
-    <article className="group relative flex min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_28px_80px_-48px_rgba(37,99,235,0.55)]">
+    <article className="group relative flex min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl">
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-28 bg-gradient-to-br from-blue-50 via-cyan-50 to-white opacity-80"
+        className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-blue-50 via-cyan-50 to-white opacity-90"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute right-5 top-5 h-16 w-16 rounded-full bg-cyan-200/30 blur-2xl transition duration-300 group-hover:bg-blue-300/30"
       />
       <div className="relative z-10">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white shadow-[0_18px_40px_-24px_rgba(37,99,235,0.8)]">
-          <IconComponent className="h-5 w-5" />
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white shadow-[0_18px_40px_-24px_rgba(37,99,235,0.8)] transition duration-300 group-hover:scale-105">
+          <IconComponent className="h-6 w-6" />
         </span>
         <p className="mt-6 text-sm font-semibold text-blue-700">{kicker}</p>
         <h3 className="mt-2 text-xl font-semibold text-slate-950">{title}</h3>
@@ -575,23 +602,24 @@ export function Home() {
           className="absolute left-1/2 top-10 h-72 w-[48rem] -translate-x-1/2 rounded-full bg-cyan-300/15 blur-3xl"
         />
 
-        <div className="page-shell relative z-10 grid gap-12 pb-24 pt-14 sm:pb-28 sm:pt-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:pb-32 lg:pt-24">
-          <div className="max-w-2xl">
+        <div className="page-shell relative z-10 grid gap-10 pb-20 pt-10 sm:gap-12 sm:pb-28 sm:pt-20 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:pb-32 lg:pt-24">
+          <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_30px_rgba(34,211,238,0.12)] backdrop-blur">
               <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.9)]" />
               Built for digital services, delivery and support
             </span>
-            <h1 className="mt-7 text-4xl font-semibold leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Run your web, SEO and support work from one client portal.
+            <h1 className="mt-7 text-[2.25rem] font-semibold leading-[1.03] tracking-tight text-white sm:text-5xl lg:text-[4.15rem]">
+              One portal for websites, SEO, hosting and support.
             </h1>
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
-              NordicWebHub helps Swedish small businesses request services,
-              track projects, manage support tickets, follow service orders, and
-              get AI-assisted recommendations in one organized workspace.
+              NordicWebHub helps Swedish small businesses choose packages,
+              submit requests, track projects, manage support tickets, follow
+              service orders, and get AI-assisted recommendations in one
+              organized workspace.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ButtonLink
-                className="w-full !border-white !bg-white !text-slate-950 hover:!border-slate-200 hover:!bg-slate-100 focus-visible:!ring-white/30 sm:w-auto sm:min-w-44"
+                className="w-full !border-white !bg-white !px-8 !text-slate-950 hover:!border-slate-200 hover:!bg-slate-100 focus-visible:!ring-white/30 sm:w-auto sm:min-w-52"
                 size="lg"
                 to={portalRoute}
                 trailingIcon={<ArrowRight className="h-4 w-4" />}
@@ -599,7 +627,7 @@ export function Home() {
                 {portalLabel}
               </ButtonLink>
               <ButtonLink
-                className="w-full !border-white/25 !bg-white/5 !text-white hover:!border-cyan-200/50 hover:!bg-white/10 focus-visible:!ring-cyan-300/20 sm:w-auto sm:min-w-44"
+                className="w-full !border-white/25 !bg-transparent !text-white hover:!border-cyan-200/50 hover:!bg-white/10 focus-visible:!ring-cyan-300/20 sm:w-auto sm:min-w-44"
                 size="lg"
                 to="/pricing"
                 variant="secondary"
@@ -632,22 +660,53 @@ export function Home() {
       </section>
 
       <section className="border-b border-slate-200 bg-[#f7f3ea]">
-        <div className="page-shell py-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <p className="max-w-xl text-sm font-semibold leading-7 text-slate-700">
-              Built for Swedish SMEs and digital service teams that want a
-              clearer workflow from first request to long-term support.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {capabilityChips.map((chip) => (
-                <span
-                  className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm"
-                  key={chip}
-                >
-                  {chip}
-                </span>
-              ))}
+        <div className="page-shell py-10">
+          <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold text-blue-700">
+                Portal workflow
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+                What the portal connects from day one.
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Instead of showing fake client logos, this section explains the
+                real workflow NordicWebHub gives a new customer: package,
+                request, delivery, support, and reporting in one place.
+              </p>
             </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {portalWorkflowHighlights.map((item) => {
+                const IconComponent = item.icon
+
+                return (
+                  <div
+                    className="group rounded-2xl border border-slate-200 bg-white/85 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-md"
+                    key={item.title}
+                  >
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-600 group-hover:text-white">
+                      <IconComponent className="h-5 w-5" />
+                    </span>
+                    <p className="mt-4 text-sm font-semibold text-slate-950">
+                      {item.title}
+                    </p>
+                    <p className="mt-2 text-xs leading-6 text-slate-600">
+                      {item.description}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2 border-t border-slate-200/80 pt-5">
+            {capabilityChips.map((chip) => (
+              <span
+                className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm"
+                key={chip}
+              >
+                {chip}
+              </span>
+            ))}
           </div>
         </div>
       </section>
@@ -758,7 +817,7 @@ export function Home() {
             tone="dark"
           />
 
-          <div className="relative mt-14 grid gap-6 lg:grid-cols-4">
+          <div className="relative mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div
               aria-hidden="true"
               className="absolute left-0 right-0 top-12 hidden h-px bg-gradient-to-r from-transparent via-cyan-300/35 to-transparent lg:block"
