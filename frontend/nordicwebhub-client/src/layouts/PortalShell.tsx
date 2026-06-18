@@ -30,14 +30,17 @@ type PortalShellProps = {
 
 const accentClasses = {
   blue: {
-    brand: 'bg-blue-600 text-white',
-    active: 'border-blue-100 bg-blue-50 text-blue-700',
-    icon: 'text-blue-600',
+    brand: 'bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-sm',
+    active:
+      'border-blue-200 bg-gradient-to-r from-blue-50 to-white text-blue-800 shadow-[0_12px_34px_-30px_rgba(37,99,235,0.9)]',
+    icon: 'text-blue-700',
   },
   emerald: {
-    brand: 'bg-emerald-600 text-white',
-    active: 'border-emerald-100 bg-emerald-50 text-emerald-700',
-    icon: 'text-emerald-600',
+    brand:
+      'bg-gradient-to-br from-emerald-600 to-teal-500 text-white shadow-sm',
+    active:
+      'border-emerald-200 bg-gradient-to-r from-emerald-50 to-white text-emerald-800 shadow-[0_12px_34px_-30px_rgba(16,185,129,0.9)]',
+    icon: 'text-emerald-700',
   },
 }
 
@@ -80,7 +83,7 @@ export function PortalShell({
   }, [isMobileNavigationOpen])
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-[#f7f3ea] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.08),transparent_32%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_30%)] text-slate-900">
       <PortalSidebar
         accent={accent}
         navigation={navigation}
@@ -98,10 +101,10 @@ export function PortalShell({
           <aside
             aria-label={`${portalLabel} mobile navigation`}
             aria-modal="true"
-            className="relative flex h-full w-[min(18rem,88vw)] flex-col border-r border-slate-200 bg-white shadow-xl"
+            className="relative flex h-full w-[min(18rem,88vw)] flex-col border-r border-slate-200 bg-[#fffdf8] shadow-xl"
             role="dialog"
           >
-            <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
+            <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4">
               <Brand portalLabel={portalLabel} tone={accent} />
               <Button
                 aria-label="Close navigation"
@@ -119,7 +122,7 @@ export function PortalShell({
               navigation={navigation}
               onNavigate={() => setIsMobileNavigationOpen(false)}
             />
-            <div className="border-t border-slate-200 p-4">
+            <div className="border-t border-slate-200/80 bg-white/45 p-4">
               <UserPanel className="flex" user={user} />
               <Button
                 className="mt-4 w-full"
@@ -136,7 +139,7 @@ export function PortalShell({
       ) : null}
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)] backdrop-blur">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-[#fffdf8]/92 shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur-xl">
           <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <Button
@@ -194,8 +197,8 @@ function PortalSidebar({
   portalLabel: string
 }) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      <div className="flex h-16 items-center border-b border-slate-200 px-5">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-slate-200/80 bg-[#fffdf8]/95 shadow-[18px_0_55px_-50px_rgba(15,23,42,0.55)] backdrop-blur lg:flex lg:flex-col">
+      <div className="flex h-16 items-center border-b border-slate-200/80 px-5">
         <Brand portalLabel={portalLabel} tone={accent} />
       </div>
       <PortalNavigation
@@ -203,9 +206,11 @@ function PortalSidebar({
         className="flex-1 overflow-y-auto p-4"
         navigation={navigation}
       />
-      <div className="flex items-center gap-2 border-t border-slate-200 px-5 py-4 text-xs leading-5 text-slate-500">
-        <ShieldCheck aria-hidden="true" className="h-4 w-4 text-slate-400" />
-        <span>Secure client workspace</span>
+      <div className="border-t border-slate-200/80 bg-white/45 px-5 py-4">
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs leading-5 text-slate-600 shadow-sm">
+          <ShieldCheck aria-hidden="true" className="h-4 w-4 text-blue-600" />
+          <span>Secure client workspace</span>
+        </div>
       </div>
     </aside>
   )
@@ -274,7 +279,7 @@ function PortalNavigation({
               <NavLink
                 className={({ isActive }) =>
                   cn(
-                    'group flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950',
+                    'group flex min-h-10 items-center gap-3 rounded-xl border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition-all hover:border-slate-200 hover:bg-white hover:text-slate-950 hover:shadow-sm',
                     isActive && accentClasses[accent].active,
                   )
                 }
@@ -317,7 +322,7 @@ function UserPanel({
 
   return (
     <div className={cn('items-center gap-3', className)}>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm">
         {initials}
       </span>
       <span className={cn('min-w-0', compact && 'max-w-44')}>

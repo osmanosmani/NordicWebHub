@@ -107,7 +107,7 @@ export function AdminDashboard() {
 
       {!isLoading && dashboard ? (
         <>
-          <div className="mt-8 flex items-end justify-between gap-4">
+          <div className="mt-8 flex items-end justify-between gap-4 rounded-2xl border border-white/70 bg-white/55 px-5 py-4 shadow-[0_18px_60px_-52px_rgba(15,23,42,0.5)]">
             <div>
               <h2 className="text-base font-semibold text-slate-950">
                 Business overview
@@ -173,12 +173,12 @@ export function AdminDashboard() {
 
 function QuickActions() {
   return (
-    <Card className="mt-6">
+    <Card className="mt-6 border-blue-100 bg-gradient-to-r from-white to-blue-50/45">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <div>
           <p className="text-sm font-semibold text-slate-950">Quick actions</p>
           <p className="mt-1 text-sm leading-5 text-slate-500">
-            Jump directly to common administration tasks.
+            Manage the most common agency tasks from one workspace.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">

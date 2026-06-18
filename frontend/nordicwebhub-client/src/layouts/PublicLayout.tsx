@@ -19,6 +19,7 @@ export function PublicLayout() {
   const { user } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const portalRoute = user ? getDefaultRouteForUser(user) : null
+  const isHomePage = location.pathname === '/'
 
   function isLinkActive(to: string) {
     const [pathname, hash = ''] = to.split('#')
@@ -31,21 +32,45 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)] backdrop-blur">
+      <header
+        className={cn(
+          'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors supports-[backdrop-filter]:bg-opacity-90 md:sticky',
+          isHomePage
+            ? 'border-white/10 bg-slate-950/90 shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+            : 'border-slate-200 bg-white/95 shadow-[0_1px_2px_rgba(15,23,42,0.03)]',
+        )}
+      >
         <div className="page-shell flex h-16 items-center justify-between gap-4">
           <Link
             aria-label="NordicWebHub home"
             className="flex shrink-0 items-center gap-3"
             to="/"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
+            <span
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm',
+                isHomePage
+                  ? 'bg-gradient-to-br from-blue-500 to-cyan-400'
+                  : 'bg-blue-600',
+              )}
+            >
               N
             </span>
             <span className="grid">
-              <span className="text-base font-semibold leading-5 text-slate-950">
+              <span
+                className={cn(
+                  'text-base font-semibold leading-5',
+                  isHomePage ? 'text-white' : 'text-slate-950',
+                )}
+              >
                 NordicWebHub
               </span>
-              <span className="hidden text-[11px] font-medium leading-4 text-slate-500 sm:block">
+              <span
+                className={cn(
+                  'hidden text-[11px] font-medium leading-4 sm:block',
+                  isHomePage ? 'text-slate-300' : 'text-slate-500',
+                )}
+              >
                 Digital services portal
               </span>
             </span>
@@ -58,9 +83,14 @@ export function PublicLayout() {
             {publicLinks.map((link) => (
               <Link
                 className={cn(
-                  'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950',
+                  'rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4',
+                  isHomePage
+                    ? 'text-slate-300 hover:bg-white/10 hover:text-white focus-visible:ring-cyan-300/20'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus-visible:ring-blue-100',
                   isLinkActive(link.to) &&
-                    'bg-blue-50 font-semibold text-blue-700',
+                    (isHomePage
+                      ? 'bg-white/10 font-semibold text-white'
+                      : 'bg-blue-50 font-semibold text-blue-700'),
                 )}
                 key={link.to}
                 to={link.to}
@@ -76,6 +106,11 @@ export function PublicLayout() {
                 size="sm"
                 to={portalRoute}
                 trailingIcon={<ArrowRight className="h-4 w-4" />}
+                className={
+                  isHomePage
+                    ? '!border-white/20 !bg-white !text-slate-950 hover:!bg-slate-100'
+                    : undefined
+                }
               >
                 Open portal
               </ButtonLink>
@@ -84,6 +119,11 @@ export function PublicLayout() {
                 <ButtonLink
                   size="sm"
                   to="/login"
+                  className={
+                    isHomePage
+                      ? '!text-slate-200 hover:!bg-white/10 hover:!text-white'
+                      : undefined
+                  }
                   variant={
                     location.pathname === '/login' ? 'secondary' : 'ghost'
                   }
@@ -91,6 +131,11 @@ export function PublicLayout() {
                   Log in
                 </ButtonLink>
                 <ButtonLink
+                  className={
+                    isHomePage
+                      ? '!border-white/20 !bg-white !text-slate-950 hover:!bg-slate-100'
+                      : undefined
+                  }
                   size="sm"
                   to="/register"
                   trailingIcon={<ArrowRight className="h-4 w-4" />}
@@ -102,80 +147,154 @@ export function PublicLayout() {
           </div>
 
           <Button
+            aria-controls="public-mobile-menu"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-            className="h-10 w-10 px-0 md:hidden"
+            className={cn(
+              '!h-12 !w-12 shrink-0 !rounded-2xl !px-0 shadow-sm md:hidden',
+              isHomePage
+                ? '!border-white/20 !bg-white/10 !text-white shadow-[0_16px_40px_-24px_rgba(34,211,238,0.8)] hover:!bg-white/[0.15] focus-visible:!ring-cyan-300/20'
+                : '!border-slate-300 !bg-white !text-slate-900 hover:!bg-slate-50 focus-visible:!ring-blue-100',
+            )}
             onClick={() => setIsMobileMenuOpen((current) => !current)}
             title={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             variant="secondary"
           >
             {isMobileMenuOpen ? (
-              <X aria-hidden="true" className="h-5 w-5" />
+              <X
+                aria-hidden="true"
+                className="h-6 w-6"
+                strokeWidth={2.6}
+              />
             ) : (
-              <Menu aria-hidden="true" className="h-5 w-5" />
+              <Menu
+                aria-hidden="true"
+                className="h-6 w-6"
+                strokeWidth={2.6}
+              />
             )}
           </Button>
         </div>
 
         {isMobileMenuOpen ? (
-          <div className="border-t border-slate-200 bg-white md:hidden">
-            <div className="page-shell grid gap-1 py-3">
-              {publicLinks.map((link) => (
-                <Link
+          <>
+            <button
+              aria-label="Close mobile menu overlay"
+              className="fixed inset-0 top-16 z-40 bg-slate-950/45 backdrop-blur-sm md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+              type="button"
+            />
+            <div
+              className={cn(
+                'fixed left-3 right-3 top-[4.75rem] z-[60] overflow-hidden rounded-2xl border shadow-[0_24px_70px_-34px_rgba(15,23,42,0.65)] ring-1 md:hidden',
+                isHomePage
+                  ? 'border-white/10 bg-slate-950/95 text-white ring-cyan-300/10'
+                  : 'border-slate-200 bg-white text-slate-900 ring-slate-900/5',
+              )}
+              id="public-mobile-menu"
+            >
+              <div className="h-px bg-gradient-to-r from-blue-500 via-cyan-300 to-emerald-300" />
+              <div className="grid gap-3 p-3">
+                <div
                   className={cn(
-                    'rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                    isLinkActive(link.to) &&
-                      'bg-blue-50 font-semibold text-blue-700',
+                    'rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-wide',
+                    isHomePage
+                      ? 'bg-white/[0.06] text-cyan-100'
+                      : 'bg-blue-50 text-blue-700',
                   )}
-                  key={link.to}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  to={link.to}
                 >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-                {portalRoute ? (
-                  <ButtonLink
-                    className="col-span-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    size="sm"
-                    to={portalRoute}
-                  >
-                    Open portal
-                  </ButtonLink>
-                ) : (
-                  <>
+                  Navigation
+                </div>
+
+                <nav
+                  aria-label="Mobile public navigation"
+                  className="grid gap-1"
+                >
+                  {publicLinks.map((link) => (
+                    <Link
+                      className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4',
+                        isHomePage
+                          ? 'text-slate-200 hover:bg-white/10 hover:text-white focus-visible:ring-cyan-300/20'
+                          : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:ring-blue-100',
+                        isLinkActive(link.to) &&
+                          (isHomePage
+                            ? 'bg-white/10 text-white'
+                            : 'bg-blue-50 text-blue-700'),
+                      )}
+                      key={link.to}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      to={link.to}
+                    >
+                      <span>{link.label}</span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="h-4 w-4 opacity-60"
+                      />
+                    </Link>
+                  ))}
+                </nav>
+
+                <div
+                  className={cn(
+                    'grid grid-cols-2 gap-2 border-t pt-3',
+                    isHomePage ? 'border-white/10' : 'border-slate-200',
+                  )}
+                >
+                  {portalRoute ? (
                     <ButtonLink
+                      className="col-span-2"
                       onClick={() => setIsMobileMenuOpen(false)}
                       size="sm"
-                      to="/login"
-                      variant="secondary"
+                      to={portalRoute}
+                      trailingIcon={<ArrowRight className="h-4 w-4" />}
                     >
-                      Log in
+                      Open portal
                     </ButtonLink>
-                    <ButtonLink
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      size="sm"
-                      to="/register"
-                    >
-                      Create account
-                    </ButtonLink>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <ButtonLink
+                        className={
+                          isHomePage
+                            ? '!border-white/20 !bg-white/[0.08] !text-white hover:!bg-white/[0.14]'
+                            : undefined
+                        }
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        size="sm"
+                        to="/login"
+                        variant="secondary"
+                      >
+                        Log in
+                      </ButtonLink>
+                      <ButtonLink
+                        className={
+                          isHomePage
+                            ? '!border-white !bg-white !text-slate-950 hover:!bg-slate-100'
+                            : undefined
+                        }
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        size="sm"
+                        to="/register"
+                        trailingIcon={<ArrowRight className="h-4 w-4" />}
+                      >
+                        Create account
+                      </ButtonLink>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         ) : null}
       </header>
 
-      <main>
+      <main className="pt-16 md:pt-0">
         <Outlet />
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="page-shell grid gap-10 py-14 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.4fr_0.6fr_0.6fr] lg:py-16">
-          <div className="max-w-sm">
+        <div className="page-shell grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_0.8fr_0.75fr] lg:py-16">
+          <div className="max-w-md">
             <Link
               aria-label="NordicWebHub home"
               className="inline-flex items-center gap-3"
@@ -192,24 +311,57 @@ export function PublicLayout() {
               Digital agency services and a secure client portal for Swedish
               small businesses.
             </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {['Web', 'SEO', 'Hosting', 'Support'].map((item) => (
+                <span
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600"
+                  key={item}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
           <nav
-            aria-label="Services and platform"
+            aria-label="Platform navigation"
             className="grid content-start gap-3"
           >
             <p className="text-xs font-semibold uppercase text-slate-500">
-              Explore
+              Platform
             </p>
             {[
-              { to: '/#services', label: 'Services' },
-              { to: '/#how-it-works', label: 'How it works' },
               { to: '/#platform', label: 'Platform' },
+              { to: '/#how-it-works', label: 'How it works' },
               { to: '/pricing', label: 'Pricing' },
+              { to: portalRoute ?? '/login', label: 'Client portal' },
             ].map((link) => (
               <Link
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                 key={link.to}
+                to={link.to}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <nav
+            aria-label="Service categories"
+            className="grid content-start gap-3"
+          >
+            <p className="text-xs font-semibold uppercase text-slate-500">
+              Services
+            </p>
+            {[
+              { to: '/#services', label: 'Web Development' },
+              { to: '/#services', label: 'SEO' },
+              { to: '/#services', label: 'Hosting & Maintenance' },
+              { to: '/#services', label: 'Support Tickets' },
+            ].map((link) => (
+              <Link
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+                key={link.label}
                 to={link.to}
               >
                 {link.label}

@@ -20,7 +20,7 @@ export function DataTable({
   return (
     <div className={wrapperClassName}>
       {showMobileHint ? (
-        <p className="border-b border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-medium text-slate-500 sm:hidden">
+        <p className="border-b border-slate-200 bg-[#faf7ef] px-4 py-2.5 text-xs font-medium text-slate-500 sm:hidden">
           Swipe horizontally to view all columns.
         </p>
       ) : null}
@@ -35,7 +35,7 @@ export function DataTable({
       >
         <table
           className={cn(
-            'min-w-full divide-y divide-slate-200 text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-slate-50/70 [&_td]:leading-6 [&_th]:whitespace-nowrap [&_th]:tracking-normal',
+            'min-w-full divide-y divide-slate-200 bg-white text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-[#faf7ef]/70 [&_td]:leading-6 [&_th]:whitespace-nowrap [&_th]:tracking-normal',
             className,
           )}
           {...props}

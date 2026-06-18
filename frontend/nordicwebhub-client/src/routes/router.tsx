@@ -18,6 +18,7 @@ import { CustomerDashboard } from '../pages/customer/CustomerDashboard'
 import { CustomerHostingStatus } from '../pages/customer/CustomerHostingStatus'
 import { CustomerMaintenanceLogs } from '../pages/customer/CustomerMaintenanceLogs'
 import { CustomerOrders } from '../pages/customer/CustomerOrders'
+import { CustomerPackages } from '../pages/customer/CustomerPackages'
 import { CustomerProjects } from '../pages/customer/CustomerProjects'
 import { CustomerRequests } from '../pages/customer/CustomerRequests'
 import { CustomerSeoReports } from '../pages/customer/CustomerSeoReports'
@@ -128,6 +129,10 @@ export const router = createBrowserRouter([
           {
             path: 'company',
             element: <CustomerCompany />,
+          },
+          {
+            path: 'packages',
+            element: <CustomerPackages />,
           },
           {
             path: 'requests',

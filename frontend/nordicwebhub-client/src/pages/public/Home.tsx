@@ -28,6 +28,7 @@ import { StatusBadge } from '../../components/ui/StatusBadge'
 import { useAuth } from '../../context/useAuth'
 import type { ServicePackage } from '../../types/servicePackage'
 import { getDefaultRouteForUser } from '../../utils/authRoutes'
+import { cn } from '../../utils/cn'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 type Icon = ComponentType<{ className?: string }>
@@ -128,6 +129,24 @@ const platformFeatures: Array<{
   },
 ]
 
+const heroSignals = [
+  {
+    label: 'Requests',
+    value: '12',
+    detail: 'organized in one client workflow',
+  },
+  {
+    label: 'Delivery',
+    value: '60%',
+    detail: 'visible project progress',
+  },
+  {
+    label: 'Support',
+    value: '1',
+    detail: 'open ticket with priority',
+  },
+]
+
 const sekFormatter = new Intl.NumberFormat('sv-SE', {
   currency: 'SEK',
   maximumFractionDigits: 0,
@@ -138,18 +157,37 @@ function SectionHeading({
   eyebrow,
   title,
   description,
+  tone = 'light',
 }: {
   eyebrow: string
   title: string
   description: string
+  tone?: 'light' | 'dark'
 }) {
   return (
     <div className="max-w-3xl">
-      <p className="text-sm font-semibold text-blue-700">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-semibold leading-[1.08] text-slate-950 sm:text-4xl">
+      <p
+        className={cn(
+          'text-sm font-semibold',
+          tone === 'dark' ? 'text-cyan-300' : 'text-blue-700',
+        )}
+      >
+        {eyebrow}
+      </p>
+      <h2
+        className={cn(
+          'mt-3 text-3xl font-semibold leading-[1.08] sm:text-4xl',
+          tone === 'dark' ? 'text-white' : 'text-slate-950',
+        )}
+      >
         {title}
       </h2>
-      <p className="mt-4 text-base leading-8 text-slate-600 sm:text-lg">
+      <p
+        className={cn(
+          'mt-4 text-base leading-8 sm:text-lg',
+          tone === 'dark' ? 'text-slate-300' : 'text-slate-600',
+        )}
+      >
         {description}
       </p>
     </div>
@@ -213,41 +251,66 @@ export function Home() {
 
   return (
     <>
-      <section className="overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-white to-slate-50">
-        <div className="page-shell pb-14 pt-12 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20">
+      <section className="relative isolate overflow-hidden bg-slate-950 text-white">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(56,189,248,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.16) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.1)_0%,rgba(2,6,23,0.82)_74%,rgba(2,6,23,0.96)_100%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-0 h-72 w-[44rem] -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -left-32 top-44 h-72 w-72 rounded-full bg-blue-600/25 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -right-32 top-64 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl"
+        />
+
+        <div className="page-shell relative z-10 pb-24 pt-14 sm:pb-28 sm:pt-20 lg:pb-32 lg:pt-24">
           <div className="mx-auto max-w-5xl text-center">
-            <StatusBadge
-              label="Digital services, delivered with clarity"
-              showDot
-              tone="blue"
-            />
-            <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] text-slate-950 sm:text-5xl lg:text-6xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_30px_rgba(34,211,238,0.12)] backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.9)]" />
+              Digital services, delivered with clarity
+            </span>
+            <h1 className="mx-auto mt-7 max-w-4xl text-4xl font-semibold leading-[1.03] tracking-tight text-white sm:text-5xl lg:text-6xl">
               Your digital agency work, finally in one place
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg sm:leading-8">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg sm:leading-8">
               Choose the services your business needs, submit requests, follow
               delivery, and get support through one secure portal for Swedish
               small businesses.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <ButtonLink
-                className="w-full sm:w-auto sm:min-w-40"
+                className="w-full !border-white !bg-white !text-slate-950 hover:!border-slate-200 hover:!bg-slate-100 focus-visible:!ring-white/30 sm:w-auto sm:min-w-44"
                 size="lg"
                 to="/pricing"
                 trailingIcon={<ArrowRight className="h-4 w-4" />}
               >
-                View Packages
+                View packages
               </ButtonLink>
               <ButtonLink
-                className="w-full sm:w-auto sm:min-w-40"
+                className="w-full !border-white/25 !bg-white/5 !text-white hover:!border-cyan-200/50 hover:!bg-white/10 focus-visible:!ring-cyan-300/20 sm:w-auto sm:min-w-44"
                 size="lg"
                 to="/register"
                 variant="secondary"
               >
-                Create Account
+                Create account
               </ButtonLink>
             </div>
-            <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600 sm:mt-7">
+            <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
               {[
                 'Built for Swedish SMBs',
                 'Transparent delivery',
@@ -256,133 +319,214 @@ export function Home() {
                 <span className="inline-flex items-center gap-2" key={item}>
                   <CheckCircle2
                     aria-hidden="true"
-                    className="h-4 w-4 text-emerald-600"
+                    className="h-4 w-4 text-emerald-300"
                   />
                   {item}
                 </span>
               ))}
             </div>
-          </div>
 
-          <div className="mx-auto mt-12 max-h-[150px] max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_24px_70px_-38px_rgba(15,23,42,0.42)] ring-1 ring-slate-100 sm:max-h-none">
-            <div className="flex h-11 items-center justify-between border-b border-slate-200 bg-white px-4">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-              </div>
-              <span className="text-xs font-medium text-slate-500">
-                NordicWebHub customer portal
-              </span>
-              <span className="h-2 w-10 rounded-full bg-slate-200" />
+            <div className="mx-auto mt-9 grid max-w-3xl gap-3 sm:grid-cols-3">
+              {heroSignals.map((signal) => (
+                <div
+                  className="rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-left shadow-[0_18px_60px_-45px_rgba(34,211,238,0.7)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-cyan-300/25 hover:bg-white/[0.075]"
+                  key={signal.label}
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                      {signal.label}
+                    </p>
+                    <p className="text-xl font-semibold text-white">
+                      {signal.value}
+                    </p>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-slate-300">
+                    {signal.detail}
+                  </p>
+                </div>
+              ))}
             </div>
 
-            <div className="grid min-h-[290px] sm:grid-cols-[172px_1fr]">
-              <aside className="hidden border-r border-slate-200 bg-white p-4 sm:block">
-                <div className="mb-5 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">
-                    N
+            <div
+              aria-hidden="true"
+              className="mx-auto mt-5 flex max-w-2xl items-center justify-center gap-3 text-xs font-medium text-slate-400"
+            >
+              <span className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-300/35 to-cyan-300/10" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/15 bg-white/[0.04] px-3 py-1.5 text-cyan-100">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" />
+                Live portal signals
+              </span>
+              <span className="h-px flex-1 bg-gradient-to-l from-transparent via-cyan-300/35 to-cyan-300/10" />
+            </div>
+          </div>
+
+          <div className="relative mx-auto mt-14 max-w-5xl">
+            <div
+              aria-hidden="true"
+              className="absolute -left-10 top-16 hidden w-48 rounded-2xl border border-cyan-300/20 bg-slate-900/85 p-4 shadow-[0_24px_70px_-44px_rgba(14,165,233,0.55)] backdrop-blur lg:block"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                Client portal
+              </p>
+              <p className="mt-2 text-sm font-semibold text-white">
+                Requests, delivery and reports stay connected.
+              </p>
+              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-300" />
+              </div>
+            </div>
+
+            <div
+              aria-hidden="true"
+              className="absolute -right-8 bottom-14 hidden w-48 rounded-2xl border border-emerald-300/20 bg-slate-900/85 p-4 shadow-[0_24px_70px_-44px_rgba(16,185,129,0.38)] backdrop-blur lg:block"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-200">
+                Secure access
+              </p>
+              <p className="mt-2 text-sm font-semibold text-white">
+                Admin and customer workflows stay separated.
+              </p>
+              <div className="mt-4 flex gap-1.5">
+                <span className="h-2 flex-1 rounded-full bg-emerald-300" />
+                <span className="h-2 flex-1 rounded-full bg-cyan-300/70" />
+                <span className="h-2 flex-1 rounded-full bg-blue-400/70" />
+              </div>
+            </div>
+
+            <div className="relative mx-auto max-h-[280px] overflow-hidden rounded-[1.5rem] border border-cyan-300/20 bg-slate-900/80 p-2 shadow-[0_34px_100px_-42px_rgba(14,165,233,0.55)] ring-1 ring-white/10 backdrop-blur sm:max-h-none">
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-12 -top-16 h-32 rounded-full bg-cyan-300/20 blur-3xl"
+              />
+              <div className="relative overflow-hidden rounded-[1.15rem] border border-white/10 bg-slate-950">
+                <div className="flex h-11 items-center justify-between border-b border-white/10 bg-slate-900/95 px-4">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-300">
+                    NordicWebHub customer portal
                   </span>
-                  <span className="text-xs font-semibold text-slate-900">
-                    Portal
-                  </span>
+                  <span className="h-2 w-10 rounded-full bg-cyan-200/20" />
                 </div>
-                <div className="grid gap-2">
-                  {['Overview', 'Projects', 'Tickets', 'SEO reports'].map(
-                    (item, index) => (
-                      <div
-                        className={
-                          index === 0
-                            ? 'rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700'
-                            : 'px-3 py-2 text-xs font-medium text-slate-500'
-                        }
-                        key={item}
-                      >
-                        {item}
+
+                <div className="grid min-h-[315px] sm:grid-cols-[178px_1fr]">
+                  <aside className="hidden border-r border-white/10 bg-slate-950/80 p-4 sm:block">
+                    <div className="mb-5 flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 text-xs font-bold text-white">
+                        N
+                      </span>
+                      <span className="text-xs font-semibold text-white">
+                        Portal
+                      </span>
+                    </div>
+                    <div className="grid gap-2">
+                      {['Overview', 'Projects', 'Tickets', 'SEO reports'].map(
+                        (item, index) => (
+                          <div
+                            className={
+                              index === 0
+                                ? 'rounded-lg border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold text-cyan-100'
+                                : 'px-3 py-2 text-xs font-medium text-slate-400'
+                            }
+                            key={item}
+                          >
+                            {item}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </aside>
+
+                  <div className="bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.16),transparent_35%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))] p-4 sm:p-5 lg:p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xs font-medium text-slate-400">
+                          Customer workspace
+                        </p>
+                        <p className="mt-1 text-base font-semibold text-white sm:text-lg">
+                          Nordic Build AB
+                        </p>
                       </div>
-                    ),
-                  )}
-                </div>
-              </aside>
+                      <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                        All systems online
+                      </span>
+                    </div>
 
-              <div className="bg-slate-50/80 p-4 sm:p-5 lg:p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-medium text-slate-500">
-                      Customer workspace
-                    </p>
-                    <p className="mt-1 text-base font-semibold text-slate-950 sm:text-lg">
-                      Nordic Build AB
-                    </p>
-                  </div>
-                  <StatusBadge
-                    label="All systems online"
-                    showDot
-                    tone="emerald"
-                  />
-                </div>
+                    <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+                      {[
+                        { label: 'Active projects', value: '2' },
+                        { label: 'Open tickets', value: '1' },
+                        { label: 'SEO score', value: '82' },
+                      ].map((stat) => (
+                        <div
+                          className="min-w-0 rounded-xl border border-white/10 bg-white/[0.07] p-3 shadow-[0_1px_2px_rgba(2,6,23,0.18)]"
+                          key={stat.label}
+                        >
+                          <p className="text-2xl font-semibold text-white">
+                            {stat.value}
+                          </p>
+                          <p className="mt-1 truncate text-xs text-slate-300">
+                            {stat.label}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
 
-                <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-                  {[
-                    { label: 'Active projects', value: '2' },
-                    { label: 'Open tickets', value: '1' },
-                    { label: 'SEO score', value: '82' },
-                  ].map((stat) => (
-                    <div
-                      className="min-w-0 rounded-xl border border-slate-200 bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-                      key={stat.label}
-                    >
-                      <p className="text-xl font-semibold text-slate-950">
-                        {stat.value}
-                      </p>
-                      <p className="mt-1 truncate text-xs text-slate-500">
-                        {stat.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                    <div className="mt-3 grid gap-3 lg:grid-cols-[1.4fr_0.6fr]">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4 shadow-[0_1px_2px_rgba(2,6,23,0.18)]">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-semibold text-white">
+                            Business Website
+                          </p>
+                          <span className="rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100">
+                            Development
+                          </span>
+                        </div>
+                        <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                          <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-300" />
+                        </div>
+                        <div className="mt-3 flex justify-between text-xs text-slate-300">
+                          <span>60% complete</span>
+                          <span>Due 28 June</span>
+                        </div>
+                      </div>
 
-                <div className="mt-3 grid gap-3 lg:grid-cols-[1.4fr_0.6fr]">
-                  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-semibold text-slate-950">
-                        Business Website
-                      </p>
-                      <StatusBadge label="Development" tone="blue" />
+                      <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4 shadow-[0_1px_2px_rgba(2,6,23,0.18)]">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-semibold text-white">
+                            Support
+                          </p>
+                          <Wrench
+                            aria-hidden="true"
+                            className="h-4 w-4 text-cyan-200"
+                          />
+                        </div>
+                        <p className="mt-3 text-xs leading-5 text-slate-300">
+                          Mobile menu adjustment
+                        </p>
+                        <span className="mt-3 inline-flex rounded-full bg-amber-300/15 px-2.5 py-1 text-xs font-semibold text-amber-100">
+                          In progress
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
-                      <div className="h-full w-3/5 rounded-full bg-blue-600" />
-                    </div>
-                    <div className="mt-3 flex justify-between text-xs text-slate-500">
-                      <span>60% complete</span>
-                      <span>Due 28 June</span>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-slate-950">
-                        Support
-                      </p>
-                      <Wrench
-                        aria-hidden="true"
-                        className="h-4 w-4 text-slate-400"
-                      />
-                    </div>
-                    <p className="mt-3 text-xs leading-5 text-slate-600">
-                      Mobile menu adjustment
-                    </p>
-                    <StatusBadge
-                      className="mt-3"
-                      label="In progress"
-                      tone="amber"
-                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-24 bg-slate-50"
+          style={{
+            clipPath:
+              'polygon(0 55%, 18% 44%, 45% 54%, 72% 42%, 100% 24%, 100% 100%, 0 100%)',
+          }}
+        />
       </section>
 
       <section className="border-b border-slate-200 bg-slate-50">
@@ -441,11 +585,52 @@ export function Home() {
               </div>
             </div>
           </div>
+          <div className="mt-10 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_-42px_rgba(15,23,42,0.38)] sm:grid-cols-3">
+            {[
+              {
+                label: '01',
+                title: 'Request intake',
+                text: 'Customers describe what they need in one structured flow.',
+              },
+              {
+                label: '02',
+                title: 'Delivery workspace',
+                text: 'Projects, tickets, reports, and orders stay visible.',
+              },
+              {
+                label: '03',
+                title: 'Long-term support',
+                text: 'Maintenance and support history remains connected.',
+              },
+            ].map((item) => (
+              <div
+                className="border-b border-slate-200 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
+                key={item.label}
+              >
+                <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                  {item.label}
+                </span>
+                <p className="mt-3 text-sm font-semibold text-slate-950">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="scroll-mt-24 bg-white" id="services">
-        <div className="page-shell py-16 lg:py-20">
+      <section
+        className="relative scroll-mt-24 overflow-hidden bg-white"
+        id="services"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute right-0 top-0 h-80 w-80 rounded-full bg-blue-100/40 blur-3xl"
+        />
+        <div className="page-shell relative z-10 py-16 lg:py-20">
           <SectionHeading
             description="Start with the service your business needs today, then keep future work and support connected to the same portal."
             eyebrow="Services"
@@ -457,10 +642,10 @@ export function Home() {
 
               return (
                 <article
-                  className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_18px_45px_-35px_rgba(15,23,42,0.45)]"
+                  className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_24px_70px_-44px_rgba(37,99,235,0.5)]"
                   key={service.title}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-1 ring-blue-100">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 ring-1 ring-blue-100">
                     <IconComponent className="h-5 w-5" />
                   </span>
                   <h3 className="mt-6 text-lg font-semibold text-slate-950">
@@ -488,34 +673,50 @@ export function Home() {
       </section>
 
       <section
-        className="scroll-mt-24 border-y border-slate-200 bg-slate-50"
+        className="relative isolate scroll-mt-24 overflow-hidden bg-slate-950 text-white"
         id="how-it-works"
       >
-        <div className="page-shell py-16 lg:py-20">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-14 bg-white"
+          style={{
+            clipPath: 'polygon(0 0, 100% 0, 100% 22%, 0 100%)',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-25"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 20% 10%, rgba(34,211,238,0.22), transparent 30%), radial-gradient(circle at 80% 80%, rgba(37,99,235,0.28), transparent 34%)',
+          }}
+        />
+        <div className="page-shell relative z-10 py-16 lg:py-20">
           <SectionHeading
             description="A simple workflow keeps expectations, progress, and communication visible from the beginning."
             eyebrow="How it works"
             title="Four steps from service choice to support"
+            tone="dark"
           />
           <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
               <li
-                className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                className="relative rounded-2xl border border-white/10 bg-white/[0.05] p-6 shadow-[0_24px_70px_-46px_rgba(14,165,233,0.55)] backdrop-blur transition hover:-translate-y-0.5 hover:border-cyan-300/30 hover:bg-white/[0.08]"
                 key={step.number}
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-xs font-semibold text-white shadow-sm">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-300 text-xs font-semibold text-white shadow-[0_0_30px_rgba(34,211,238,0.28)]">
                   {step.number}
                 </span>
-                <h3 className="mt-4 text-base font-semibold text-slate-950">
+                <h3 className="mt-4 text-base font-semibold text-white">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-7 text-slate-600">
+                <p className="mt-2 text-sm leading-7 text-slate-300">
                   {step.description}
                 </p>
                 {step.number !== '04' ? (
                   <ArrowRight
                     aria-hidden="true"
-                    className="absolute right-5 top-7 hidden h-4 w-4 text-slate-300 lg:block"
+                    className="absolute right-5 top-7 hidden h-4 w-4 text-cyan-200/60 lg:block"
                   />
                 ) : null}
               </li>
@@ -524,7 +725,10 @@ export function Home() {
         </div>
       </section>
 
-      <section className="scroll-mt-24 bg-white" id="platform">
+      <section
+        className="scroll-mt-24 bg-gradient-to-b from-white to-slate-50"
+        id="platform"
+      >
         <div className="page-shell py-16 lg:py-20">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
@@ -546,10 +750,10 @@ export function Home() {
 
               return (
                 <div
-                  className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300 hover:bg-slate-50/60"
+                  className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-[0_20px_55px_-42px_rgba(37,99,235,0.45)]"
                   key={feature.title}
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-gradient-to-br from-slate-50 to-blue-50 text-blue-700">
                     <IconComponent className="h-5 w-5" />
                   </span>
                   <div>
@@ -585,23 +789,20 @@ export function Home() {
               const IconComponent = item.icon
 
               return (
-                <div
-                  className="rounded-xl border border-slate-200 bg-white p-4"
-                  key={item.label}
-                >
+                <div className="rounded-xl border border-slate-200 bg-white p-4" key={item.label}>
                   <div className="flex gap-3">
-                  <IconComponent
-                    aria-hidden="true"
-                    className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
-                  />
-                  <div>
-                    <p className="text-sm font-semibold text-slate-950">
-                      {item.label}
-                    </p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">
-                      {item.text}
-                    </p>
-                  </div>
+                    <IconComponent
+                      aria-hidden="true"
+                      className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-slate-950">
+                        {item.label}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        {item.text}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )
@@ -610,8 +811,12 @@ export function Home() {
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-slate-50">
-        <div className="page-shell py-16 lg:py-20">
+      <section className="relative overflow-hidden border-y border-slate-200 bg-slate-50">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.16),transparent_55%)]"
+        />
+        <div className="page-shell relative z-10 py-16 lg:py-20">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
               description="Transparent starting points for websites, SEO, hosting, and digital support."
@@ -667,7 +872,7 @@ export function Home() {
                     accent={isRecommended ? 'blue' : undefined}
                     className={
                       isRecommended
-                        ? 'flex min-h-full flex-col rounded-2xl border-blue-300 shadow-[0_22px_55px_-36px_rgba(37,99,235,0.5)] ring-2 ring-blue-100'
+                        ? 'flex min-h-full flex-col rounded-2xl border-blue-300 shadow-[0_28px_80px_-46px_rgba(37,99,235,0.62)] ring-2 ring-blue-100'
                         : 'flex min-h-full flex-col rounded-2xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300 hover:shadow-[0_18px_45px_-36px_rgba(15,23,42,0.35)]'
                     }
                     key={servicePackage.id}
@@ -726,9 +931,13 @@ export function Home() {
         </div>
       </section>
 
-      <section className="bg-slate-950 text-white">
-        <div className="page-shell py-16 sm:py-20">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.9)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-12">
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(34,211,238,0.18),transparent_34%),radial-gradient(circle_at_85%_70%,rgba(37,99,235,0.22),transparent_36%)]"
+        />
+        <div className="page-shell relative z-10 py-16 sm:py-20">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_28px_90px_-50px_rgba(14,165,233,0.55)] backdrop-blur sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold text-blue-300">
                 Start with what your business needs now

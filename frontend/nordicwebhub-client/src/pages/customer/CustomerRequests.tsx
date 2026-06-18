@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { getPackages } from '../../api/packagesApi'
 import {
   createProjectRequest,
@@ -44,6 +45,8 @@ const sekFormatter = new Intl.NumberFormat('sv-SE', {
 })
 
 export function CustomerRequests() {
+  const [searchParams] = useSearchParams()
+  const requestedPackageId = searchParams.get('packageId') ?? ''
   const [requests, setRequests] = useState<ProjectRequest[]>([])
   const [packages, setPackages] = useState<ServicePackage[]>([])
   const [form, setForm] = useState<RequestFormState>(emptyForm)
@@ -76,6 +79,19 @@ export function CustomerRequests() {
         if (isMounted) {
           setRequests(loadedRequests)
           setPackages(loadedPackages)
+          if (
+            requestedPackageId &&
+            loadedPackages.some(
+              (servicePackage) =>
+                String(servicePackage.id) === requestedPackageId,
+            )
+          ) {
+            setForm((currentForm) => ({
+              ...currentForm,
+              servicePackageId:
+                currentForm.servicePackageId || requestedPackageId,
+            }))
+          }
         }
       } catch (loadError) {
         if (isMounted) {
@@ -98,7 +114,7 @@ export function CustomerRequests() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [requestedPackageId])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

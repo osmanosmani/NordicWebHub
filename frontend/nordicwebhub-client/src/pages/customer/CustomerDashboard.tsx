@@ -211,12 +211,12 @@ export function CustomerDashboard() {
 
 function QuickActions() {
   return (
-    <Card className="mt-6">
+    <Card className="mt-6 border-blue-100 bg-gradient-to-r from-white to-blue-50/45">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <div>
           <p className="text-sm font-semibold text-slate-950">Quick actions</p>
           <p className="mt-1 text-sm leading-5 text-slate-500">
-            Start a request, contact support, or review active work.
+            Start a request, contact support, or review your active workspace.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
@@ -266,12 +266,12 @@ function CustomerOverviewStats({
 }) {
   return (
     <div className="mt-8">
-      <div>
+      <div className="rounded-2xl border border-white/70 bg-white/55 px-5 py-4 shadow-[0_18px_60px_-52px_rgba(15,23,42,0.5)]">
         <h2 className="text-base font-semibold text-slate-950">
           Workspace overview
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Current activity connected to your company.
+          Current activity, delivery work, and support connected to your company.
         </p>
       </div>
       <div className="mt-4 grid gap-4 sm:grid-cols-3">

@@ -14,7 +14,7 @@ const iconToneClasses: Record<NonNullable<StatCardProps['tone']>, string> = {
   amber: 'border-amber-200 bg-amber-50 text-amber-700',
   blue: 'border-blue-200 bg-blue-50 text-blue-700',
   emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  slate: 'border-slate-200 bg-slate-100 text-slate-600',
+  slate: 'border-slate-200 bg-slate-50 text-slate-600',
 }
 
 export function StatCard({
@@ -28,7 +28,10 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <Card
-      className={cn('p-5 sm:p-6', className)}
+      className={cn(
+        'p-5 transition hover:-translate-y-0.5 hover:border-blue-100 hover:shadow-[0_24px_70px_-50px_rgba(37,99,235,0.42)] sm:p-6',
+        className,
+      )}
       {...props}
     >
       <div className="flex items-start justify-between gap-4">
@@ -46,7 +49,7 @@ export function StatCard({
         {icon ? (
           <div
             className={cn(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border [&>svg]:h-5 [&>svg]:w-5',
+              'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border shadow-sm [&>svg]:h-5 [&>svg]:w-5',
               iconToneClasses[tone],
             )}
           >

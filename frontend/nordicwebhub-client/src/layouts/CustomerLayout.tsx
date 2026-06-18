@@ -28,10 +28,9 @@ const customerNavigation: PortalNavItem[] = [
     section: 'Company',
   },
   {
-    to: '/pricing',
+    to: '/customer/packages',
     label: 'Packages',
     icon: Package,
-    end: true,
     section: 'Company',
   },
   {

@@ -19,11 +19,11 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        'flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between',
+        'relative overflow-hidden rounded-2xl border border-white/70 bg-[#f7f3ea] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.12),transparent_34%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.1),transparent_30%)] px-5 py-5 shadow-[0_22px_70px_-52px_rgba(15,23,42,0.65)] sm:px-6 sm:py-6 lg:flex lg:items-end lg:justify-between lg:gap-6',
         className,
       )}
     >
-      <div className="max-w-3xl">
+      <div className="relative z-10 max-w-3xl">
         {eyebrow ? (
           <p className="mb-2 text-sm font-semibold text-blue-700">
             {eyebrow}
@@ -39,7 +39,9 @@ export function PageHeader({
         ) : null}
       </div>
       {action ? (
-        <div className="flex shrink-0 flex-wrap items-center gap-2">{action}</div>
+        <div className="relative z-10 mt-5 flex shrink-0 flex-wrap items-center gap-2 lg:mt-0">
+          {action}
+        </div>
       ) : null}
     </header>
   )
