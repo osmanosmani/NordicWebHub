@@ -255,9 +255,10 @@ export function Pricing() {
               {t('pricing.choose')}
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-              The packages are demo-friendly starting points for Swedish small
-              businesses. Each one can become a request, order, project, ticket,
-              or report inside NordicWebHub.
+              The packages are demo-friendly starting points for Swedish
+              companies, organizations, and digital service teams. Each one can
+              become a request, order, project, ticket, or report inside
+              NordicWebHub.
             </p>
             <ul className="mt-6 grid gap-3 text-sm text-slate-700">
               {packageBenefits.map((benefit) => (
@@ -431,7 +432,7 @@ export function Pricing() {
           <Card
             className="rounded-2xl shadow-[0_20px_70px_-50px_rgba(15,23,42,0.5)]"
             title={t('pricing.questionsTitle')}
-            description="Practical answers for small businesses comparing digital services, support, and ongoing website work."
+            description="Practical answers for companies and organizations comparing digital services, support, and ongoing website work."
           >
             <div className="bg-slate-50/60 px-5 py-4 sm:px-6">
               <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">

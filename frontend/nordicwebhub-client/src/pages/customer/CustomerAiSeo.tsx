@@ -251,7 +251,7 @@ export function CustomerAiSeo() {
               onChange={(event) =>
                 setForm({ ...form, targetCustomers: event.target.value })
               }
-              placeholder="e.g. Property owners and small businesses in the Stockholm region."
+              placeholder="e.g. Property owners, organizations, and growing companies in the Stockholm region."
               required
               rows={3}
               value={form.targetCustomers}

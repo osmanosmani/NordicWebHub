@@ -267,7 +267,7 @@ public static class DbInitializer
             new ServicePackage
             {
                 Name = "Starter Website",
-                Description = "A polished starter website for small companies that need a trustworthy online presence.",
+                Description = "A polished starter website for growing companies that need a trustworthy online presence.",
                 Category = "Web Design",
                 MonthlyPrice = 499,
                 SetupFee = 4990,

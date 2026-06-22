@@ -73,9 +73,9 @@ const translations: Record<Language, Record<string, string>> = {
     'home.badge': 'Built for digital services, delivery and support',
     'home.title': 'One portal for websites, SEO, hosting and support.',
     'home.subtitle':
-      'NordicWebHub helps Swedish small businesses choose packages, submit requests, track projects, manage support tickets, follow service orders, and get AI-assisted recommendations in one organized workspace.',
+      'NordicWebHub helps Swedish companies and digital service teams choose packages, submit requests, track projects, manage support tickets, follow service orders, and get AI-assisted recommendations in one organized workspace.',
     'home.viewPackages': 'View Packages',
-    'home.builtFor': 'Built for Swedish SMEs',
+    'home.builtFor': 'Built for Swedish service teams',
     'home.roles': 'Admin and Customer roles',
     'home.secure': 'Secure client access',
     'home.workflowEyebrow': 'Portal workflow',
@@ -249,9 +249,9 @@ const translations: Record<Language, Record<string, string>> = {
     'home.badge': 'Byggt för digitala tjänster, leverans och support',
     'home.title': 'En portal för webbplatser, SEO, hosting och support.',
     'home.subtitle':
-      'NordicWebHub hjälper svenska småföretag att välja paket, skicka förfrågningar, följa projekt, hantera supportärenden, se tjänsteordrar och få AI-stödda rekommendationer i en samlad arbetsyta.',
+      'NordicWebHub hjälper svenska företag och digitala serviceteam att välja paket, skicka förfrågningar, följa projekt, hantera supportärenden, se tjänsteordrar och få AI-stödda rekommendationer i en samlad arbetsyta.',
     'home.viewPackages': 'Visa paket',
-    'home.builtFor': 'Byggt för svenska SME-bolag',
+    'home.builtFor': 'Byggt för svenska serviceteam',
     'home.roles': 'Admin- och kundroller',
     'home.secure': 'Säker kundåtkomst',
     'home.workflowEyebrow': 'Portalflöde',

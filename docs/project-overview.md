@@ -1,6 +1,6 @@
 # Project Overview
 
-NordicWebHub is a full-stack client portal for a digital agency that offers website, SEO, hosting, maintenance, support, and service ordering workflows for small and medium-sized businesses.
+NordicWebHub is a full-stack client portal for digital agency services that supports website, SEO, hosting, maintenance, support, and service ordering workflows for companies and organizations in Sweden.
 
 The project is built as a decoupled application:
 
@@ -13,7 +13,7 @@ The application is designed as a realistic B2B SaaS-style portal where an agency
 
 ## Problem Statement
 
-Small businesses often communicate with digital agencies through scattered email threads, documents, support messages, and informal updates. This makes it harder to understand project progress, service status, maintenance history, and support priorities.
+Companies and digital service teams often communicate through scattered email threads, documents, support messages, and informal updates. This makes it harder to understand project progress, service status, maintenance history, and support priorities.
 
 NordicWebHub centralizes this workflow into one portal:
 
