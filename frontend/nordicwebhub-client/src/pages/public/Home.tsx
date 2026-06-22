@@ -29,6 +29,161 @@ import { getDefaultRouteForUser } from '../../utils/authRoutes'
 import { cn } from '../../utils/cn'
 
 type Icon = ComponentType<{ className?: string }>
+type PublicCopyLanguage = 'en' | 'sv'
+
+const homeSwedishCopy: Record<string, string> = {
+  'Web Development': 'Webbutveckling',
+  'SEO Reports': 'SEO-rapporter',
+  'Hosting Status': 'Hostingstatus',
+  'Support Tickets': 'Supportärenden',
+  'Service Orders': 'Tjänsteordrar',
+  'AI Assistant': 'AI-assistent',
+  'Package choice': 'Paketval',
+  'Start from a clear service package instead of a vague email.':
+    'Börja från ett tydligt tjänstepaket i stället för ett vagt mejl.',
+  'Structured request': 'Strukturerad förfrågan',
+  'Collect goals, scope, budget, and timeline in one place.':
+    'Samla mål, omfattning, budget och tidsplan på ett ställe.',
+  'Visible delivery': 'Synlig leverans',
+  'Turn approved work into projects, tickets, orders, and reports.':
+    'Gör godkänt arbete till projekt, ärenden, ordrar och rapporter.',
+  'Ongoing support': 'Löpande support',
+  'Keep support, hosting status, and maintenance history connected.':
+    'Håll support, hostingstatus och underhållshistorik samlat.',
+  'Service order active': 'Aktiv tjänsteorder',
+  'Business Website package': 'Paket: Business Website',
+  'AI recommendation ready': 'AI-rekommendation klar',
+  'Local SEO next steps': 'Nästa steg för lokal SEO',
+  'Support ticket in progress': 'Supportärende pågår',
+  'Priority and replies visible': 'Prioritet och svar synliga',
+  'Hosting status online': 'Hostingstatus online',
+  'Last check successful': 'Senaste kontroll lyckades',
+  'Scattered communication': 'Spridd kommunikation',
+  'Requests, feedback, files, and support replies get spread across email and chat.':
+    'Förfrågningar, feedback, filer och supportsvar hamnar i mejl och chatt.',
+  'Unclear service status': 'Otydlig servicestatus',
+  'Customers have to ask for updates instead of seeing project and support progress.':
+    'Kunder behöver fråga efter uppdateringar i stället för att se projekt- och supportstatus.',
+  'Manual follow-ups': 'Manuella uppföljningar',
+  'Packages, orders, reports, tickets, and maintenance history are hard to keep connected.':
+    'Paket, ordrar, rapporter, ärenden och underhållshistorik blir svåra att hålla ihop.',
+  'One client workspace': 'En samlad kundarbetsyta',
+  'Customers request services, follow delivery, and manage support from one portal.':
+    'Kunder beställer tjänster, följer leverans och hanterar support från en portal.',
+  'Role-based visibility': 'Rollbaserad synlighet',
+  'Admin users manage the full workflow while customers only see their own company data.':
+    'Admin hanterar hela flödet medan kunder bara ser sin egen företagsdata.',
+  'Connected delivery flow': 'Sammanhängande leveransflöde',
+  'Packages, requests, projects, tickets, orders, reports, and AI recommendations stay linked.':
+    'Paket, förfrågningar, projekt, ärenden, ordrar, rapporter och AI-rekommendationer hålls ihop.',
+  'Websites that can become real requests':
+    'Webbplatser som kan bli riktiga förfrågningar',
+  'Create clear starting points for company websites, campaign pages, and e-commerce setup.':
+    'Skapa tydliga startpunkter för företagswebbplatser, kampanjsidor och e-handelsupplägg.',
+  'Business websites': 'Företagswebbplatser',
+  'E-commerce setup': 'E-handelsupplägg',
+  'Project tracking': 'Projektuppföljning',
+  'SEO & Reports': 'SEO och rapporter',
+  'Visibility with practical next steps': 'Synlighet med praktiska nästa steg',
+  'Keep SEO scores, keywords, technical issues, and recommendations visible to the customer.':
+    'Håll SEO-poäng, sökord, tekniska problem och rekommendationer synliga för kunden.',
+  'SEO reports': 'SEO-rapporter',
+  'Local keywords': 'Lokala sökord',
+  'AI-assisted ideas': 'AI-stödda idéer',
+  'Hosting & Maintenance': 'Hosting och underhåll',
+  'Operational work with history': 'Driftarbete med historik',
+  'Show hosting status, health checks, fixes, and maintenance logs in a structured way.':
+    'Visa hostingstatus, hälsokontroller, åtgärder och underhållsloggar strukturerat.',
+  'Website checks': 'Webbplatskontroller',
+  'Maintenance logs': 'Underhållsloggar',
+  'Status history': 'Statushistorik',
+  'Clear support instead of inbox threads': 'Tydlig support istället för mejltrådar',
+  'Customers can open tickets, follow priorities, and keep every reply connected.':
+    'Kunder kan skapa ärenden, följa prioritet och hålla alla svar samlade.',
+  'Priority handling': 'Prioritetshantering',
+  'Message thread': 'Meddelandetråd',
+  'Admin replies': 'Adminsvar',
+  'Choose a package': 'Välj ett paket',
+  'The customer starts from a service package that matches their current business need.':
+    'Kunden börjar med ett tjänstepaket som matchar aktuellt behov.',
+  'Selected package': 'Valt paket',
+  'Business Website': 'Företagswebbplats',
+  'Setup 12 990 kr': 'Start 12 990 kr',
+  'Delivery 4-6 weeks': 'Leverans 4-6 veckor',
+  'Submit a request': 'Skicka en förfrågan',
+  'The request captures scope, budget, and context without losing details in email.':
+    'Förfrågan samlar omfattning, budget och kontext utan att detaljer försvinner i mejl.',
+  'Request intake': 'Förfrågningsunderlag',
+  'Goal: new website': 'Mål: ny webbplats',
+  'Budget: medium': 'Budget: medel',
+  'Status: New': 'Status: ny',
+  'Track delivery': 'Följ leveransen',
+  'Projects, deadlines, progress, reports, and orders become visible in the portal.':
+    'Projekt, deadlines, framsteg, rapporter och ordrar blir synliga i portalen.',
+  'Project progress': 'Projektstatus',
+  'Design approved': 'Design godkänd',
+  'Development 60%': 'Utveckling 60 %',
+  'Review next': 'Granskning nästa',
+  'Get support': 'Få support',
+  'Support tickets and maintenance activity stay connected to the customer company.':
+    'Supportärenden och underhållsarbete kopplas till kundens företag.',
+  'Support thread': 'Supporttråd',
+  'Priority: Medium': 'Prioritet: medel',
+  'Reply from admin': 'Svar från admin',
+  'Status: In progress': 'Status: pågår',
+  'Customer Portal': 'Kundportal',
+  'A focused workspace where customers can see their company, requests, projects, tickets, orders, reports, and AI recommendations.':
+    'En fokuserad arbetsyta där kunder ser företag, förfrågningar, projekt, ärenden, ordrar, rapporter och AI-rekommendationer.',
+  'Own company data': 'Egen företagsdata',
+  'Requests and orders': 'Förfrågningar och ordrar',
+  'Support history': 'Supporthistorik',
+  'Admin Dashboard': 'Adminpanel',
+  'A management view for packages, companies, project requests, projects, tickets, service orders, maintenance, SEO, and hosting checks.':
+    'En vy för att hantera paket, företag, projektförfrågningar, projekt, ärenden, tjänsteordrar, underhåll, SEO och hostingkontroller.',
+  'All companies': 'Alla företag',
+  'Workflow control': 'Flödeskontroll',
+  'Status management': 'Statushantering',
+  Projects: 'Projekt',
+  'Follow status, deadline, and delivery progress.':
+    'Följ status, deadline och leveransframsteg.',
+  Tickets: 'Ärenden',
+  'Keep questions, priorities, and replies organized.':
+    'Håll frågor, prioriteringar och svar organiserade.',
+  Orders: 'Ordrar',
+  'Track demo payment and service order status.':
+    'Följ demobetalning och tjänsteorderstatus.',
+  Reports: 'Rapporter',
+  'Show SEO scores, keywords, issues, and recommendations.':
+    'Visa SEO-poäng, sökord, problem och rekommendationer.',
+  'Generate rule-based service recommendations for customers.':
+    'Generera regelbaserade tjänsterekommendationer för kunder.',
+  'Hosting status': 'Hostingstatus',
+  'Display website health checks and availability signals.':
+    'Visa webbplatskontroller och tillgänglighetssignaler.',
+  'NordicWebHub portal workspace': 'NordicWebHub portalarbetsyta',
+  'Client workspace': 'Kundarbetsyta',
+  Overview: 'Översikt',
+  Requests: 'Förfrågningar',
+  'Customer workspace': 'Kundarbetsyta',
+  'All systems online': 'Alla system online',
+  'Active projects': 'Aktiva projekt',
+  'Open tickets': 'Öppna ärenden',
+  'SEO score': 'SEO-poäng',
+  Development: 'Utveckling',
+  '60% complete': '60 % klart',
+  'Due 28 June': 'Deadline 28 juni',
+  Support: 'Support',
+  'Mobile menu adjustment': 'Justering av mobilmeny',
+  'In progress': 'Pågår',
+  'AI service assistant': 'AI-tjänsteassistent',
+  'Recommended package: SEO Growth': 'Rekommenderat paket: SEO Growth',
+  'Service order': 'Tjänsteorder',
+  'Payment status: Pending': 'Betalstatus: väntar',
+}
+
+function homeCopy(text: string, language: PublicCopyLanguage) {
+  return language === 'sv' ? homeSwedishCopy[text] ?? text : text
+}
 
 const capabilityChips = [
   'Web Development',
@@ -346,6 +501,7 @@ function HeroSignalCard({
   icon: IconComponent,
   tone,
 }: (typeof floatingSignals)[number]) {
+  const { language } = useLanguage()
   const toneClasses = {
     blue: 'border-blue-300/20 bg-blue-300/10 text-blue-100',
     cyan: 'border-cyan-300/20 bg-cyan-300/10 text-cyan-100',
@@ -365,8 +521,12 @@ function HeroSignalCard({
           <IconComponent className="h-4 w-4" />
         </span>
         <div>
-          <p className="text-sm font-semibold text-white">{title}</p>
-          <p className="mt-1 text-xs leading-5 text-slate-300">{description}</p>
+          <p className="text-sm font-semibold text-white">
+            {homeCopy(title, language)}
+          </p>
+          <p className="mt-1 text-xs leading-5 text-slate-300">
+            {homeCopy(description, language)}
+          </p>
         </div>
       </div>
     </div>
@@ -374,6 +534,8 @@ function HeroSignalCard({
 }
 
 function HeroDashboardMockup() {
+  const { language } = useLanguage()
+
   return (
     <div className="relative mx-auto w-full max-w-2xl lg:max-w-none">
       <div
@@ -390,7 +552,7 @@ function HeroDashboardMockup() {
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
             </div>
             <span className="text-xs font-semibold text-slate-300">
-              NordicWebHub portal workspace
+              {homeCopy('NordicWebHub portal workspace', language)}
             </span>
             <span className="h-2 w-12 rounded-full bg-cyan-200/20" />
           </div>
@@ -402,8 +564,12 @@ function HeroDashboardMockup() {
                   N
                 </span>
                 <div>
-                  <p className="text-xs font-semibold text-white">Portal</p>
-                  <p className="text-[11px] text-slate-500">Client workspace</p>
+                  <p className="text-xs font-semibold text-white">
+                    {homeCopy('Portal', language)}
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    {homeCopy('Client workspace', language)}
+                  </p>
                 </div>
               </div>
 
@@ -419,7 +585,7 @@ function HeroDashboardMockup() {
                       )}
                       key={item}
                     >
-                      {item}
+                      {homeCopy(item, language)}
                     </div>
                   ),
                 )}
@@ -430,7 +596,7 @@ function HeroDashboardMockup() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="text-xs font-medium text-slate-400">
-                    Customer workspace
+                    {homeCopy('Customer workspace', language)}
                   </p>
                   <p className="mt-1 text-lg font-semibold text-white">
                     Nordic Build AB
@@ -438,7 +604,7 @@ function HeroDashboardMockup() {
                 </div>
                 <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" />
-                  All systems online
+                  {homeCopy('All systems online', language)}
                 </span>
               </div>
 
@@ -456,7 +622,7 @@ function HeroDashboardMockup() {
                       {stat.value}
                     </p>
                     <p className="mt-1 truncate text-xs text-slate-300">
-                      {stat.label}
+                      {homeCopy(stat.label, language)}
                     </p>
                   </div>
                 ))}
@@ -466,31 +632,33 @@ function HeroDashboardMockup() {
                 <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-white">
-                      Business Website
+                      {homeCopy('Business Website', language)}
                     </p>
                     <span className="rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100">
-                      Development
+                      {homeCopy('Development', language)}
                     </span>
                   </div>
                   <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
                     <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-300" />
                   </div>
                   <div className="mt-3 flex justify-between text-xs text-slate-300">
-                    <span>60% complete</span>
-                    <span>Due 28 June</span>
+                    <span>{homeCopy('60% complete', language)}</span>
+                    <span>{homeCopy('Due 28 June', language)}</span>
                   </div>
                 </div>
 
                 <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-white">Support</p>
+                    <p className="text-sm font-semibold text-white">
+                      {homeCopy('Support', language)}
+                    </p>
                     <MessageSquareText className="h-4 w-4 text-cyan-200" />
                   </div>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    Mobile menu adjustment
+                    {homeCopy('Mobile menu adjustment', language)}
                   </p>
                   <span className="mt-3 inline-flex rounded-full bg-amber-300/10 px-2.5 py-1 text-xs font-semibold text-amber-100">
-                    In progress
+                    {homeCopy('In progress', language)}
                   </span>
                 </div>
               </div>
@@ -499,19 +667,19 @@ function HeroDashboardMockup() {
                 <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-white">
                     <Sparkles className="h-4 w-4 text-violet-200" />
-                    AI service assistant
+                    {homeCopy('AI service assistant', language)}
                   </div>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    Recommended package: SEO Growth
+                    {homeCopy('Recommended package: SEO Growth', language)}
                   </p>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-white">
                     <CreditCard className="h-4 w-4 text-emerald-200" />
-                    Service order
+                    {homeCopy('Service order', language)}
                   </div>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    Payment status: Pending
+                    {homeCopy('Payment status: Pending', language)}
                   </p>
                 </div>
               </div>
@@ -537,6 +705,8 @@ function ServiceCard({
   icon: IconComponent,
   highlights,
 }: (typeof services)[number]) {
+  const { language } = useLanguage()
+
   return (
     <article className="group relative flex min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl">
       <div
@@ -551,14 +721,20 @@ function ServiceCard({
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white shadow-[0_18px_40px_-24px_rgba(37,99,235,0.8)] transition duration-300 group-hover:scale-105">
           <IconComponent className="h-6 w-6" />
         </span>
-        <p className="mt-6 text-sm font-semibold text-blue-700">{kicker}</p>
-        <h3 className="mt-2 text-xl font-semibold text-slate-950">{title}</h3>
-        <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
+        <p className="mt-6 text-sm font-semibold text-blue-700">
+          {homeCopy(kicker, language)}
+        </p>
+        <h3 className="mt-2 text-xl font-semibold text-slate-950">
+          {homeCopy(title, language)}
+        </h3>
+        <p className="mt-3 text-sm leading-7 text-slate-600">
+          {homeCopy(description, language)}
+        </p>
         <ul className="mt-6 grid gap-2 border-t border-slate-100 pt-4 text-sm text-slate-700">
           {highlights.map((highlight) => (
             <li className="flex items-center gap-2" key={highlight}>
               <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-              {highlight}
+              {homeCopy(highlight, language)}
             </li>
           ))}
         </ul>
@@ -570,7 +746,8 @@ function ServiceCard({
 export function Home() {
   const { hash } = useLocation()
   const { user } = useAuth()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
+  const homeText = (text: string) => homeCopy(text, language)
   const portalRoute = user ? getDefaultRouteForUser(user) : '/register'
   const portalLabel = user ? t('common.openPortal') : t('common.createAccount')
 
@@ -685,10 +862,10 @@ export function Home() {
                       <IconComponent className="h-5 w-5" />
                     </span>
                     <p className="mt-4 text-sm font-semibold text-slate-950">
-                      {item.title}
+                      {homeText(item.title)}
                     </p>
                     <p className="mt-2 text-xs leading-6 text-slate-600">
-                      {item.description}
+                      {homeText(item.description)}
                     </p>
                   </div>
                 )
@@ -701,7 +878,7 @@ export function Home() {
                 className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm"
                 key={chip}
               >
-                {chip}
+                {homeText(chip)}
               </span>
             ))}
           </div>
@@ -728,10 +905,10 @@ export function Home() {
                     >
                       <IconComponent className="h-5 w-5 text-slate-500" />
                       <h3 className="mt-4 font-semibold text-slate-950">
-                        {card.title}
+                        {homeText(card.title)}
                       </h3>
                       <p className="mt-2 text-sm leading-7 text-slate-600">
-                        {card.description}
+                        {homeText(card.description)}
                       </p>
                     </article>
                   )
@@ -748,10 +925,10 @@ export function Home() {
                     >
                       <IconComponent className="h-5 w-5 text-blue-700" />
                       <h3 className="mt-4 font-semibold text-slate-950">
-                        {card.title}
+                        {homeText(card.title)}
                       </h3>
                       <p className="mt-2 text-sm leading-7 text-slate-600">
-                        {card.description}
+                        {homeText(card.description)}
                       </p>
                     </article>
                   )
@@ -836,14 +1013,14 @@ export function Home() {
                     </span>
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-white">
-                    {step.title}
+                    {homeText(step.title)}
                   </h3>
                   <p className="mt-2 text-sm leading-7 text-slate-300">
-                    {step.description}
+                    {homeText(step.description)}
                   </p>
                   <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/55 p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide text-cyan-200">
-                      {step.mockTitle}
+                      {homeText(step.mockTitle)}
                     </p>
                     <div className="mt-3 grid gap-2">
                       {step.mockRows.map((row) => (
@@ -851,7 +1028,7 @@ export function Home() {
                           className="rounded-lg bg-white/[0.06] px-3 py-2 text-xs text-slate-300"
                           key={row}
                         >
-                          {row}
+                          {homeText(row)}
                         </div>
                       ))}
                     </div>
@@ -918,10 +1095,10 @@ export function Home() {
                       </span>
                       <div>
                         <h3 className="text-xl font-semibold text-slate-950">
-                          {card.title}
+                          {homeText(card.title)}
                         </h3>
                         <p className="mt-2 text-sm leading-7 text-slate-600">
-                          {card.description}
+                          {homeText(card.description)}
                         </p>
                       </div>
                     </div>
@@ -932,7 +1109,7 @@ export function Home() {
                         className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700"
                         key={stat}
                       >
-                        {stat}
+                        {homeText(stat)}
                       </div>
                     ))}
                   </div>
@@ -955,10 +1132,10 @@ export function Home() {
                   </span>
                   <div>
                     <h3 className="text-base font-semibold text-slate-950">
-                      {item.title}
+                      {homeText(item.title)}
                     </h3>
                     <p className="mt-2 text-sm leading-7 text-slate-600">
-                      {item.description}
+                      {homeText(item.description)}
                     </p>
                   </div>
                 </div>

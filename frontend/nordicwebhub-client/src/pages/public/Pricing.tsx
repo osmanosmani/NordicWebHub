@@ -26,6 +26,7 @@ import { cn } from '../../utils/cn'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
 type Icon = ComponentType<{ className?: string }>
+type PricingCopyLanguage = 'en' | 'sv'
 
 const sekFormatter = new Intl.NumberFormat('sv-SE', {
   currency: 'SEK',
@@ -114,6 +115,90 @@ const faqs = [
   },
 ]
 
+const pricingSwedishCopy: Record<string, string> = {
+  'Request and delivery history in one place':
+    'Förfrågningar och leveranshistorik på ett ställe',
+  'Support and status updates through the portal':
+    'Support och statusuppdateringar via portalen',
+  'Clear monthly and setup cost visibility':
+    'Tydlig översikt över månadspris och startavgift',
+  'Demo-friendly service order workflow':
+    'Demovänligt flöde för tjänsteordrar',
+  'Choose package': 'Välj paket',
+  'Compare practical starting points for website, SEO, support, and hosting work.':
+    'Jämför praktiska startpunkter för webb, SEO, support och hosting.',
+  'Send request': 'Skicka förfrågan',
+  'Create a structured request from the customer portal with context and budget.':
+    'Skapa en strukturerad förfrågan från kundportalen med kontext och budget.',
+  'Track delivery': 'Följ leveransen',
+  'Follow project status, support tickets, reports, and service orders in one workspace.':
+    'Följ projektstatus, supportärenden, rapporter och tjänsteordrar i en arbetsyta.',
+  'Customer request portal': 'Kundportal för förfrågningar',
+  'Structured intake instead of scattered email threads':
+    'Strukturerat underlag i stället för spridda mejltrådar',
+  'Project and ticket visibility': 'Synlighet för projekt och ärenden',
+  'Progress, priorities, deadlines, and replies stay connected':
+    'Framsteg, prioriteringar, deadlines och svar hålls ihop',
+  'SEO and hosting overview': 'SEO- och hostingöversikt',
+  'Reports, health status, and maintenance activity are visible':
+    'Rapporter, hälsostatus och underhållsaktivitet är synliga',
+  'Admin management workspace': 'Adminarbetsyta',
+  'The agency can manage packages, customers, requests, and orders':
+    'Byrån kan hantera paket, kunder, förfrågningar och ordrar',
+  'The packages are demo-friendly starting points for Swedish companies, organizations, and digital service teams. Each one can become a request, order, project, ticket, or report inside NordicWebHub.':
+    'Paketen är demovänliga startpunkter för svenska företag, organisationer och digitala serviceteam. Varje paket kan bli en förfrågan, order, projekt, ärende eller rapport i NordicWebHub.',
+  'A quick overview of what the platform keeps connected around each service.':
+    'En snabb översikt över vad plattformen håller ihop kring varje tjänst.',
+  'Included around every package': 'Ingår kring varje paket',
+  'Loading service packages': 'Laddar tjänstepaket',
+  'Please check again later or contact NordicWebHub.':
+    'Kontrollera igen senare eller kontakta NordicWebHub.',
+  'No active packages available': 'Inga aktiva paket tillgängliga',
+  'All services stay connected': 'Alla tjänster hålls ihop',
+  'A package is only the starting point. The portal keeps the full delivery workflow visible.':
+    'Ett paket är bara startpunkten. Portalen håller hela leveransflödet synligt.',
+  'Project requests': 'Projektförfrågningar',
+  'Service orders': 'Tjänsteordrar',
+  'Project tracking': 'Projektuppföljning',
+  'Support tickets': 'Supportärenden',
+  'SEO visibility': 'SEO-synlighet',
+  'Secure role access': 'Säker rollåtkomst',
+  'Practical answers for companies and organizations comparing digital services, support, and ongoing website work.':
+    'Praktiska svar för företag och organisationer som jämför digitala tjänster, support och löpande webbplatsarbete.',
+  'Not sure where to start? Choose the closest package, describe your business goal, and keep the next steps, communication, and delivery history organized in the portal.':
+    'Osäker på var du ska börja? Välj det paket som passar bäst, beskriv ditt mål och håll nästa steg, kommunikation och leveranshistorik samlat i portalen.',
+  'How do I know which package is right for my business?':
+    'Hur vet jag vilket paket som passar min verksamhet?',
+  'Start with the package that matches your most important goal. Choose a website package if you need a stronger online presence, SEO if visibility is the priority, or hosting and maintenance if you already have a website that needs ongoing care.':
+    'Börja med paketet som matchar ditt viktigaste mål. Välj ett webbpaket om du behöver en starkare närvaro online, SEO om synlighet är viktigast, eller hosting och underhåll om du redan har en webbplats som behöver löpande skötsel.',
+  'What happens after I request a package?':
+    'Vad händer efter att jag skickar en paketförfrågan?',
+  'Your request is saved in the client portal so the agency can review the scope, ask follow-up questions, and turn approved work into a project, support case, service order, or report.':
+    'Förfrågan sparas i kundportalen så att byrån kan granska omfattningen, ställa följdfrågor och göra godkänt arbete till projekt, supportärende, tjänsteorder eller rapport.',
+  'Can I start small and add more services later?':
+    'Kan jag börja enkelt och lägga till fler tjänster senare?',
+  'Yes. NordicWebHub is designed around a long-term client relationship. You can begin with one package and keep adding requests, support tickets, SEO reports, maintenance work, and service orders as your business grows.':
+    'Ja. NordicWebHub är byggt för långsiktiga kundrelationer. Du kan börja med ett paket och lägga till förfrågningar, supportärenden, SEO-rapporter, underhåll och tjänsteordrar när verksamheten växer.',
+  'How do I follow progress after the work starts?':
+    'Hur följer jag arbetet när det har startat?',
+  'The customer portal keeps project status, deadlines, support messages, maintenance logs, hosting checks, and SEO reports in one place, so you do not need to search through separate email threads.':
+    'Kundportalen samlar projektstatus, deadlines, supportmeddelanden, underhållsloggar, hostingkontroller och SEO-rapporter på ett ställe så att du slipper leta i separata mejltrådar.',
+  'Do I need technical knowledge to use the portal?':
+    'Behöver jag teknisk kunskap för att använda portalen?',
+  'No. The portal is built for business owners and teams who want clear communication. You submit requests in plain language, and the agency can handle the technical planning and delivery workflow.':
+    'Nej. Portalen är byggd för företagare och team som vill ha tydlig kommunikation. Du beskriver behovet med vanliga ord, och byrån hanterar den tekniska planeringen och leveransen.',
+  'How are orders and payment status handled?':
+    'Hur hanteras ordrar och betalstatus?',
+  'Service orders can show approval and payment status in the portal, which makes it easier to understand what has been requested, approved, or completed. For this version, payment tracking is informational and does not process real card payments.':
+    'Tjänsteordrar kan visa godkännande och betalstatus i portalen, vilket gör det enklare att se vad som är begärt, godkänt eller slutfört. I den här versionen är betalstatus informativ och inga riktiga kortbetalningar behandlas.',
+  'This is a portfolio demo with fictional Swedish business data, built to show a realistic agency/customer portal workflow.':
+    'Detta är en portfoliodemo med fiktiv svensk företagsdata, byggd för att visa ett realistiskt flöde mellan byrå och kundportal.',
+}
+
+function pricingCopy(text: string, language: PricingCopyLanguage) {
+  return language === 'sv' ? pricingSwedishCopy[text] ?? text : text
+}
+
 function isRecommendedPackage(servicePackage: ServicePackage) {
   return /business|growth/i.test(servicePackage.name)
 }
@@ -132,7 +217,8 @@ function getRequestRoute(servicePackageId: number, user: ReturnType<typeof useAu
 
 export function Pricing() {
   const { user } = useAuth()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
+  const copy = (text: string) => pricingCopy(text, language)
   const [packages, setPackages] = useState<ServicePackage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -233,10 +319,10 @@ export function Pricing() {
                   </span>
                 </div>
                 <h2 className="mt-5 text-base font-semibold text-slate-950">
-                  {step.title}
+                  {copy(step.title)}
                 </h2>
                 <p className="mt-2 text-sm leading-7 text-slate-600">
-                  {step.description}
+                  {copy(step.description)}
                 </p>
               </article>
             )
@@ -255,10 +341,9 @@ export function Pricing() {
               {t('pricing.choose')}
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-              The packages are demo-friendly starting points for Swedish
-              companies, organizations, and digital service teams. Each one can
-              become a request, order, project, ticket, or report inside
-              NordicWebHub.
+              {copy(
+                'The packages are demo-friendly starting points for Swedish companies, organizations, and digital service teams. Each one can become a request, order, project, ticket, or report inside NordicWebHub.',
+              )}
             </p>
             <ul className="mt-6 grid gap-3 text-sm text-slate-700">
               {packageBenefits.map((benefit) => (
@@ -266,7 +351,7 @@ export function Pricing() {
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
                     <Check className="h-3.5 w-3.5" />
                   </span>
-                  <span>{benefit}</span>
+                  <span>{copy(benefit)}</span>
                 </li>
               ))}
             </ul>
@@ -274,8 +359,10 @@ export function Pricing() {
 
           <Card
             className="rounded-2xl shadow-[0_20px_70px_-50px_rgba(15,23,42,0.5)]"
-            description="A quick overview of what the platform keeps connected around each service."
-            title="Included around every package"
+            description={copy(
+              'A quick overview of what the platform keeps connected around each service.',
+            )}
+            title={copy('Included around every package')}
           >
             <div className="divide-y divide-slate-200">
               {includedFeatures.map((item) => (
@@ -288,10 +375,10 @@ export function Pricing() {
                       aria-hidden="true"
                       className="h-4 w-4 text-emerald-600"
                     />
-                    {item.feature}
+                    {copy(item.feature)}
                   </div>
                   <p className="text-sm leading-6 text-slate-600">
-                    {item.note}
+                    {copy(item.note)}
                   </p>
                 </div>
               ))}
@@ -302,8 +389,8 @@ export function Pricing() {
         {isLoading ? (
           <Card className="mt-8">
             <div className="flex items-center justify-center gap-3 p-8 text-sm font-medium text-slate-600">
-              <LoadingSpinner label="Loading service packages" />
-              <span>Loading service packages</span>
+              <LoadingSpinner label={copy('Loading service packages')} />
+              <span>{copy('Loading service packages')}</span>
             </div>
           </Card>
         ) : null}
@@ -313,8 +400,10 @@ export function Pricing() {
         {!isLoading && !error && packages.length === 0 ? (
           <Card className="mt-8">
             <EmptyState
-              description="Please check again later or contact NordicWebHub."
-              title="No active packages available"
+              description={copy(
+                'Please check again later or contact NordicWebHub.',
+              )}
+              title={copy('No active packages available')}
             />
           </Card>
         ) : null}
@@ -399,8 +488,10 @@ export function Pricing() {
           <Card
             accent="blue"
             className="rounded-2xl"
-            title="All services stay connected"
-            description="A package is only the starting point. The portal keeps the full delivery workflow visible."
+            title={copy('All services stay connected')}
+            description={copy(
+              'A package is only the starting point. The portal keeps the full delivery workflow visible.',
+            )}
           >
             <div className="grid gap-3 p-5">
               {[
@@ -422,7 +513,7 @@ export function Pricing() {
                       aria-hidden="true"
                       className="h-4 w-4 text-blue-700"
                     />
-                    {item.label}
+                    {copy(item.label)}
                   </div>
                 )
               })}
@@ -432,13 +523,15 @@ export function Pricing() {
           <Card
             className="rounded-2xl shadow-[0_20px_70px_-50px_rgba(15,23,42,0.5)]"
             title={t('pricing.questionsTitle')}
-            description="Practical answers for companies and organizations comparing digital services, support, and ongoing website work."
+            description={copy(
+              'Practical answers for companies and organizations comparing digital services, support, and ongoing website work.',
+            )}
           >
             <div className="bg-slate-50/60 px-5 py-4 sm:px-6">
               <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
-                Not sure where to start? Choose the closest package, describe
-                your business goal, and keep the next steps, communication, and
-                delivery history organized in the portal.
+                {copy(
+                  'Not sure where to start? Choose the closest package, describe your business goal, and keep the next steps, communication, and delivery history organized in the portal.',
+                )}
               </div>
             </div>
             <div className="divide-y divide-slate-200">
@@ -448,7 +541,7 @@ export function Pricing() {
                   key={faq.question}
                 >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-semibold leading-7 text-slate-950 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">
-                    <span>{faq.question}</span>
+                    <span>{copy(faq.question)}</span>
                     <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition group-open:border-blue-200 group-open:bg-blue-50 group-open:text-blue-700">
                       <ChevronDown
                         aria-hidden="true"
@@ -457,7 +550,7 @@ export function Pricing() {
                     </span>
                   </summary>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
-                    {faq.answer}
+                    {copy(faq.answer)}
                   </p>
                 </details>
               ))}
@@ -474,8 +567,9 @@ export function Pricing() {
               {t('pricing.ctaTitle')}
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-300">
-              This is a portfolio demo with fictional Swedish business data,
-              built to show a realistic agency/customer portal workflow.
+              {copy(
+                'This is a portfolio demo with fictional Swedish business data, built to show a realistic agency/customer portal workflow.',
+              )}
             </p>
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-0">

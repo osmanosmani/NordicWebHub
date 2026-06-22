@@ -29,7 +29,7 @@ export function Register() {
       navigate(getDefaultRouteForUser(user), { replace: true })
     } catch (submitError) {
       setError(
-        getErrorMessage(submitError, 'Registration failed. Please try again.'),
+        getErrorMessage(submitError, t('auth.registrationFailed')),
       )
     } finally {
       setIsSubmitting(false)

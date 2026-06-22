@@ -318,7 +318,12 @@ export function PublicLayout() {
               {t('home.subtitle')}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {['Web', 'SEO', 'Hosting', 'Support'].map((item) => (
+              {[
+                t('footer.webDevelopment'),
+                t('footer.seo'),
+                t('footer.hostingMaintenance'),
+                t('footer.supportTickets'),
+              ].map((item) => (
                 <span
                   className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600"
                   key={item}
@@ -359,11 +364,11 @@ export function PublicLayout() {
             <p className="text-xs font-semibold uppercase text-slate-500">
               {t('nav.services')}
             </p>
-            {[
-              { to: '/#services', label: 'Web Development' },
-              { to: '/#services', label: 'SEO' },
-              { to: '/#services', label: 'Hosting & Maintenance' },
-              { to: '/#services', label: 'Support Tickets' },
+            {[ 
+              { to: '/#services', label: t('footer.webDevelopment') },
+              { to: '/#services', label: t('footer.seo') },
+              { to: '/#services', label: t('footer.hostingMaintenance') },
+              { to: '/#services', label: t('footer.supportTickets') },
             ].map((link) => (
               <Link
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
@@ -410,7 +415,7 @@ export function PublicLayout() {
         <div className="border-t border-slate-100">
           <div className="page-shell flex flex-col gap-2 py-5 text-xs leading-5 text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} NordicWebHub.</span>
-            <span>Portfolio demo with fictional Swedish business data.</span>
+            <span>{t('footer.demoNote')}</span>
           </div>
         </div>
       </footer>

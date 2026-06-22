@@ -26,7 +26,7 @@ export function Login() {
       const user = await login({ email, password })
       navigate(getDefaultRouteForUser(user), { replace: true })
     } catch (submitError) {
-      setError(getErrorMessage(submitError, 'Login failed. Please try again.'))
+      setError(getErrorMessage(submitError, t('auth.loginFailed')))
     } finally {
       setIsSubmitting(false)
     }

@@ -47,6 +47,11 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.navigation': 'Navigation',
     'nav.clientPortal': 'Client portal',
     'nav.portalLogin': 'Portal login',
+    'footer.webDevelopment': 'Web Development',
+    'footer.seo': 'SEO',
+    'footer.hostingMaintenance': 'Hosting & Maintenance',
+    'footer.supportTickets': 'Support Tickets',
+    'footer.demoNote': 'Portfolio demo with fictional Swedish business data.',
 
     'portal.overview': 'Overview',
     'portal.clientWork': 'Client work',
@@ -129,11 +134,13 @@ const translations: Record<Language, Record<string, string>> = {
 
     'auth.loginTitle': 'Log in',
     'auth.loginDescription': 'Access your NordicWebHub client portal account.',
+    'auth.loginFailed': 'Login failed. Please try again.',
     'auth.signingIn': 'Signing in',
     'auth.newCustomer': 'New customer?',
     'auth.registerTitle': 'Register',
     'auth.registerDescription':
       'Create a customer account for the NordicWebHub portal.',
+    'auth.registrationFailed': 'Registration failed. Please try again.',
     'auth.firstName': 'First name',
     'auth.lastName': 'Last name',
     'auth.creatingAccount': 'Creating account',
@@ -223,6 +230,11 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.navigation': 'Navigation',
     'nav.clientPortal': 'Kundportal',
     'nav.portalLogin': 'Portalinloggning',
+    'footer.webDevelopment': 'Webbutveckling',
+    'footer.seo': 'SEO',
+    'footer.hostingMaintenance': 'Hosting och underhåll',
+    'footer.supportTickets': 'Supportärenden',
+    'footer.demoNote': 'Portfoliodemo med fiktiv svensk företagsdata.',
 
     'portal.overview': 'Översikt',
     'portal.clientWork': 'Kundarbete',
@@ -302,11 +314,13 @@ const translations: Record<Language, Record<string, string>> = {
 
     'auth.loginTitle': 'Logga in',
     'auth.loginDescription': 'Öppna ditt NordicWebHub-kundkonto.',
+    'auth.loginFailed': 'Inloggningen misslyckades. Försök igen.',
     'auth.signingIn': 'Loggar in',
     'auth.newCustomer': 'Ny kund?',
     'auth.registerTitle': 'Registrera',
     'auth.registerDescription':
       'Skapa ett kundkonto för NordicWebHub-portalen.',
+    'auth.registrationFailed': 'Registreringen misslyckades. Försök igen.',
     'auth.firstName': 'Förnamn',
     'auth.lastName': 'Efternamn',
     'auth.creatingAccount': 'Skapar konto',
