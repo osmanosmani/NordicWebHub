@@ -24,11 +24,11 @@ NordicWebHub is currently a demo-ready full-stack MVP.
 - Hosting status and manual website health check
 - AI Service Assistant
 - Frontend design system and polished layouts
-- Documentation and final presentation material
+- Public documentation and screenshot checklist
 
 ## In Progress
 
-- Final screenshots for README, portfolio, and presentation
+- Final screenshots for README and portfolio documentation
 - Deployment preparation
 - GitHub publishing review
 

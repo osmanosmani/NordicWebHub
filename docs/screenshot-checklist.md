@@ -1,6 +1,6 @@
 # Screenshot Checklist
 
-Use this checklist when preparing final screenshots for the README, portfolio, school report, and presentation.
+Use this checklist when preparing final screenshots for the README, portfolio, and school report.
 
 Recommended browser sizes:
 
@@ -76,4 +76,4 @@ Log in with a Customer demo user before capturing these.
 - Avoid capturing browser extensions, bookmarks, or private local paths.
 - Do not include real client data.
 - Make sure the app is logged in with the correct role before each capture.
-- Prefer clean desktop screenshots for README and a few mobile screenshots for the presentation.
+- Prefer clean desktop screenshots for README and a few mobile screenshots for responsive documentation.

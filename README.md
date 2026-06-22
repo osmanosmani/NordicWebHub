@@ -2,7 +2,7 @@
 
 NordicWebHub is a full-stack client portal for digital agency services. It gives a small agency a professional workspace for managing customers, service packages, project requests, projects, support tickets, maintenance work, SEO reports, hosting status, service orders, and service recommendations.
 
-The project is built as a realistic Swedish B2B SaaS-style MVP for small and medium businesses. It is suitable for school presentation, portfolio review, and private GitHub publishing.
+The project is built as a realistic Swedish B2B SaaS-style MVP for small and medium businesses. It is suitable for school review, portfolio documentation, and private GitHub publishing.
 
 ## Key Features
 
@@ -227,8 +227,6 @@ More documentation is available in [docs](docs/README.md):
 - Project review checklist
 - Testing
 - Screenshot checklist
-- Final presentation material
-- Technical presentation guide
 
 ## Project Status
 
@@ -239,7 +237,7 @@ Completed:
 - Customer data isolation
 - Service Orders demo
 - AI Service Assistant
-- Documentation and presentation material
+- Public documentation and screenshot checklist
 
 Known limitations:
 

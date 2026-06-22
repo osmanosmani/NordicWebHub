@@ -55,4 +55,4 @@ Typical Customer tasks:
 
 ## Project Status
 
-NordicWebHub is a demo-ready MVP. It is suitable for school presentation, portfolio documentation, and private GitHub review. It is not production-ready without additional hardening, deployment configuration, monitoring, and real payment integration.
+NordicWebHub is a demo-ready MVP. It is suitable for school review, portfolio documentation, and private GitHub review. It is not production-ready without additional hardening, deployment configuration, monitoring, and real payment integration.

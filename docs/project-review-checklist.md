@@ -1,6 +1,6 @@
 # Project Review Checklist
 
-Use this checklist before a final presentation, portfolio screenshot session, or GitHub publishing.
+Use this checklist before a final project review, portfolio screenshot session, or GitHub publishing.
 
 ## Build and Test
 
