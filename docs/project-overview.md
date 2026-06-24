@@ -1,6 +1,6 @@
 # Project Overview
 
-NordicWebHub is a full-stack client portal for digital agency services that supports website, SEO, hosting, maintenance, support, and service ordering workflows for companies and organizations in Sweden.
+NordicWebHub is a full-stack B2B SaaS-style client portal for digital service delivery. It supports website projects, SEO work, hosting, maintenance, support, service ordering, reporting, and AI-assisted recommendations for companies, organizations, startups, freelancers, and digital service teams in Sweden.
 
 The project is built as a decoupled application:
 
@@ -9,13 +9,13 @@ The project is built as a decoupled application:
 - Entity Framework Core with SQL Server
 - ASP.NET Core Identity with Admin and Customer roles
 
-The application is designed as a realistic B2B SaaS-style portal where an agency can manage customer companies, service packages, project requests, active projects, tickets, maintenance logs, SEO reports, website health checks, service orders, and an AI-style recommendation assistant.
+The application is designed as a realistic full-stack MVP where an agency can manage customer companies, service packages, project requests, active projects, tickets, maintenance logs, SEO reports, website health checks, service orders, and an AI-style service assistant from one connected workspace.
 
 ## Problem Statement
 
-Companies and digital service teams often communicate through scattered email threads, documents, support messages, and informal updates. This makes it harder to understand project progress, service status, maintenance history, and support priorities.
+Digital service delivery often becomes fragmented across email threads, chats, documents, support messages, and informal updates. This makes it harder for customers and agency teams to understand project progress, service status, maintenance history, support priorities, and what has already been agreed.
 
-NordicWebHub centralizes this workflow into one portal:
+NordicWebHub centralizes this workflow into one structured portal:
 
 - Customers can request services, track projects, open support tickets, view SEO reports, and check hosting status.
 - Admin users can manage companies, packages, requests, projects, tickets, logs, reports, service orders, and website checks.

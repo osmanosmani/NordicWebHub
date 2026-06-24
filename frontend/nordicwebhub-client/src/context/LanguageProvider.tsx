@@ -75,37 +75,37 @@ const translations: Record<Language, Record<string, string>> = {
     'portal.hostingStatus': 'Hosting Status',
     'portal.aiAssistant': 'AI Service Assistant',
 
-    'home.badge': 'Built for digital services, delivery and support',
-    'home.title': 'One portal for websites, SEO, hosting and support.',
+    'home.badge': 'Client portal for digital services and delivery',
+    'home.title': 'Digital service delivery, organized in one client portal.',
     'home.subtitle':
-      'NordicWebHub helps Swedish companies and digital service teams choose packages, submit requests, track projects, manage support tickets, follow service orders, and get AI-assisted recommendations in one organized workspace.',
+      'NordicWebHub gives Swedish companies and digital service teams a secure workspace to choose services, send requests, track projects, manage support, follow service orders, review reports, and use AI-assisted recommendations.',
     'home.viewPackages': 'View Packages',
-    'home.builtFor': 'Built for Swedish service teams',
+    'home.builtFor': 'Built for Swedish companies and service teams',
     'home.roles': 'Admin and Customer roles',
     'home.secure': 'Secure client access',
     'home.workflowEyebrow': 'Portal workflow',
-    'home.workflowTitle': 'What the portal connects from day one.',
+    'home.workflowTitle': 'A clearer workflow from first request to long-term support.',
     'home.workflowText':
-      'Instead of showing fake client logos, this section explains the real workflow NordicWebHub gives a new customer: package, request, delivery, support, and reporting in one place.',
+      'From package selection to project delivery, service orders, support, and reporting, NordicWebHub keeps customers and agency teams aligned around the same source of truth.',
     'home.problemEyebrow': 'Problem / Solution',
     'home.problemTitle':
-      'No more messy emails, scattered updates or unclear service status.',
+      'Replace scattered communication with a clear digital service workflow.',
     'home.problemText':
-      'NordicWebHub turns digital service delivery into a visible portal workflow where every request, project, ticket, order, and report has a place.',
+      'NordicWebHub turns client delivery into a structured portal where every request, project, ticket, order, report, and recommendation has a clear place.',
     'home.servicesEyebrow': 'Services',
     'home.servicesTitle':
-      'Practical digital services with a portal workflow behind them.',
+      'Practical digital services connected to real delivery workflows.',
     'home.servicesText':
       'Each service is designed as a clear starting point that can become a request, project, ticket, service order, report, or support flow.',
     'home.howEyebrow': 'How it works',
     'home.howTitle':
       'From service choice to support, every step stays visible.',
     'home.howText':
-      'The workflow is simple enough for a school MVP, but realistic enough to show how a digital agency can organize client delivery.',
+      'The workflow is simple to understand, but realistic enough to show how a digital agency can manage client delivery with structure and visibility.',
     'home.platformEyebrow': 'Platform preview',
     'home.platformTitle': 'Two portal roles, one connected delivery system.',
     'home.platformText':
-      'NordicWebHub is not only a marketing page. It connects the public package flow with a working Admin and Customer portal.',
+      'NordicWebHub connects the public package flow with a working Admin and Customer portal for requests, projects, support, reports, and service orders.',
     'home.explorePortal': 'Explore the portal',
     'home.finalEyebrow': 'Ready to explore the portal?',
     'home.finalTitle':
@@ -258,36 +258,36 @@ const translations: Record<Language, Record<string, string>> = {
     'portal.hostingStatus': 'Hostingstatus',
     'portal.aiAssistant': 'AI-tjänsteassistent',
 
-    'home.badge': 'Byggt för digitala tjänster, leverans och support',
-    'home.title': 'En portal för webbplatser, SEO, hosting och support.',
+    'home.badge': 'Kundportal för digitala tjänster och leverans',
+    'home.title': 'Digital tjänsteleverans, samlad i en kundportal.',
     'home.subtitle':
-      'NordicWebHub hjälper svenska företag och digitala serviceteam att välja paket, skicka förfrågningar, följa projekt, hantera supportärenden, se tjänsteordrar och få AI-stödda rekommendationer i en samlad arbetsyta.',
+      'NordicWebHub ger svenska företag och digitala serviceteam en säker arbetsyta för att välja tjänster, skicka förfrågningar, följa projekt, hantera support, se tjänsteordrar, granska rapporter och använda AI-stödda rekommendationer.',
     'home.viewPackages': 'Visa paket',
-    'home.builtFor': 'Byggt för svenska serviceteam',
+    'home.builtFor': 'Byggt för svenska företag och serviceteam',
     'home.roles': 'Admin- och kundroller',
     'home.secure': 'Säker kundåtkomst',
     'home.workflowEyebrow': 'Portalflöde',
-    'home.workflowTitle': 'Det portalen kopplar ihop från dag ett.',
+    'home.workflowTitle': 'Ett tydligare flöde från första förfrågan till långsiktig support.',
     'home.workflowText':
-      'I stället för att visa påhittade kundlogotyper visar detta avsnitt det verkliga arbetsflödet NordicWebHub ger en ny kund: paket, förfrågan, leverans, support och rapportering på ett ställe.',
+      'Från paketval till projektleverans, tjänsteordrar, support och rapportering hjälper NordicWebHub kunder och byråteam att arbeta utifrån samma tydliga information.',
     'home.problemEyebrow': 'Problem / Lösning',
     'home.problemTitle':
-      'Slipp röriga mejltrådar, spridda uppdateringar och otydlig servicestatus.',
+      'Ersätt spridd kommunikation med ett tydligt digitalt serviceflöde.',
     'home.problemText':
-      'NordicWebHub gör leveransen synlig i ett portalflöde där varje förfrågan, projekt, ärende, order och rapport har sin plats.',
+      'NordicWebHub gör kundleveransen mer strukturerad genom en portal där varje förfrågan, projekt, ärende, order, rapport och rekommendation har sin plats.',
     'home.servicesEyebrow': 'Tjänster',
     'home.servicesTitle':
-      'Praktiska digitala tjänster med ett portalflöde bakom.',
+      'Praktiska digitala tjänster kopplade till verkliga leveransflöden.',
     'home.servicesText':
       'Varje tjänst är en tydlig startpunkt som kan bli en förfrågan, ett projekt, ett ärende, en tjänsteorder, en rapport eller ett supportflöde.',
     'home.howEyebrow': 'Så fungerar det',
     'home.howTitle': 'Från tjänsteval till support, varje steg är synligt.',
     'home.howText':
-      'Flödet är tillräckligt enkelt för ett skol-MVP men realistiskt nog för att visa hur en digital byrå kan organisera kundleverans.',
+      'Flödet är enkelt att förstå men realistiskt nog för att visa hur en digital byrå kan hantera kundleverans med struktur och överblick.',
     'home.platformEyebrow': 'Plattformsöversikt',
     'home.platformTitle': 'Två portalroller, ett sammanhängande leveranssystem.',
     'home.platformText':
-      'NordicWebHub är inte bara en marknadssida. Den kopplar ihop paketflödet med en fungerande admin- och kundportal.',
+      'NordicWebHub kopplar ihop paketflödet med en fungerande admin- och kundportal för förfrågningar, projekt, support, rapporter och tjänsteordrar.',
     'home.explorePortal': 'Utforska portalen',
     'home.finalEyebrow': 'Redo att utforska portalen?',
     'home.finalTitle': 'Samla nästa digitala projekt i en organiserad portal.',
