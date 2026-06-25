@@ -37,7 +37,7 @@ export function PublicLayout() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header
         className={cn(
-          'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors supports-[backdrop-filter]:bg-opacity-90 md:sticky',
+          'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors supports-[backdrop-filter]:bg-opacity-90',
           isHomePage
             ? 'border-white/10 bg-slate-950/95 shadow-[0_16px_45px_-35px_rgba(14,165,233,0.65)]'
             : 'border-slate-200 bg-white/95 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.3)]',
@@ -295,7 +295,7 @@ export function PublicLayout() {
         ) : null}
       </header>
 
-      <main className="pt-[4.5rem] md:pt-0">
+      <main className="pt-[4.5rem]">
         <Outlet />
       </main>
 
