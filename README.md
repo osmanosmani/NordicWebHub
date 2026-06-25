@@ -4,6 +4,14 @@ NordicWebHub is a full-stack B2B SaaS-style client portal for digital service de
 
 The project is built as a realistic MVP with a decoupled React frontend, ASP.NET Core Web API backend, SQL Server database, Identity-based authentication, role-based access, customer data isolation, and live cloud deployment. It is suitable for school review, portfolio documentation, and private GitHub publishing.
 
+## Live Demo
+
+- Frontend: [nordic-web-hub.vercel.app](https://nordic-web-hub.vercel.app)
+- API health check: [nordicwebhub-api.azurewebsites.net/api/health](https://nordicwebhub-api.azurewebsites.net/api/health)
+- Public packages API: [nordicwebhub-api.azurewebsites.net/api/packages](https://nordicwebhub-api.azurewebsites.net/api/packages)
+
+The live demo uses fictional Swedish demo data only.
+
 ## Key Features
 
 - Public landing page and pricing page
@@ -20,6 +28,34 @@ The project is built as a realistic MVP with a decoupled React frontend, ASP.NET
 - AI Service Assistant with rule-based recommendations
 - One Customer equals one Company data isolation
 - HttpOnly cookie authentication and CSRF protection
+
+## Screenshots
+
+### Public Landing Page
+
+<img src="docs/screenshots/home.png" alt="NordicWebHub public landing page" width="100%">
+
+### Public Pricing And Mobile Experience
+
+| Pricing page | Mobile landing page |
+| --- | --- |
+| <img src="docs/screenshots/pricing.png" alt="NordicWebHub pricing page" width="100%"> | <img src="docs/screenshots/mobile-home.png" alt="NordicWebHub mobile landing page" width="100%"> |
+
+### Admin And Customer Portals
+
+| Admin dashboard | Customer dashboard |
+| --- | --- |
+| <img src="docs/screenshots/admin-dashboard.png" alt="NordicWebHub admin dashboard" width="100%"> | <img src="docs/screenshots/customer-dashboard.png" alt="NordicWebHub customer dashboard" width="100%"> |
+
+### Core Workflow Features
+
+| Support tickets | Service orders |
+| --- | --- |
+| <img src="docs/screenshots/support-tickets.png" alt="NordicWebHub support tickets" width="100%"> | <img src="docs/screenshots/service-orders.png" alt="NordicWebHub service orders" width="100%"> |
+
+### AI Service Assistant
+
+<img src="docs/screenshots/ai-assistant.png" alt="NordicWebHub AI Service Assistant" width="100%">
 
 ## Tech Stack
 
@@ -199,11 +235,11 @@ npm run lint
 
 ## Deployment Notes
 
-Recommended deployment direction:
+Current demo deployment:
 
 - React frontend: Vercel
 - ASP.NET Core API: Azure App Service
-- Database: Azure SQL for production or SQL Server LocalDB for demo
+- Database: Azure SQL Database
 
 The frontend includes a Vercel SPA routing configuration. Backend deployment should use environment variables or hosting provider settings for connection strings, allowed frontend origins, and any optional API keys.
 

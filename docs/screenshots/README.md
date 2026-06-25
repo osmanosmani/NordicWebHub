@@ -1,17 +1,16 @@
 # Screenshots
 
-Save final presentation and README screenshots in this folder.
+This folder contains public README and presentation screenshots for NordicWebHub.
 
-Suggested filenames:
+Current screenshots:
 
-- `01-public-home.png`
-- `02-public-pricing.png`
-- `03-public-login.png`
-- `04-admin-dashboard.png`
-- `05-admin-service-orders.png`
-- `06-customer-dashboard.png`
-- `07-customer-service-orders.png`
-- `08-customer-ai-service-assistant.png`
-- `09-mobile-navigation.png`
+- `home.png` - public landing page
+- `pricing.png` - public pricing and packages page
+- `admin-dashboard.png` - Admin portal dashboard
+- `customer-dashboard.png` - Customer portal dashboard
+- `support-tickets.png` - support ticket workflow
+- `service-orders.png` - service order/payment status demo
+- `ai-assistant.png` - AI Service Assistant
+- `mobile-home.png` - mobile public landing page
 
 Do not commit screenshots that contain real client data, real credentials, or private local machine information.
