@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AdminLayout } from '../layouts/AdminLayout'
 import { CustomerLayout } from '../layouts/CustomerLayout'
@@ -29,10 +30,20 @@ import { Pricing } from '../pages/public/Pricing'
 import { Register } from '../pages/public/Register'
 import { Unauthorized } from '../pages/public/Unauthorized'
 import { ProtectedRoute } from './ProtectedRoute'
+import { ScrollToTop } from './ScrollToTop'
+
+function withScrollToTop(element: ReactElement) {
+  return (
+    <>
+      <ScrollToTop />
+      {element}
+    </>
+  )
+}
 
 export const router = createBrowserRouter([
   {
-    element: <PublicLayout />,
+    element: withScrollToTop(<PublicLayout />),
     children: [
       {
         index: true,
@@ -57,7 +68,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute allowedRole="Admin" />,
+    element: withScrollToTop(<ProtectedRoute allowedRole="Admin" />),
     children: [
       {
         path: 'admin',
@@ -112,7 +123,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute allowedRole="Customer" />,
+    element: withScrollToTop(<ProtectedRoute allowedRole="Customer" />),
     children: [
       {
         path: 'customer',
