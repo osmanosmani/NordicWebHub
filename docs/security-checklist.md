@@ -58,4 +58,4 @@ Use this checklist before publishing to GitHub or preparing a demo.
 - [ ] Review `git status`.
 - [ ] Review `git diff --cached --name-only`.
 - [ ] Verify the remote URL.
-- [ ] Keep the repository private until ready for public portfolio use.
+- [ ] Confirm the repository visibility matches the intended release.

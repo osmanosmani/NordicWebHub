@@ -1,6 +1,6 @@
 # Screenshots
 
-This folder contains public README and presentation screenshots for NordicWebHub.
+This folder contains README and project screenshots for NordicWebHub.
 
 Current screenshots:
 
@@ -12,5 +12,3 @@ Current screenshots:
 - `service-orders.png` - service order/payment status demo
 - `ai-assistant.png` - AI Service Assistant
 - `mobile-home.png` - mobile public landing page
-
-Do not commit screenshots that contain real client data, real credentials, or private local machine information.
