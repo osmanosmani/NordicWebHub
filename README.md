@@ -180,7 +180,7 @@ After copying `appsettings.Development.example.json` to `appsettings.Development
 
 ```json
 "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=NordicWebHub;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-
+```
 
 ## Authentication and Roles
 
