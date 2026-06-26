@@ -174,13 +174,13 @@ http://localhost:5096/api
 
 ## Database Setup
 
-The default local setup uses SQL Server LocalDB:
+For local development, NordicWebHub can run with SQL Server LocalDB.
+
+After copying `appsettings.Development.example.json` to `appsettings.Development.json`, configure a local-only connection string such as:
 
 ```json
 "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=NordicWebHub;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-```
 
-For production, use a secure SQL Server or Azure SQL connection string through environment variables or hosting provider configuration. Do not commit production connection strings.
 
 ## Authentication and Roles
 
